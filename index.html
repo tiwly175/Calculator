@@ -4,18 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>fx-991CW ClassWiz — Scientific Calculator</title>
+<link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="fx-991CW">
 <meta name="theme-color" content="#1b1d21">
-<!-- manifest inline -->
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22fx-991CW%20ClassWiz%22%2C%22short_name%22%3A%22fx-991CW%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231b1d21%22%2C%22theme_color%22%3A%22%231b1d21%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2527%2520viewBox%253D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%253D%2527100%2527%2520height%253D%2527100%2527%2520rx%253D%252718%2527%2520fill%253D%2527%25231b1d21%2527%252F%253E%253Ctext%2520x%253D%252750%2527%2520y%253D%252562%2527%2520font-size%253D%252742%2527%2520text-anchor%253D%2527middle%2527%2520fill%253D%2527%2523f2a63c%2527%2520font-family%253D%2527sans-serif%2527%2520font-weight%253D%2527700%2527%253Efx%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%5D%7D">
-<!-- fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ---------- root & theme ---------- */
+/* ===== CSS หลัก (เหมือนเดิม แต่ปรับให้สมบูรณ์) ===== */
 :root{
   --body-bg:#e9ebec; --body-bg-2:#d7d9db; --body-edge:#b9bcc0;
   --screen-frame:#1b1d21; --screen-frame-2:#2a2d32;
@@ -24,13 +22,12 @@
   --key-num-bg:#f8f8f6; --key-num-bg2:#e6e6e3; --key-num-fg:#1d1e20;
   --key-op-bg:#54585f; --key-op-bg2:#494c53; --key-op-fg:#ffffff;
   --shift:#f2941f; --shift-dim:#8a5c1c;
-  --alpha:#d9483a;
-  --ac:#c94236;
-  --menu:#3d6fb0;
+  --alpha:#d9483a; --ac:#c94236; --menu:#3d6fb0;
   --equals-1:#f2a63c; --equals-2:#e8871c; --equals-fg:#241300;
   --sub-label:#c9691f;
   --gap:5px; --radius-key:9px;
   --brightness:1;
+  --font-scale:1;
 }
 body[data-theme="dark"]{
   --body-bg:#2b2d31; --body-bg-2:#1e2023; --body-edge:#0e0f11;
@@ -51,7 +48,6 @@ body{height:100dvh; display:flex; align-items:stretch; justify-content:center;
   padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom));
   font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; overflow:hidden;
   transition:background .25s;}
-
 .device{
   width:100%; max-width:410px; max-height:880px; height:100%; margin:0 auto;
   background:linear-gradient(155deg,var(--body-bg) 0%,var(--body-bg-2) 55%,#c3c5c8 100%);
@@ -76,38 +72,36 @@ body[data-theme="dark"] .brand-name{color:#e6e8ea;}
 .icon-btn:active{background:rgba(0,0,0,.16);}
 body[data-theme="dark"] .icon-btn{background:rgba(255,255,255,.1); color:#e6e8ea;}
 body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
-
-/* ---------- screen ---------- */
 .screen-frame{flex:0 0 auto; background:linear-gradient(180deg,var(--screen-frame) 0%,var(--screen-frame-2) 100%);
   border-radius:12px; padding:9px; margin-bottom:8px; box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 0 0 1px #000;}
 .lcd{background:linear-gradient(155deg,var(--lcd-bg) 0%,var(--lcd-bg-2) 100%); border-radius:5px; padding:7px 10px 8px;
   min-height:118px; position:relative; overflow:hidden; box-shadow:inset 0 2px 6px rgba(0,0,0,.25);}
 .lcd-top{display:flex; align-items:center; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--lcd-dim); margin-bottom:3px; letter-spacing:.03em; gap:6px;}
-.lcd-badges{display:flex; gap:6px; flex:0 0 auto;}
+.lcd-badges{display:flex; gap:6px; flex:0 0 auto; flex-wrap:wrap;}
 .lcd-badges span{opacity:.35;}
 .lcd-badges span.on{opacity:1; color:var(--lcd-fg); font-weight:700;}
 .lcd-mode{font-weight:700; color:var(--lcd-fg); opacity:.85; flex:1 1 auto; min-width:0; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:0 4px;}
 .lcd-body{display:flex; flex-direction:column; justify-content:flex-end; min-height:78px;}
-.expr{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--lcd-fg); opacity:.72;
+.expr{font-family:'JetBrains Mono',monospace; font-size:calc(12.5px * var(--font-scale)); color:var(--lcd-fg); opacity:.72;
   text-align:right; min-height:15px; white-space:nowrap; overflow-x:auto; scrollbar-width:none; letter-spacing:.01em; cursor:pointer;}
 .expr::-webkit-scrollbar{display:none;}
+.result-row{display:flex; align-items:center; justify-content:flex-end; gap:6px;}
 .result{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(22px,7.6vw,32px); line-height:1.15;
-  color:var(--lcd-fg); text-align:right; white-space:nowrap; overflow-x:auto; scrollbar-width:none; cursor:pointer;}
+  color:var(--lcd-fg); white-space:nowrap; overflow-x:auto; scrollbar-width:none; flex:1; text-align:right;}
 .result::-webkit-scrollbar{display:none;}
 .result.error{color:#9b2f22; font-size:16px;}
-.panel-note{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--lcd-dim); text-align:right; margin-top:2px;}
-
+.copy-btn{background:rgba(0,0,0,.1); border:none; border-radius:4px; color:var(--lcd-dim); font-size:13px; cursor:pointer; padding:2px 6px; flex:0 0 auto;}
+.copy-btn:active{background:rgba(0,0,0,.2);}
 .hist-panel{position:absolute; inset:0; background:rgba(30,33,26,.96); border-radius:5px; padding:8px 10px;
   display:none; flex-direction:column; gap:3px; overflow-y:auto; z-index:5;}
 .hist-panel.open{display:flex;}
-.hist-panel-title{font-family:'JetBrains Mono',monospace; font-size:9px; color:#c7cabf; letter-spacing:.1em; margin-bottom:2px;}
+.hist-panel-title{font-family:'JetBrains Mono',monospace; font-size:9px; color:#c7cabf; letter-spacing:.1em; margin-bottom:2px; display:flex; justify-content:space-between;}
 .hist-item{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#e7e9df; text-align:right; padding:3px 2px; border-bottom:1px solid #3c3f34; cursor:pointer;}
 .hist-empty{font-family:'JetBrains Mono',monospace; font-size:11px; color:#8b8e82; text-align:center; margin-top:12px;}
 .hist-btn{flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--lcd-dim);
   background:none; border:1px solid rgba(32,38,28,.35); border-radius:4px; padding:1px 5px; cursor:pointer; z-index:6;}
 .hist-btn.on{color:var(--lcd-fg); border-color:var(--lcd-fg);}
-
-/* ---------- menus & overlays ---------- */
+.hist-clear{background:rgba(255,255,255,.1); border:none; color:#ffb0a6; font-size:9px; cursor:pointer; border-radius:4px; padding:0 6px;}
 .menu-overlay{position:absolute; inset:11px 11px auto 11px; top:52px; bottom:64px; background:rgba(20,22,18,.97);
   border-radius:12px; display:none; padding:10px; z-index:20; overflow-y:auto;}
 .menu-overlay .sheet-head{margin:-10px -10px 10px; padding:10px 10px 8px; border-radius:12px 12px 0 0;}
@@ -118,7 +112,6 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .menu-item:active{background:#363a2c;}
 .menu-item .n{font-family:'JetBrains Mono',monospace; color:var(--shift); font-size:10px; display:block;}
 .menu-item .t{font-size:10.5px; font-weight:600; display:block; margin-top:3px; line-height:1.2;}
-
 .sheet-overlay{position:absolute; inset:11px 11px auto 11px; top:52px; bottom:64px; background:rgba(20,22,18,.97);
   border-radius:12px; display:none; padding:12px; z-index:25; overflow-y:auto; color:#e6e8de;
   font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif;}
@@ -147,7 +140,6 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .reset-colors{width:100%; margin-top:2px; background:#4a4d52; color:#fff; border:none; border-radius:8px;
   font-weight:600; font-size:11.5px; padding:8px 0; cursor:pointer;}
 .reset-colors:active{background:#3d4045;}
-
 .guide-item{background:#22251d; border:1px solid #33362b; border-radius:10px; padding:9px 11px; margin-bottom:8px;}
 .guide-q{font-size:12.5px; font-weight:700; color:#f0d9a0; margin-bottom:4px;}
 .guide-a{font-size:12px; color:#dfe1d6; line-height:1.55;}
@@ -155,8 +147,6 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .guide-sec{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.12em; color:var(--shift);
   text-transform:uppercase; margin:12px 0 6px; opacity:.9;}
 .guide-sec:first-child{margin-top:0;}
-
-/* panels */
 .panel{flex:1 1 auto; min-height:0; display:none; flex-direction:column; overflow-y:auto; padding:1px 1px 4px; gap:7px;}
 .panel.active{display:flex;}
 .field-row{display:flex; gap:6px; align-items:center; flex:0 0 auto;}
@@ -193,8 +183,6 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
   padding:4px 7px; display:flex; align-items:center; gap:5px;}
 .stat-chip b{cursor:pointer; color:#ffb0a6; font-weight:700;}
 .stat-list{display:flex; flex-wrap:wrap; gap:5px; max-height:56px; overflow-y:auto; flex:0 0 auto;}
-
-/* ---------- keypad ---------- */
 .grid{flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(9,minmax(0,1fr)); gap:var(--gap);}
 .key{appearance:none; border:none; width:100%; height:100%; min-width:0; min-height:0; font-family:'IBM Plex Sans',sans-serif;
   font-size:clamp(11.5px,3.6vw,14px); font-weight:600; border-radius:var(--radius-key); padding:0 2px; display:flex; flex-direction:column;
@@ -222,8 +210,6 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
   box-shadow:0 2px 0 #a5680f,0 3px 6px rgba(232,135,28,.3),inset 0 1px 0 rgba(255,255,255,.3);}
 .key.active-toggle{outline:2px solid var(--shift); box-shadow:0 0 0 #202226,0 0 6px var(--shift),inset 0 2px 4px rgba(0,0,0,.3);}
 .span2{grid-column:span 2;}
-
-/* dark theme panels */
 body[data-theme="dark"] .field-row label{color:#a9acb1;}
 body[data-theme="dark"] .field-row input, body[data-theme="dark"] .field-row select{background:#26282c; color:#e9eaec; border-color:#43464d;}
 body[data-theme="dark"] .seg button{background:#33363c; color:#c2c4c8;}
@@ -234,21 +220,20 @@ body[data-theme="dark"] .table-row span:first-child{color:#9a9da2;}
 body[data-theme="dark"] .table-empty{color:#797c82;}
 body[data-theme="dark"] .grid-inputs input{background:#26282c; color:#e9eaec; border-color:#43464d;}
 body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
-
-/* converter rows */
 .conv-group{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:6px;}
 .conv-group select, .conv-group input{width:100%;}
 .toast{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#222; color:#eee; padding:8px 18px;
   border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:13px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:100;}
 .toast.show{opacity:1;}
+#graphCanvas{width:100%; height:150px; background:#0f1a12; border-radius:9px; display:block;}
 </style>
 </head>
 <body>
 <div class="device">
   <div class="brand">
-    <div class="brand-left"><div class="solar"></div><span class="brand-name" id="brandName">CASIO</span></div>
+    <div class="brand-left"><div class="solar"></div><span class="brand-name">CASIO</span></div>
     <div class="brand-meta">
-      <div><div class="brand-model" id="brandModel">fx‑991CW</div><div class="brand-sub">ClassWiz</div></div>
+      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">ClassWiz</div></div>
       <div class="brand-right">
         <button class="icon-btn" id="backMenuBtn" title="กลับไปเมนู">&#9776;</button>
         <button class="icon-btn" id="guideBtn" title="คู่มือการใช้งาน">&#63;</button>
@@ -259,22 +244,26 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <div class="screen-frame" style="position:relative;">
     <div class="lcd">
-      <div class="hist-panel" id="histPanel"><div class="hist-panel-title">HISTORY</div><div id="histList"></div></div>
+      <div class="hist-panel" id="histPanel"><div class="hist-panel-title">HISTORY <button class="hist-clear" id="histClear">ล้างทั้งหมด</button></div><div id="histList"></div></div>
       <div class="lcd-top">
         <div class="lcd-badges">
           <span id="badgeDeg" class="on">D</span><span id="badgeRad">R</span><span id="badgeM">M</span><span id="badgeShift">SHIFT</span>
+          <span id="badgeSto">STO</span>
         </div>
         <div class="lcd-mode" id="lcdMode">CALCULATE</div>
         <button class="hist-btn" id="histBtn">HIST</button>
       </div>
       <div class="lcd-body">
         <div class="expr" id="expr">&nbsp;</div>
-        <div class="result" id="result">0</div>
+        <div class="result-row">
+          <div class="result" id="result">0</div>
+          <button class="copy-btn" id="copyResult" title="คัดลอกผลลัพธ์">&#128203;</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- menu overlay -->
+  <!-- MENU OVERLAY -->
   <div class="menu-overlay" id="menuOverlay">
     <div class="sheet-head"><div class="menu-title" style="margin-bottom:0;">MENU — เลือกโหมด</div><button class="sheet-close" id="menuClose">&#10005;</button></div>
     <div class="menu-grid">
@@ -291,67 +280,45 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     </div>
   </div>
 
-  <!-- settings -->
+  <!-- SETTINGS -->
   <div class="sheet-overlay" id="settingsOverlay">
-    <div class="sheet-head"><div class="sheet-title">ธีม / ความสว่าง / เสียง</div><button class="sheet-close" id="settingsClose">&#10005;</button></div>
-    <div class="set-block">
-      <div class="set-label">ธีม (Theme)</div>
-      <div class="theme-seg" id="themeSeg">
-        <button class="on" data-theme="light">&#9728; สว่าง</button>
-        <button data-theme="dark">&#9789; มืด</button>
-      </div>
+    <div class="sheet-head"><div class="sheet-title">ตั้งค่า</div><button class="sheet-close" id="settingsClose">&#10005;</button></div>
+    <div class="set-block"><div class="set-label">ธีม</div>
+      <div class="theme-seg" id="themeSeg"><button class="on" data-theme="light">&#9728; สว่าง</button><button data-theme="dark">&#9789; มืด</button></div>
     </div>
-    <div class="set-block">
-      <div class="set-label">ความสว่างหน้าจอ (Brightness)</div>
-      <div class="bright-row">
-        <span>&#9788;</span>
-        <input type="range" id="brightRange" min="40" max="100" value="100" step="5">
-        <span class="bright-val" id="brightVal">100%</span>
-      </div>
+    <div class="set-block"><div class="set-label">ความสว่าง</div>
+      <div class="bright-row"><span>&#9788;</span><input type="range" id="brightRange" min="40" max="100" value="100" step="5"><span class="bright-val" id="brightVal">100%</span></div>
     </div>
-    <div class="set-block">
-      <div class="set-label">เสียงคลิกปุ่ม</div>
-      <div class="theme-seg" id="soundSeg">
-        <button class="on" data-sound="on">&#128266; เปิด</button>
-        <button data-sound="off">&#128263; ปิด</button>
-      </div>
+    <div class="set-block"><div class="set-label">ขนาดตัวอักษรบนจอ</div>
+      <div class="bright-row"><span>A</span><input type="range" id="fontScale" min="70" max="150" value="100" step="5"><span class="bright-val" id="fontScaleVal">100%</span></div>
     </div>
-    <div class="set-block">
-      <div class="set-label">ปรับแต่งสี</div>
-      <div class="color-row"><span>สีเน้น (ปุ่ม = / SHIFT)</span><input type="color" id="colorAccent" value="#f2941f"></div>
-      <div class="color-row"><span>สีตัวอักษรบนจอ LCD</span><input type="color" id="colorLcd" value="#20261c"></div>
+    <div class="set-block"><div class="set-label">เสียงคลิก</div>
+      <div class="theme-seg" id="soundSeg"><button class="on" data-sound="on">&#128266; เปิด</button><button data-sound="off">&#128263; ปิด</button></div>
+    </div>
+    <div class="set-block"><div class="set-label">ปรับแต่งสี</div>
+      <div class="color-row"><span>สีเน้น</span><input type="color" id="colorAccent" value="#f2941f"></div>
+      <div class="color-row"><span>สีตัวอักษร LCD</span><input type="color" id="colorLcd" value="#20261c"></div>
       <div class="color-row"><span>สีปุ่มตัวเลข</span><input type="color" id="colorKeyNum" value="#f8f8f6"></div>
       <div class="color-row"><span>สีปุ่มฟังก์ชัน</span><input type="color" id="colorKeyFn" value="#3d4149"></div>
-      <button class="reset-colors" id="colorReset">รีเซ็ตสีเริ่มต้น</button>
+      <button class="reset-colors" id="colorReset">รีเซ็ตสี</button>
     </div>
   </div>
 
-  <!-- guide -->
+  <!-- GUIDE -->
   <div class="sheet-overlay" id="guideOverlay">
-    <div class="sheet-head"><div class="sheet-title">คู่มือ &amp; ทริค</div><button class="sheet-close" id="guideClose">&#10005;</button></div>
+    <div class="sheet-head"><div class="sheet-title">คู่มือ</div><button class="sheet-close" id="guideClose">&#10005;</button></div>
     <div class="guide-sec">พื้นฐาน</div>
-    <div class="guide-item"><div class="guide-q">คำนวณทั่วไป เช่น 3 × (4 + 5)</div><div class="guide-a">พิมพ์ตัวเลขและเครื่องหมายตามปกติในโหมด <b>CALCULATE</b> แล้วกด <b>=</b> เครื่องจะปิดวงเล็บที่เปิดค้างไว้ให้อัตโนมัติ</div></div>
-    <div class="guide-item"><div class="guide-q">ใช้ผลลัพธ์เดิมต่อ (Ans)</div><div class="guide-a">กดปุ่ม <b>Ans</b> เพื่อดึงผลลัพธ์ล่าสุดมาใช้ในสูตรถัดไป เช่น <b>Ans + 1</b></div></div>
-    <div class="guide-item"><div class="guide-q">ปุ่ม SHIFT ใช้ยังไง</div><div class="guide-a">กด <b>SHIFT</b> ค้างสถานะไว้ 1 ครั้ง แล้วกดปุ่มฟังก์ชัน จะได้ฟังก์ชันสำรอง (ตัวเลขสีส้มเล็กด้านบนปุ่ม) เช่น SHIFT + x² = x³</div></div>
-    <div class="guide-item"><div class="guide-q">ความจำเครื่อง (Memory)</div><div class="guide-a"><b>M+</b> บวกค่าปัจจุบันเข้าหน่วยความจำ, <b>M−</b> ลบออก, <b>MR</b> เรียกค่าที่จำไว้มาใช้, <b>MC</b> ล้างความจำ</div></div>
-    <div class="guide-item"><div class="guide-q">ดูประวัติการคำนวณ</div><div class="guide-a">กดปุ่ม <b>HIST</b> มุมขวาบนจอ แล้วแตะรายการเก่าเพื่อดึงผลลัพธ์กลับมาใช้ต่อ</div></div>
-    <div class="guide-item"><div class="guide-q">แตะค้างที่ผลลัพธ์เพื่อคัดลอก</div><div class="guide-a">แตะค้างที่ตัวเลขผลลัพธ์หรือนิพจน์ด้านบน จะคัดลอกไปคลิปบอร์ด</div></div>
-
-    <div class="guide-sec">ค่าเฉลี่ย &amp; สถิติ</div>
-    <div class="guide-item"><div class="guide-q">หาค่าเฉลี่ย (Mean, x̄)</div><div class="guide-a">กด <b>MENU</b> → <b>8 Statistics</b> → เลือก <b>1-VAR</b> → ป้อนค่า x แล้วกด <b>+</b> → ค่าเฉลี่ยจะแสดงในตารางผลลัพธ์ พร้อม Σx, ส่วนเบี่ยงเบนมาตรฐาน และ min/max</div></div>
-    <div class="guide-item"><div class="guide-q">หาสมการเส้นตรง / สหสัมพันธ์ (Regression)</div><div class="guide-a">ใน <b>Statistics</b> เลือก <b>2-VAR</b> ป้อนคู่ x,y แล้วกด <b>+</b> ผลลัพธ์จะแสดง a, b และค่าสหสัมพันธ์ r</div></div>
-
-    <div class="guide-sec">พีชคณิต &amp; สมการ</div>
-    <div class="guide-item"><div class="guide-q">แก้สมการหลายตัวแปร</div><div class="guide-a">กด <b>MENU</b> → <b>6 Equation</b> → <b>SIMUL</b> → กรอกสัมประสิทธิ์ → <b>SOLVE</b></div></div>
-    <div class="guide-item"><div class="guide-q">แก้สมการพหุนาม (หาราก)</div><div class="guide-a">ใน <b>Equation</b> เลือก <b>POLY</b> และดีกรี → กรอกสัมประสิทธิ์ → <b>SOLVE</b></div></div>
-    <div class="guide-item"><div class="guide-q">สร้างตารางค่า f(x)</div><div class="guide-a">กด <b>MENU</b> → <b>7 Table</b> → พิมพ์สมการที่ f(x)= → กำหนดช่วง → <b>Generate Table</b></div></div>
-
-    <div class="guide-sec">เครื่องมือเพิ่ม</div>
-    <div class="guide-item"><div class="guide-q">แปลงหน่วย (Tools)</div><div class="guide-a">ในโหมด <b>Tools</b> เลือกประเภท (ความยาว/น้ำหนัก/อุณหภูมิ) แล้วกรอกค่าเพื่อแปลง</div></div>
-    <div class="guide-item"><div class="guide-q">S⇔D (เศษส่วน/ทศนิยม)</div><div class="guide-a">กดปุ่ม <b>S⇔D</b> ในแถวเครื่องหมายบนหน้าจอ เพื่อสลับผลลัพธ์ระหว่างทศนิยมกับเศษส่วน</div></div>
+    <div class="guide-item"><div class="guide-q">คำนวณทั่วไป</div><div class="guide-a">พิมพ์ตัวเลขและเครื่องหมายตามปกติ แล้วกด <b>=</b></div></div>
+    <div class="guide-item"><div class="guide-q">ใช้ผลลัพธ์เดิม (Ans)</div><div class="guide-a">กด <b>Ans</b> เพื่อดึงผลลัพธ์ล่าสุด</div></div>
+    <div class="guide-item"><div class="guide-q">SHIFT + ฟังก์ชัน</div><div class="guide-a">กด <b>SHIFT</b> แล้วกดปุ่มฟังก์ชัน จะได้ฟังก์ชันสำรอง</div></div>
+    <div class="guide-item"><div class="guide-q">หน่วยความจำ (M, A, B, C)</div><div class="guide-a">ใช้ปุ่ม <b>STO</b> (เก็บ) และ <b>RCL</b> (เรียก) ร่วมกับตัวแปร A, B, C</div></div>
+    <div class="guide-item"><div class="guide-q">S⇔D (เศษส่วน/ทศนิยม)</div><div class="guide-a">กดปุ่ม <b>S⇔D</b> ในแถวชิป</div></div>
+    <div class="guide-item"><div class="guide-q">คัดลอกผลลัพธ์</div><div class="guide-a">กดปุ่ม &#128203; ข้างผลลัพธ์ หรือแตะค้างที่ผลลัพธ์</div></div>
+    <div class="guide-item"><div class="guide-q">ดูประวัติ</div><div class="guide-a">กด <b>HIST</b> มุมขวาบนจอ</div></div>
+    <div class="guide-item"><div class="guide-q">Undo / Redo</div><div class="guide-a">ใช้ <b>Ctrl+Z</b> (ย้อนกลับ) และ <b>Ctrl+Y</b> (เลิกย้อนกลับ)</div></div>
   </div>
 
-  <!-- panel CALCULATE -->
+  <!-- ===== PANEL: CALCULATE ===== -->
   <div class="panel active" id="panel-calc" style="display:flex;">
     <div class="chip-row" id="calcChips">
       <button class="chip" data-tok="nPr(">nPr(</button>
@@ -376,56 +343,51 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="key key-util mem" data-action="mminus">M−</button>
       <button class="key key-util mem" data-action="mrecall">MR</button>
       <button class="key key-util shift" data-action="second" id="btn2nd">SHIFT</button>
-
       <button class="key key-util menu" data-action="menu">MENU</button>
       <button class="key key-util" data-action="toggleDeg" id="btnDeg">Deg</button>
       <button class="key key-util" data-action="input" data-val="(">(</button>
       <button class="key key-util" data-action="input" data-val=")">)</button>
       <button class="key key-util" data-action="exp">EXP</button>
-
       <button class="key key-fn" data-action="func" data-primary="x²" data-secondary="x³" data-vprimary="^2" data-vsecondary="^3"><span class="shiftlbl">x³</span>x²</button>
       <button class="key key-fn" data-action="func" data-primary="√x" data-secondary="∛x" data-vprimary="sqrt(" data-vsecondary="cbrt("><span class="shiftlbl">∛x</span>√x</button>
       <button class="key key-fn" data-action="func" data-primary="x^y" data-secondary="y√x" data-vprimary="^" data-vsecondary="^(1/"><span class="shiftlbl">y√x</span>x^y</button>
       <button class="key key-fn" data-action="func" data-primary="log" data-secondary="10^x" data-vprimary="log(" data-vsecondary="10^"><span class="shiftlbl">10^x</span>log</button>
       <button class="key key-fn" data-action="func" data-primary="ln" data-secondary="e^x" data-vprimary="ln(" data-vsecondary="exp("><span class="shiftlbl">e^x</span>ln</button>
-
       <button class="key key-fn" data-action="func" data-primary="sin" data-secondary="sin⁻¹" data-vprimary="sin(" data-vsecondary="asin("><span class="shiftlbl">sin⁻¹</span>sin</button>
       <button class="key key-fn" data-action="func" data-primary="cos" data-secondary="cos⁻¹" data-vprimary="cos(" data-vsecondary="acos("><span class="shiftlbl">cos⁻¹</span>cos</button>
       <button class="key key-fn" data-action="func" data-primary="tan" data-secondary="tan⁻¹" data-vprimary="tan(" data-vsecondary="atan("><span class="shiftlbl">tan⁻¹</span>tan</button>
       <button class="key key-fn" data-action="input" data-val="π"><span class="shiftlbl">&nbsp;</span>π</button>
       <button class="key key-fn" data-action="input" data-val="e"><span class="shiftlbl">&nbsp;</span>e</button>
-
       <button class="key key-util danger" data-action="clear">AC</button>
       <button class="key key-util" data-action="del">DEL</button>
       <button class="key key-fn" data-action="input" data-val="1/("><span class="shiftlbl">&nbsp;</span>1/x</button>
       <button class="key key-fn" data-action="input" data-val="!"><span class="shiftlbl">&nbsp;</span>n!</button>
       <button class="key key-op" data-action="input" data-val="/">÷</button>
-
       <button class="key key-num" data-action="input" data-val="7">7</button>
       <button class="key key-num" data-action="input" data-val="8">8</button>
       <button class="key key-num" data-action="input" data-val="9">9</button>
       <button class="key key-op" data-action="input" data-val="*">×</button>
       <button class="key key-op" data-action="ans">Ans</button>
-
       <button class="key key-num" data-action="input" data-val="4">4</button>
       <button class="key key-num" data-action="input" data-val="5">5</button>
       <button class="key key-num" data-action="input" data-val="6">6</button>
       <button class="key key-op" data-action="input" data-val="-">−</button>
       <button class="key key-op equals" data-action="equals">=</button>
-
       <button class="key key-num" data-action="input" data-val="1">1</button>
       <button class="key key-num" data-action="input" data-val="2">2</button>
       <button class="key key-num" data-action="input" data-val="3">3</button>
       <button class="key key-op" data-action="input" data-val="+">+</button>
-
       <button class="key key-num span2" data-action="input" data-val="0">0</button>
       <button class="key key-num" data-action="input" data-val=".">.</button>
       <button class="key key-util" data-action="input" data-val="%">%</button>
       <button class="key key-util" data-action="negate">±</button>
+      <!-- ปุ่ม STO/RCL เพิ่ม -->
+      <button class="key key-util" data-action="sto" style="font-size:10px;">STO</button>
+      <button class="key key-util" data-action="rcl" style="font-size:10px;">RCL</button>
     </div>
   </div>
 
-  <!-- COMPLEX -->
+  <!-- ===== PANEL: COMPLEX ===== -->
   <div class="panel" id="panel-complex">
     <div class="mini-title">Complex A</div>
     <div class="field-row"><label>Re(A)</label><input id="cxAr" type="number" value="0"><label style="width:26px">Im(A)</label><input id="cxAi" type="number" value="0"></div>
@@ -444,7 +406,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div class="out" id="cxOut">ผลลัพธ์จะแสดงที่นี่</div>
   </div>
 
-  <!-- BASE-N -->
+  <!-- ===== PANEL: BASE-N ===== -->
   <div class="panel" id="panel-basen">
     <div class="mini-title">ค่า A</div>
     <div class="field-row"><label>ฐาน</label>
@@ -452,7 +414,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <input id="baseAVal" value="0">
     </div>
     <div class="out" id="baseAConv" style="min-height:44px;"></div>
-    <div class="mini-title">ค่า B (สำหรับ Bitwise)</div>
+    <div class="mini-title">ค่า B (Bitwise)</div>
     <div class="field-row"><label>ฐาน</label>
       <select id="baseBMode"><option value="10">DEC</option><option value="16">HEX</option><option value="2">BIN</option><option value="8">OCT</option></select>
       <input id="baseBVal" value="0">
@@ -465,10 +427,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="pbtn" data-bn="NOT">NOT(A)</button>
       <button class="pbtn" data-bn="NEG">Neg(A)</button>
     </div>
-    <div class="out" id="baseOut">ผลลัพธ์ Bitwise จะแสดงที่นี่ (32-bit)</div>
+    <div class="out" id="baseOut">ผลลัพธ์ Bitwise (32-bit)</div>
   </div>
 
-  <!-- MATRIX -->
+  <!-- ===== PANEL: MATRIX ===== -->
   <div class="panel" id="panel-matrix">
     <div class="seg" id="matSizeSeg"><button class="on" data-size="2">2×2</button><button data-size="3">3×3</button></div>
     <div class="mini-title">MatA</div>
@@ -484,10 +446,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="pbtn" data-mx="mul">A×B</button>
       <button class="pbtn acc" data-mx="ident">Identity</button>
     </div>
-    <div class="out" id="matOut">ผลลัพธ์เมทริกซ์จะแสดงที่นี่</div>
+    <div class="out" id="matOut">ผลลัพธ์เมทริกซ์</div>
   </div>
 
-  <!-- VECTOR -->
+  <!-- ===== PANEL: VECTOR ===== -->
   <div class="panel" id="panel-vector">
     <div class="seg" id="vecSizeSeg"><button data-size="2">2D</button><button class="on" data-size="3">3D</button></div>
     <div class="mini-title">VctA</div>
@@ -501,10 +463,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="pbtn" data-vc="unitA">UnitV(A)</button>
       <button class="pbtn acc" data-vc="angle">∠(A,B)</button>
     </div>
-    <div class="out" id="vecOut">ผลลัพธ์เวกเตอร์จะแสดงที่นี่</div>
+    <div class="out" id="vecOut">ผลลัพธ์เวกเตอร์</div>
   </div>
 
-  <!-- EQUATION -->
+  <!-- ===== PANEL: EQUATION ===== -->
   <div class="panel" id="panel-equation">
     <div class="seg" id="eqTypeSeg"><button class="on" data-type="simul">SIMUL</button><button data-type="poly">POLY</button></div>
     <div class="seg" id="eqSimulSeg"><button class="on" data-n="2">2 ตัวแปร</button><button data-n="3">3 ตัวแปร</button><button data-n="4">4 ตัวแปร</button></div>
@@ -514,7 +476,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div class="out" id="eqOut">ป้อนสัมประสิทธิ์แล้วกด SOLVE</div>
   </div>
 
-  <!-- TABLE -->
+  <!-- ===== PANEL: TABLE + GRAPH ===== -->
   <div class="panel" id="panel-table">
     <div class="field-row"><label>f(x)=</label><input id="tblExpr" placeholder="x^2-2x+1" autocomplete="off"></div>
     <div class="field-row"><label>g(x)=</label><input id="tblExpr2" placeholder="(ไม่บังคับ)" autocomplete="off"></div>
@@ -528,21 +490,22 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <input id="tblEnd" type="number" placeholder="end" value="5">
       <input id="tblStep" type="number" placeholder="step" value="1"></div>
     <button class="pbtn acc" id="tblGenerate">Generate Table</button>
-    <div class="table-scroll" id="tblScroll"><div class="table-empty">ยังไม่มีข้อมูล — กรอกฟังก์ชันแล้วกด Generate</div></div>
+    <canvas id="graphCanvas"></canvas>
+    <div class="table-scroll" id="tblScroll"><div class="table-empty">ยังไม่มีข้อมูล</div></div>
   </div>
 
-  <!-- STATISTICS -->
+  <!-- ===== PANEL: STATISTICS ===== -->
   <div class="panel" id="panel-stat">
     <div class="seg" id="statModeSeg"><button class="on" data-svar="1">1-VAR</button><button data-svar="2">2-VAR (Regression)</button></div>
     <div class="field-row"><input id="statXInput" type="number" placeholder="x" inputmode="decimal">
       <input id="statYInput" type="number" placeholder="y" inputmode="decimal" style="display:none;">
       <button class="pbtn acc" id="statAdd" style="flex:0 0 44px;">+</button></div>
     <div class="stat-list" id="statList"></div>
-    <button class="pbtn" id="statClear" style="background:#8a3227;">ล้างข้อมูลทั้งหมด</button>
+    <button class="pbtn" id="statClear" style="background:#8a3227;">ล้างข้อมูล</button>
     <div class="table-scroll" id="statResults"></div>
   </div>
 
-  <!-- DISTRIBUTION -->
+  <!-- ===== PANEL: DISTRIBUTION ===== -->
   <div class="panel" id="panel-dist">
     <div class="seg" id="distTypeSeg"><button class="on" data-d="normal">Normal</button><button data-d="binom">Binomial</button><button data-d="poisson">Poisson</button></div>
     <div id="distNormal">
@@ -560,16 +523,18 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="field-row"><label>λ</label><input id="poL" type="number" value="4"><label style="width:20px">x</label><input id="poX" type="number" value="2"></div>
       <div class="btnrow"><button class="pbtn" data-po="pdf">Poisson PD</button><button class="pbtn" data-po="cdf">Poisson CD</button></div>
     </div>
-    <div class="out" id="distOut">ผลลัพธ์การแจกแจงความน่าจะเป็นจะแสดงที่นี่</div>
+    <div class="out" id="distOut">ผลลัพธ์การแจกแจง</div>
   </div>
 
-  <!-- TOOLS (รวมแปลงหน่วย) -->
+  <!-- ===== PANEL: TOOLS (รวมตัวแปลงหน่วยครบ) ===== -->
   <div class="panel" id="panel-tools">
     <div class="mini-title">Physical Constants</div>
     <div class="btnrow">
       <button class="pbtn" data-const="c">Speed of Light c</button>
       <button class="pbtn" data-const="h">Planck h</button>
       <button class="pbtn" data-const="g">Gravity g</button>
+      <button class="pbtn" data-const="me">Electron mass</button>
+      <button class="pbtn" data-const="r">Gas constant</button>
     </div>
     <div class="mini-title">Unit Converter</div>
     <div class="field-row"><label>ประเภท</label>
@@ -577,6 +542,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         <option value="length">ความยาว</option>
         <option value="weight">น้ำหนัก</option>
         <option value="temp">อุณหภูมิ</option>
+        <option value="area">พื้นที่</option>
+        <option value="volume">ปริมาตร</option>
+        <option value="speed">ความเร็ว</option>
       </select>
     </div>
     <div class="conv-group">
@@ -595,27 +563,26 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <input id="ranB" type="number" value="6" style="max-width:60px;"><button class="pbtn" style="flex:0 0 70px;" data-mb="ranint">Roll</button></div>
   </div>
 
-</div>
+</div> <!-- end .device -->
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 (function(){
   'use strict';
 
-  /* ============================================================
-     PERSISTENCE (history, memory, lastAnswer, sound, etc.)
-  ============================================================ */
+  // ----- PERSISTENCE -----
   function loadState(key, def){ try{ const v=localStorage.getItem('fx991cw-'+key); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
   function saveState(key, val){ try{ localStorage.setItem('fx991cw-'+key, JSON.stringify(val)); }catch(e){} }
 
-  /* ============================================================
-     HAPTIC & SOUND
-  ============================================================ */
+  // ----- HAPTIC (สั่น) -----
+  function haptic(){
+    try { if(navigator.vibrate) navigator.vibrate(10); } catch(e) {}
+  }
+
+  // ----- SOUND -----
   let soundEnabled = loadState('sound', true);
   let audioCtx = null;
-
   function playClick(){
     if(!soundEnabled) return;
     try{
@@ -633,13 +600,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }catch(e){}
   }
 
-  function haptic(){
-    try{ if(navigator.vibrate) navigator.vibrate(10); }catch(e){}
-  }
-
-  /* ============================================================
-     TOAST
-  ============================================================ */
+  // ----- TOAST -----
   function showToast(msg){
     const el=document.getElementById('toast');
     el.textContent=msg;
@@ -648,12 +609,11 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     el._hide=setTimeout(()=>el.classList.remove('show'),1800);
   }
 
-  /* ============================================================
-     MATH ENGINE (same as original with minor tweaks)
-  ============================================================ */
+  // ============================================================
+  // MATH ENGINE (ครบทุกฟังก์ชัน)
+  // ============================================================
   const FUNCS = ['sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','asinh','acosh','atanh',
     'log','ln','sqrt','cbrt','exp','abs','gcd','lcm','npr','ncr','rnd','logb','diff','integrate','sum','product','solve'];
-
   function tokenize(src){
     const s = src.replace(/π/g,'pi').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
     const tokens=[]; let i=0;
@@ -720,7 +680,6 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   function fromRad(v,deg){ return deg? v*180/Math.PI : v; }
   function gcd2(a,b){ a=Math.abs(Math.round(a)); b=Math.abs(Math.round(b)); while(b){ [a,b]=[b,a%b]; } return a; }
   function lcm2(a,b){ return Math.abs(a*b)/(gcd2(a,b)||1); }
-
   function evalNode(node, scope, deg){
     switch(node.type){
       case 'num': return node.value;
@@ -780,39 +739,35 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     if(Math.abs(n)>1e15 || (Math.abs(n)<1e-9 && n!==0)) return n.toExponential(6).replace(/e\+?/,'e');
     return parseFloat(n.toFixed(10)).toString();
   }
-
-  /* ---- fraction conversion ---- */
   function decimalToFraction(n, tol){
-    tol = tol || 1e-6;
-    if(Math.abs(n) > 1e12) return null;
-    if(Math.abs(n - Math.round(n)) < tol) return [Math.round(n), 1];
-    let sign = n < 0 ? -1 : 1;
-    n = Math.abs(n);
-    let num=1, den=1, bestNum=0, bestDen=1, bestErr=Infinity;
-    for(den=1; den<=10000; den++){
-      num = Math.round(n * den);
-      const err = Math.abs(n - num/den);
-      if(err < bestErr){ bestErr=err; bestNum=num; bestDen=den; }
-      if(err < tol) break;
+    tol=tol||1e-6;
+    if(Math.abs(n)>1e12) return null;
+    if(Math.abs(n-Math.round(n))<tol) return [Math.round(n),1];
+    let sign=n<0?-1:1; n=Math.abs(n);
+    let num=1,den=1,bestNum=0,bestDen=1,bestErr=Infinity;
+    for(den=1;den<=10000;den++){
+      num=Math.round(n*den);
+      const err=Math.abs(n-num/den);
+      if(err<bestErr){ bestErr=err; bestNum=num; bestDen=den; }
+      if(err<tol) break;
     }
-    if(bestErr > tol && den>=10000) return null;
+    if(bestErr>tol && den>=10000) return null;
     return [sign*bestNum, bestDen];
   }
   function formatFraction(num, den){
     if(den===1) return num.toString();
-    const g = gcd2(Math.abs(num), Math.abs(den));
-    num/=g; den/=g;
+    const g=gcd2(Math.abs(num),Math.abs(den)); num/=g; den/=g;
     if(den<0){ num=-num; den=-den; }
-    if(Math.abs(num) >= den){
-      const whole = Math.floor(num/den);
-      const rem = Math.abs(num % den);
+    if(Math.abs(num)>=den){
+      const whole=Math.floor(num/den);
+      const rem=Math.abs(num%den);
       if(rem===0) return whole.toString();
-      return whole + ' ' + rem + '/' + den;
+      return whole+' '+rem+'/'+den;
     }
-    return num + '/' + den;
+    return num+'/'+den;
   }
 
-  /* ---- complex helpers ---- */
+  // ----- COMPLEX helpers -----
   const cAdd=(a,b)=>({re:a.re+b.re, im:a.im+b.im});
   const cSub=(a,b)=>({re:a.re-b.re, im:a.im-b.im});
   const cMul=(a,b)=>({re:a.re*b.re-a.im*b.im, im:a.re*b.im+a.im*b.re});
@@ -821,7 +776,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   const cArgDeg=(a)=>Math.atan2(a.im,a.re)*180/Math.PI;
   function fmtC(a){ const re=formatNumber(a.re), im=formatNumber(Math.abs(a.im)); return a.im<0? re+' - '+im+'i' : re+' + '+im+'i'; }
 
-  /* ---- polynomial roots ---- */
+  // ----- POLY ROOTS -----
   function polyRoots(coeffs){
     const n=coeffs.length-1;
     const norm=coeffs.map(c=>c/coeffs[0]);
@@ -844,7 +799,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     return roots;
   }
 
-  /* ---- linear system ---- */
+  // ----- LINEAR SYSTEM -----
   function solveLinear(mat){
     const n=mat.length;
     const M=mat.map(r=>r.slice());
@@ -859,7 +814,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     return x;
   }
 
-  /* ---- distributions ---- */
+  // ----- DISTRIBUTIONS -----
   function erf(x){ const sign=x<0?-1:1; x=Math.abs(x);
     const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
     const t=1/(1+p*x); const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x); return sign*y; }
@@ -871,9 +826,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   function poissonPMF(lam,k){ return Math.exp(-lam)*Math.pow(lam,k)/factorial(k); }
   function poissonCDF(lam,k){ let s=0; for(let i=0;i<=k;i++) s+=poissonPMF(lam,i); return s; }
 
-  /* ============================================================
-     MENU / MODE SWITCHING
-  ============================================================ */
+  // ============================================================
+  // MENU / MODE
+  // ============================================================
   const menuOverlay=document.getElementById('menuOverlay');
   const lcdMode=document.getElementById('lcdMode');
   const panels={ calc:document.getElementById('panel-calc'), complex:document.getElementById('panel-complex'),
@@ -883,7 +838,6 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     dist:document.getElementById('panel-dist'), tools:document.getElementById('panel-tools') };
   const modeNames={ calc:'CALCULATE', complex:'COMPLEX', basen:'BASE-N', matrix:'MATRIX', vector:'VECTOR',
     equation:'EQUATION', table:'TABLE', stat:'STATISTICS', dist:'DISTRIBUTION', tools:'TOOLS' };
-
   function openMenu(){ menuOverlay.classList.add('open'); }
   function closeMenu(){ menuOverlay.classList.remove('open'); }
   function setMode(m){
@@ -899,17 +853,17 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   document.getElementById('backMenuBtn').addEventListener('click', openMenu);
   document.getElementById('menuClose').addEventListener('click', closeMenu);
 
-  /* ============================================================
-     SETTINGS: theme, brightness, sound
-  ============================================================ */
+  // ============================================================
+  // SETTINGS: theme, brightness, font scale, sound, colors
+  // ============================================================
   (function(){
     const settingsBtn=document.getElementById('settingsBtn'), settingsOverlay=document.getElementById('settingsOverlay'),
       settingsClose=document.getElementById('settingsClose'), themeSeg=document.getElementById('themeSeg'),
       brightRange=document.getElementById('brightRange'), brightVal=document.getElementById('brightVal'),
+      fontScale=document.getElementById('fontScale'), fontScaleVal=document.getElementById('fontScaleVal'),
       soundSeg=document.getElementById('soundSeg');
     let saved={};
     try{ saved=JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}'); }catch(e){ saved={}; }
-
     function applyTheme(t){
       document.body.dataset.theme = t;
       themeSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.theme===t));
@@ -920,6 +874,11 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       brightRange.value=v; brightVal.textContent=v+'%';
       try{ saved.brightness=v; localStorage.setItem('fx991cw-prefs', JSON.stringify(saved)); }catch(e){}
     }
+    function applyFontScale(v){
+      document.documentElement.style.setProperty('--font-scale', (v/100));
+      fontScale.value=v; fontScaleVal.textContent=v+'%';
+      try{ saved.fontScale=v; localStorage.setItem('fx991cw-prefs', JSON.stringify(saved)); }catch(e){}
+    }
     function applySound(on){
       soundEnabled = on;
       soundSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.sound===(on?'on':'off')));
@@ -927,122 +886,65 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }
     applyTheme(saved.theme==='dark'?'dark':'light');
     applyBrightness(saved.brightness || 100);
+    applyFontScale(saved.fontScale || 100);
     applySound(loadState('sound', true));
-
     settingsBtn.addEventListener('click', ()=>{ settingsOverlay.classList.add('open'); });
     settingsClose.addEventListener('click', ()=>{ settingsOverlay.classList.remove('open'); });
     themeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applyTheme(b.dataset.theme); });
     brightRange.addEventListener('input', ()=>{ applyBrightness(brightRange.value); });
+    fontScale.addEventListener('input', ()=>{ applyFontScale(fontScale.value); });
     soundSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applySound(b.dataset.sound==='on'); });
   })();
 
-  /* ============================================================
-     FREE COLOR CUSTOMIZATION
-  ============================================================ */
+  // ----- FREE COLOR CUSTOMIZATION -----
   (function(){
     const accent=document.getElementById('colorAccent'), lcdC=document.getElementById('colorLcd'),
       keyNum=document.getElementById('colorKeyNum'), keyFn=document.getElementById('colorKeyFn'),
       resetBtn=document.getElementById('colorReset');
-
-    function shade(hex,percent){
-      hex=(hex||'').replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
-      if(hex.length!==6) return '#888888';
-      let r=parseInt(hex.substring(0,2),16), g=parseInt(hex.substring(2,4),16), b=parseInt(hex.substring(4,6),16);
-      r=Math.min(255,Math.max(0,Math.round(r*(100+percent)/100)));
-      g=Math.min(255,Math.max(0,Math.round(g*(100+percent)/100)));
-      b=Math.min(255,Math.max(0,Math.round(b*(100+percent)/100)));
-      return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
-    }
-    function luminance(hex){
-      hex=(hex||'').replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
-      if(hex.length!==6) return 0.5;
-      const r=parseInt(hex.substring(0,2),16)/255, g=parseInt(hex.substring(2,4),16)/255, b=parseInt(hex.substring(4,6),16)/255;
-      const lin=c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);
-      return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);
-    }
-    function contrastText(hex){ return luminance(hex) > 0.52 ? '#1d1e20' : '#ffffff'; }
-
-    function applyAccent(hex){
-      document.body.style.setProperty('--equals-1', hex);
-      document.body.style.setProperty('--equals-2', shade(hex,-14));
-      document.body.style.setProperty('--equals-fg', contrastText(hex));
-      document.body.style.setProperty('--shift', hex);
-      document.body.style.setProperty('--shift-dim', shade(hex,-25));
-      document.body.style.setProperty('--shift-dim2', shade(hex,-25));
-      document.body.style.setProperty('--shift-fg', contrastText(hex));
-    }
+    function shade(hex,percent){ /* ... */ hex=(hex||'').replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join(''); if(hex.length!==6) return '#888888'; let r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16); r=Math.min(255,Math.max(0,Math.round(r*(100+percent)/100))); g=Math.min(255,Math.max(0,Math.round(g*(100+percent)/100))); b=Math.min(255,Math.max(0,Math.round(b*(100+percent)/100))); return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join(''); }
+    function luminance(hex){ hex=(hex||'').replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join(''); if(hex.length!==6) return 0.5; const r=parseInt(hex.substring(0,2),16)/255,g=parseInt(hex.substring(2,4),16)/255,b=parseInt(hex.substring(4,6),16)/255; const lin=c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4); return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b); }
+    function contrastText(hex){ return luminance(hex)>0.52?'#1d1e20':'#ffffff'; }
+    function applyAccent(hex){ document.body.style.setProperty('--equals-1', hex); document.body.style.setProperty('--equals-2', shade(hex,-14)); document.body.style.setProperty('--equals-fg', contrastText(hex)); document.body.style.setProperty('--shift', hex); document.body.style.setProperty('--shift-dim', shade(hex,-25)); document.body.style.setProperty('--shift-dim2', shade(hex,-25)); document.body.style.setProperty('--shift-fg', contrastText(hex)); }
     function applyLcd(hex){ document.body.style.setProperty('--lcd-fg', hex); }
-    function applyKeyNum(hex){
-      document.body.style.setProperty('--key-num-bg', hex);
-      document.body.style.setProperty('--key-num-bg2', shade(hex,-10));
-      document.body.style.setProperty('--key-num-fg', contrastText(hex));
-    }
-    function applyKeyFn(hex){
-      document.body.style.setProperty('--key-fn-bg', hex);
-      document.body.style.setProperty('--key-fn-bg2', shade(hex,-12));
-      document.body.style.setProperty('--key-fn-fg', contrastText(hex));
-    }
-    function saveColors(){
-      try{
-        const p=JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}');
-        p.colors={accent:accent.value, lcd:lcdC.value, keyNum:keyNum.value, keyFn:keyFn.value};
-        localStorage.setItem('fx991cw-prefs', JSON.stringify(p));
-      }catch(e){}
-    }
-    function prefillFromComputed(){
-      const cs=getComputedStyle(document.body);
-      const g=(name,fallback)=>{ const v=cs.getPropertyValue(name).trim(); return /^#[0-9a-fA-F]{3,6}$/.test(v)?v:fallback; };
-      accent.value=g('--shift', accent.value);
-      lcdC.value=g('--lcd-fg', lcdC.value);
-      keyNum.value=g('--key-num-bg', keyNum.value);
-      keyFn.value=g('--key-fn-bg', keyFn.value);
-    }
-
+    function applyKeyNum(hex){ document.body.style.setProperty('--key-num-bg', hex); document.body.style.setProperty('--key-num-bg2', shade(hex,-10)); document.body.style.setProperty('--key-num-fg', contrastText(hex)); }
+    function applyKeyFn(hex){ document.body.style.setProperty('--key-fn-bg', hex); document.body.style.setProperty('--key-fn-bg2', shade(hex,-12)); document.body.style.setProperty('--key-fn-fg', contrastText(hex)); }
+    function saveColors(){ try{ const p=JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}'); p.colors={accent:accent.value, lcd:lcdC.value, keyNum:keyNum.value, keyFn:keyFn.value}; localStorage.setItem('fx991cw-prefs', JSON.stringify(p)); }catch(e){} }
+    function prefillFromComputed(){ const cs=getComputedStyle(document.body); const g=(name,fallback)=>{ const v=cs.getPropertyValue(name).trim(); return /^#[0-9a-fA-F]{3,6}$/.test(v)?v:fallback; }; accent.value=g('--shift', accent.value); lcdC.value=g('--lcd-fg', lcdC.value); keyNum.value=g('--key-num-bg', keyNum.value); keyFn.value=g('--key-fn-bg', keyFn.value); }
     let savedColors=null;
     try{ savedColors=(JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}')).colors; }catch(e){}
-    if(savedColors){
-      accent.value=savedColors.accent||accent.value; lcdC.value=savedColors.lcd||lcdC.value;
-      keyNum.value=savedColors.keyNum||keyNum.value; keyFn.value=savedColors.keyFn||keyFn.value;
-      applyAccent(accent.value); applyLcd(lcdC.value); applyKeyNum(keyNum.value); applyKeyFn(keyFn.value);
-    } else {
-      prefillFromComputed();
-    }
-
+    if(savedColors){ accent.value=savedColors.accent||accent.value; lcdC.value=savedColors.lcd||lcdC.value; keyNum.value=savedColors.keyNum||keyNum.value; keyFn.value=savedColors.keyFn||keyFn.value; applyAccent(accent.value); applyLcd(lcdC.value); applyKeyNum(keyNum.value); applyKeyFn(keyFn.value); } else { prefillFromComputed(); }
     accent.addEventListener('input', ()=>{ applyAccent(accent.value); saveColors(); });
     lcdC.addEventListener('input', ()=>{ applyLcd(lcdC.value); saveColors(); });
     keyNum.addEventListener('input', ()=>{ applyKeyNum(keyNum.value); saveColors(); });
     keyFn.addEventListener('input', ()=>{ applyKeyFn(keyFn.value); saveColors(); });
     resetBtn.addEventListener('click', ()=>{
-      // remove custom props
-      ['--equals-1','--equals-2','--equals-fg','--shift','--shift-dim','--shift-dim2','--shift-fg',
-       '--lcd-fg','--key-num-bg','--key-num-bg2','--key-num-fg','--key-fn-bg','--key-fn-bg2','--key-fn-fg']
-        .forEach(v=>document.body.style.removeProperty(v));
+      ['--equals-1','--equals-2','--equals-fg','--shift','--shift-dim','--shift-dim2','--shift-fg','--lcd-fg','--key-num-bg','--key-num-bg2','--key-num-fg','--key-fn-bg','--key-fn-bg2','--key-fn-fg'].forEach(v=>document.body.style.removeProperty(v));
       try{ const p=JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}'); delete p.colors; localStorage.setItem('fx991cw-prefs', JSON.stringify(p)); }catch(e){}
       prefillFromComputed();
     });
     document.getElementById('themeSeg').addEventListener('click', ()=>{ if(!savedColors) setTimeout(prefillFromComputed, 0); });
   })();
 
-  /* ============================================================
-     GUIDE
-  ============================================================ */
-  (function(){
-    const guideBtn=document.getElementById('guideBtn'), guideOverlay=document.getElementById('guideOverlay'), guideClose=document.getElementById('guideClose');
-    guideBtn.addEventListener('click', ()=>{ guideOverlay.classList.add('open'); });
-    guideClose.addEventListener('click', ()=>{ guideOverlay.classList.remove('open'); });
-  })();
+  // ============================================================
+  // GUIDE
+  // ============================================================
+  document.getElementById('guideBtn').addEventListener('click', ()=>{ document.getElementById('guideOverlay').classList.add('open'); });
+  document.getElementById('guideClose').addEventListener('click', ()=>{ document.getElementById('guideOverlay').classList.remove('open'); });
 
-  /* ============================================================
-     CALCULATE PANEL (enhanced with persistence, haptic, sound, copy, S⇔D)
-  ============================================================ */
+  // ============================================================
+  // PANEL: CALCULATE (หลัก)
+  // ============================================================
   (function(){
     const exprEl=document.getElementById('expr'), resultEl=document.getElementById('result');
     const badgeDeg=document.getElementById('badgeDeg'), badgeRad=document.getElementById('badgeRad'),
-      badgeM=document.getElementById('badgeM'), badgeShift=document.getElementById('badgeShift');
+      badgeM=document.getElementById('badgeM'), badgeShift=document.getElementById('badgeShift'),
+      badgeSto=document.getElementById('badgeSto');
     const btn2nd=document.getElementById('btn2nd'), grid=document.getElementById('grid');
     const histBtn=document.getElementById('histBtn'), histPanel=document.getElementById('histPanel'), histList=document.getElementById('histList');
+    const histClear=document.getElementById('histClear');
+    const copyBtn=document.getElementById('copyResult');
+    const sdBtn=document.getElementById('sdBtn');
 
-    // load persisted state
     let expr = loadState('expr', '') || '';
     let isDeg = loadState('deg', true);
     let isSecond = false;
@@ -1050,140 +952,101 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     let memory = loadState('memory', 0);
     let justEvaluated = false;
     let history = loadState('history', []);
-    let fracMode = false; // false = decimal, true = fraction display
-    let currentValue = 0; // last evaluated numeric value
+    let fracMode = false;
     let currentDisplay = '0';
+    let vars = loadState('vars', {A:0, B:0, C:0});
+    let stoTarget = null;
+
+    let undoStack = [], redoStack = [];
+    const MAX_UNDO = 30;
+    function pushUndo(){ if(undoStack.length>MAX_UNDO) undoStack.shift(); undoStack.push(expr); redoStack=[]; }
+    function undo(){ if(undoStack.length){ redoStack.push(expr); expr=undoStack.pop(); renderExpr(); } }
+    function redo(){ if(redoStack.length){ undoStack.push(expr); expr=redoStack.pop(); renderExpr(); } }
 
     function updateBadges(){
       badgeDeg.classList.toggle('on', isDeg); badgeRad.classList.toggle('on', !isDeg);
-      badgeM.classList.toggle('on', memory!==0); badgeShift.classList.toggle('on', isSecond);
+      badgeM.classList.toggle('on', memory!==0);
+      badgeShift.classList.toggle('on', isSecond);
       btn2nd.classList.toggle('active-toggle', isSecond);
-      saveState('deg', isDeg);
-      saveState('memory', memory);
+      const hasSto = stoTarget !== null;
+      badgeSto.classList.toggle('on', hasSto);
+      if(hasSto) badgeSto.textContent = 'STO '+stoTarget;
+      saveState('deg', isDeg); saveState('memory', memory); saveState('vars', vars);
     }
     function renderExpr(){ exprEl.textContent = expr.length? expr : '\u00A0'; livePreview(); }
-    function renderResult(text, err){
-      resultEl.textContent=text;
-      resultEl.classList.toggle('error', !!err);
-      currentDisplay = text;
-      if(!err) currentValue = parseFloat(text) || 0;
-    }
+    function renderResult(text, err){ resultEl.textContent=text; resultEl.classList.toggle('error', !!err); currentDisplay=text; if(!err) currentValue=parseFloat(text)||0; }
+    let currentValue=0;
     function livePreview(){
       if(justEvaluated) return;
       if(!expr.trim()){ renderResult('0', false); return; }
       try{
+        const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C};
         const tree=compile(expr);
-        const value=evalNode(tree, {ans:lastAnswer}, isDeg);
+        const value=evalNode(tree, scope, isDeg);
         if(isFinite(value) && !Number.isNaN(value)) renderResult(formatNumber(value), false);
-      }catch(err){ /* ignore */ }
+      }catch(err){}
     }
-
     function renderHistory(){
       histList.innerHTML='';
       if(!history.length){ histList.innerHTML='<div class="hist-empty">ยังไม่มีประวัติ</div>'; return; }
       history.slice().reverse().forEach(h=>{
-        const d=document.createElement('div'); d.className='hist-item'; d.textContent=h.expr+' = '+h.result;
-        d.addEventListener('click', ()=>{ expr=h.result; justEvaluated=false; renderExpr(); histPanel.classList.remove('open'); histBtn.classList.remove('on'); });
+        const d=document.createElement('div'); d.className='hist-item';
+        const time = h.time ? new Date(h.time).toLocaleString() : '';
+        d.textContent = h.expr+' = '+h.result + (time ? '  ('+time+')' : '');
+        d.addEventListener('click', ()=>{ expr = h.expr; justEvaluated = false; renderExpr(); histPanel.classList.remove('open'); histBtn.classList.remove('on'); });
         histList.appendChild(d);
       });
     }
-    function saveAll(){
-      saveState('expr', expr);
-      saveState('lastAnswer', lastAnswer);
-      saveState('history', history);
-      saveState('memory', memory);
-    }
-
+    function saveAll(){ saveState('expr', expr); saveState('lastAnswer', lastAnswer); saveState('history', history); saveState('memory', memory); saveState('vars', vars); }
     function evaluate(){
       if(!expr.trim()) return;
       try{
+        const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C};
         const tree=compile(expr);
-        const value=evalNode(tree, {ans:lastAnswer}, isDeg);
+        const value=evalNode(tree, scope, isDeg);
         const formatted=formatNumber(value);
         renderResult(formatted,false);
-        history.push({expr, result:formatted}); if(history.length>50) history.shift();
+        history.push({expr, result:formatted, time:Date.now()});
+        if(history.length>50) history.shift();
         lastAnswer=value; justEvaluated=true; fracMode=false;
-        saveAll();
-        renderHistory();
-        // haptic & sound on evaluation
+        saveAll(); renderHistory();
         haptic(); playClick();
       }catch(err){ renderResult('Error', true); justEvaluated=false; }
     }
-
     function insert(val){
       if(justEvaluated){ const isOperator=['+','-','*','/','^'].includes(val); expr = isOperator? resultEl.textContent+val : val; justEvaluated=false; }
       else expr += val;
-      renderExpr();
-      haptic(); playClick();
+      pushUndo(); renderExpr(); haptic(); playClick();
     }
-
-    function clearAll(){ expr=''; justEvaluated=false; fracMode=false; renderExpr(); renderResult('0', false); saveAll(); haptic(); playClick(); }
-    function del(){ if(justEvaluated){ clearAll(); return; } expr=expr.slice(0,-1); renderExpr(); haptic(); playClick(); }
-    function negate(){
-      if(justEvaluated){ expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; justEvaluated=false; renderExpr(); return; }
-      if(!expr){ expr='-('; renderExpr(); return; }
-      expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; renderExpr();
-      haptic(); playClick();
-    }
-
+    function clearAll(){ pushUndo(); expr=''; justEvaluated=false; fracMode=false; renderExpr(); renderResult('0', false); saveAll(); haptic(); playClick(); }
+    function del(){ if(justEvaluated){ clearAll(); return; } pushUndo(); expr=expr.slice(0,-1); renderExpr(); haptic(); playClick(); }
+    function negate(){ pushUndo(); if(justEvaluated){ expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; justEvaluated=false; renderExpr(); return; } if(!expr){ expr='-('; renderExpr(); return; } expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; renderExpr(); haptic(); playClick(); }
     function currentValueForMemory(){
-      try{ const tree=compile(expr||resultEl.textContent); return evalNode(tree,{ans:lastAnswer}, isDeg); }
-      catch(e){ const n=parseFloat(resultEl.textContent); return isNaN(n)?0:n; }
+      try{ const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C}; const tree=compile(expr||resultEl.textContent); return evalNode(tree, scope, isDeg); }catch(e){ const n=parseFloat(resultEl.textContent); return isNaN(n)?0:n; }
     }
-
-    /* ---- S⇔D ---- */
     function toggleFraction(){
-      if(!justEvaluated || fracMode){
-        // if already fraction mode, switch back to decimal
-        fracMode = false;
-        renderResult(currentDisplay, false);
-        return;
-      }
-      const v = parseFloat(resultEl.textContent);
-      if(isNaN(v) || !isFinite(v)) return;
-      const frac = decimalToFraction(v, 1e-6);
-      if(frac && frac[1] > 1){
-        const fStr = formatFraction(frac[0], frac[1]);
-        renderResult(fStr, false);
-        fracMode = true;
-      } else {
-        showToast('ไม่สามารถแปลงเป็นเศษส่วนได้');
-      }
+      if(!justEvaluated || fracMode){ fracMode=false; renderResult(currentDisplay, false); return; }
+      const v=parseFloat(resultEl.textContent);
+      if(isNaN(v)||!isFinite(v)) return;
+      const frac=decimalToFraction(v, 1e-6);
+      if(frac && frac[1]>1){ const fStr=formatFraction(frac[0], frac[1]); renderResult(fStr, false); fracMode=true; } else { showToast('ไม่สามารถแปลงเป็นเศษส่วนได้'); }
     }
+    copyBtn.addEventListener('click', ()=>{
+      const text=resultEl.textContent;
+      if(text && text!='0' && text!='Error'){
+        if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('คัดลอกแล้ว: '+text)).catch(()=>{}); }
+        else { const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('คัดลอกแล้ว: '+text); }
+        haptic();
+      }
+    });
+    function setupLongCopy(el){ let timer=null; const start=()=>{ timer=setTimeout(()=>{ const text=el.textContent.trim(); if(text && text!='0' && text!='\u00A0' && text!='Error'){ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('คัดลอกแล้ว: '+text)).catch(()=>{}); } else { const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('คัดลอกแล้ว: '+text); } } timer=null; }, 600); }; const end=()=>{ if(timer){ clearTimeout(timer); timer=null; } }; el.addEventListener('mousedown', start); el.addEventListener('mouseup', end); el.addEventListener('mouseleave', end); el.addEventListener('touchstart', start, {passive:true}); el.addEventListener('touchend', end, {passive:true}); el.addEventListener('touchcancel', end, {passive:true}); }
+    setupLongCopy(resultEl); setupLongCopy(exprEl);
 
-    /* ---- copy on long press ---- */
-    function setupLongCopy(el){
-      let timer=null;
-      const start=()=>{ timer=setTimeout(()=>{
-        const text=el.textContent.trim();
-        if(text && text!='0' && text!='\u00A0' && text!='Error'){
-          if(navigator.clipboard && navigator.clipboard.writeText){
-            navigator.clipboard.writeText(text).then(()=>showToast('คัดลอกแล้ว: '+text)).catch(()=>{});
-          } else {
-            const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-            showToast('คัดลอกแล้ว: '+text);
-          }
-        }
-        timer=null;
-      }, 600); };
-      const end=()=>{ if(timer){ clearTimeout(timer); timer=null; } };
-      el.addEventListener('mousedown', start);
-      el.addEventListener('mouseup', end);
-      el.addEventListener('mouseleave', end);
-      el.addEventListener('touchstart', start, {passive:true});
-      el.addEventListener('touchend', end, {passive:true});
-      el.addEventListener('touchcancel', end, {passive:true});
-    }
-    setupLongCopy(resultEl);
-    setupLongCopy(exprEl);
-
-    /* ---- event binding ---- */
     grid.addEventListener('click',(e)=>{
       const btn=e.target.closest('.key'); if(!btn) return;
       const action=btn.dataset.action;
       if(action==='input') insert(btn.dataset.val);
-      else if(action==='func'){ const val=isSecond?btn.dataset.vsecondary:btn.dataset.vprimary; insert(val);
-        if(isSecond){ isSecond=false; updateBadges(); } }
+      else if(action==='func'){ const val=isSecond?btn.dataset.vsecondary:btn.dataset.vprimary; insert(val); if(isSecond){ isSecond=false; updateBadges(); } }
       else if(action==='clear') clearAll();
       else if(action==='del') del();
       else if(action==='equals') evaluate();
@@ -1197,43 +1060,26 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       else if(action==='mrecall') insert(formatNumber(memory));
       else if(action==='second'){ isSecond=!isSecond; updateBadges(); haptic(); playClick(); }
       else if(action==='toggleDeg'){ isDeg=!isDeg; updateBadges(); btn.textContent=isDeg?'Deg':'Rad'; haptic(); playClick(); }
+      else if(action==='sto'){ const target=prompt('เก็บลงตัวแปร A, B หรือ C?', 'A'); if(target && ['A','B','C'].includes(target.toUpperCase())){ stoTarget=target.toUpperCase(); vars[stoTarget]=currentValueForMemory(); updateBadges(); saveAll(); showToast('เก็บค่า = '+formatNumber(vars[stoTarget])+' ลง '+stoTarget); haptic(); } }
+      else if(action==='rcl'){ const target=prompt('เรียกตัวแปร A, B หรือ C?', 'A'); if(target && ['A','B','C'].includes(target.toUpperCase())){ const val=vars[target.toUpperCase()]; if(val!==undefined) insert(formatNumber(val)); else showToast('ตัวแปร '+target+' ยังไม่มีค่า'); haptic(); } }
     });
-
-    document.getElementById('calcChips').addEventListener('click',(e)=>{
-      const chip=e.target.closest('.chip'); if(!chip) return;
-      if(chip.id==='sdBtn'){ toggleFraction(); return; }
-      insert(chip.dataset.tok);
-    });
-
-    histBtn.addEventListener('click', ()=>{
-      const open=histPanel.classList.toggle('open'); histBtn.classList.toggle('on', open);
-      if(open) renderHistory();
-    });
-
-    /* ---- keyboard ---- */
-    window.addEventListener('keydown',(e)=>{
+    sdBtn.addEventListener('click', toggleFraction);
+    histBtn.addEventListener('click', ()=>{ const open=histPanel.classList.toggle('open'); histBtn.classList.toggle('on', open); if(open) renderHistory(); });
+    histClear.addEventListener('click', ()=>{ history=[]; saveAll(); renderHistory(); showToast('ล้างประวัติแล้ว'); haptic(); });
+    document.addEventListener('keydown', (e)=>{
       if(!panels.calc.classList.contains('active')) return;
-      const k=e.key;
-      if(/[0-9.]/.test(k)){ insert(k); return; }
-      if(['+','-','*','/','^','(',')','%','!'].includes(k)){ insert(k); return; }
-      if(k==='Enter'||k==='='){ e.preventDefault(); evaluate(); return; }
-      if(k==='Backspace'){ del(); return; }
-      if(k==='Escape'){ clearAll(); return; }
+      if(e.ctrlKey && e.key==='z'){ e.preventDefault(); undo(); }
+      if(e.ctrlKey && e.key==='y'){ e.preventDefault(); redo(); }
     });
-
-    /* ---- init ---- */
-    updateBadges();
-    renderExpr();
-    if(expr) { try{ const tree=compile(expr); const v=evalNode(tree,{ans:lastAnswer},isDeg); if(isFinite(v)) renderResult(formatNumber(v),false); }catch(e){} }
+    updateBadges(); renderExpr();
+    if(expr){ try{ const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C}; const tree=compile(expr); const v=evalNode(tree, scope, isDeg); if(isFinite(v)) renderResult(formatNumber(v), false); }catch(e){} }
     saveAll();
-
-    // expose for other panels
-    window.calcCompile=compile; window.calcEvalNode=evalNode; window.calcFormat=formatNumber;
+    window.undo=undo; window.redo=redo;
   })();
 
-  /* ============================================================
-     COMPLEX PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: COMPLEX
+  // ============================================================
   document.querySelectorAll('#panel-complex [data-cx]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const A={ re:parseFloat(document.getElementById('cxAr').value)||0, im:parseFloat(document.getElementById('cxAi').value)||0 };
@@ -1249,21 +1095,18 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         else if(op==='arg') out.textContent='Arg(A) = '+formatNumber(cArgDeg(A))+'°';
         else if(op==='polar') out.textContent='r = '+formatNumber(cAbs(A))+'\nθ = '+formatNumber(cArgDeg(A))+'°';
       }catch(err){ out.textContent='Error'; }
-      try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+      haptic();
     });
   });
 
-  /* ============================================================
-     BASE-N PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: BASE-N
+  // ============================================================
   (function(){
     const aMode=document.getElementById('baseAMode'), aVal=document.getElementById('baseAVal'), aConv=document.getElementById('baseAConv');
     const bMode=document.getElementById('baseBMode'), bVal=document.getElementById('baseBVal');
     function toInt(str, base){ const v=parseInt(str, base); return isNaN(v)?0:v; }
-    function renderAll(){
-      const dec=toInt(aVal.value, parseInt(aMode.value));
-      aConv.textContent='DEC: '+dec+'\nHEX: '+(dec>>>0).toString(16).toUpperCase()+'\nBIN: '+(dec>>>0).toString(2)+'\nOCT: '+(dec>>>0).toString(8);
-    }
+    function renderAll(){ const dec=toInt(aVal.value, parseInt(aMode.value)); aConv.textContent='DEC: '+dec+'\nHEX: '+(dec>>>0).toString(16).toUpperCase()+'\nBIN: '+(dec>>>0).toString(2)+'\nOCT: '+(dec>>>0).toString(8); }
     aMode.addEventListener('change', renderAll); aVal.addEventListener('input', renderAll); renderAll();
     document.querySelectorAll('#panel-basen [data-bn]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -1274,42 +1117,27 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         else if(op==='XNOR') r=~(a^b); else if(op==='NOT') r=~a; else if(op==='NEG') r=-a;
         const out=document.getElementById('baseOut');
         out.textContent='DEC: '+r+'\nHEX: '+(r>>>0).toString(16).toUpperCase()+'\nBIN: '+(r>>>0).toString(2)+'\nOCT: '+(r>>>0).toString(8);
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
   })();
 
-  /* ============================================================
-     MATRIX PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: MATRIX
+  // ============================================================
   (function(){
     let size=2;
     const matA=document.getElementById('matA'), matB=document.getElementById('matB'), out=document.getElementById('matOut');
-    function buildGrid(container, n){
-      container.style.gridTemplateColumns='repeat('+n+',1fr)';
-      container.innerHTML='';
-      for(let i=0;i<n*n;i++){ const inp=document.createElement('input'); inp.type='number'; inp.value='0'; inp.dataset.idx=i; container.appendChild(inp); }
-    }
+    function buildGrid(container, n){ container.style.gridTemplateColumns='repeat('+n+',1fr)'; container.innerHTML=''; for(let i=0;i<n*n;i++){ const inp=document.createElement('input'); inp.type='number'; inp.value='0'; inp.dataset.idx=i; container.appendChild(inp); } }
     function readMat(container, n){ const vals=[...container.querySelectorAll('input')].map(i=>parseFloat(i.value)||0); const m=[]; for(let r=0;r<n;r++) m.push(vals.slice(r*n,r*n+n)); return m; }
     function fmtMat(m){ return m.map(r=>r.map(v=>formatNumber(v)).join('\t')).join('\n'); }
-    function det(m){ const n=m.length;
-      if(n===1) return m[0][0];
-      if(n===2) return m[0][0]*m[1][1]-m[0][1]*m[1][0];
-      let d=0; for(let c=0;c<n;c++){ const minor=m.slice(1).map(row=>row.filter((_,ci)=>ci!==c)); d += ((c%2===0)?1:-1)*m[0][c]*det(minor); } return d; }
+    function det(m){ const n=m.length; if(n===1) return m[0][0]; if(n===2) return m[0][0]*m[1][1]-m[0][1]*m[1][0]; let d=0; for(let c=0;c<n;c++){ const minor=m.slice(1).map(row=>row.filter((_,ci)=>ci!==c)); d += ((c%2===0)?1:-1)*m[0][c]*det(minor); } return d; }
     function transpose(m){ const n=m.length; const t=[]; for(let i=0;i<n;i++){ t.push([]); for(let j=0;j<n;j++) t[i][j]=m[j][i]; } return t; }
-    function inverse(m){ const n=m.length; const d=det(m); if(Math.abs(d)<1e-12) return null;
-      const cof=[]; for(let i=0;i<n;i++){ cof.push([]); for(let j=0;j<n;j++){ const minor=m.filter((_,ri)=>ri!==i).map(row=>row.filter((_,ci)=>ci!==j)); cof[i][j]=(((i+j)%2===0)?1:-1)*det(minor); } }
-      const adj=transpose(cof); return adj.map(row=>row.map(v=>v/d)); }
+    function inverse(m){ const n=m.length; const d=det(m); if(Math.abs(d)<1e-12) return null; const cof=[]; for(let i=0;i<n;i++){ cof.push([]); for(let j=0;j<n;j++){ const minor=m.filter((_,ri)=>ri!==i).map(row=>row.filter((_,ci)=>ci!==j)); cof[i][j]=(((i+j)%2===0)?1:-1)*det(minor); } } const adj=transpose(cof); return adj.map(row=>row.map(v=>v/d)); }
     function matAdd(a,b,sign){ return a.map((row,i)=>row.map((v,j)=>v+sign*b[i][j])); }
     function matMul(a,b){ const n=a.length; const r=[]; for(let i=0;i<n;i++){ r.push([]); for(let j=0;j<n;j++){ let s=0; for(let k=0;k<n;k++) s+=a[i][k]*b[k][j]; r[i][j]=s; } } return r; }
-
-    document.getElementById('matSizeSeg').addEventListener('click',(e)=>{
-      const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#matSizeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      size=parseInt(b.dataset.size); buildGrid(matA,size); buildGrid(matB,size);
-    });
+    document.getElementById('matSizeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#matSizeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); size=parseInt(b.dataset.size); buildGrid(matA,size); buildGrid(matB,size); });
     buildGrid(matA,size); buildGrid(matB,size);
-
     document.querySelectorAll('#panel-matrix [data-mx]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const A=readMat(matA,size), B=readMat(matB,size); const op=btn.dataset.mx;
@@ -1322,14 +1150,14 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
           else if(op==='mul') out.textContent='A×B =\n'+fmtMat(matMul(A,B));
           else if(op==='ident'){ const id=[]; for(let i=0;i<size;i++){ id.push([]); for(let j=0;j<size;j++) id[i][j]=(i===j?1:0); } out.textContent='Identity =\n'+fmtMat(id); }
         }catch(err){ out.textContent='Error'; }
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
   })();
 
-  /* ============================================================
-     VECTOR PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: VECTOR
+  // ============================================================
   (function(){
     let dim=3;
     const vecA=document.getElementById('vecA'), vecB=document.getElementById('vecB'), out=document.getElementById('vecOut');
@@ -1338,14 +1166,8 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     function dot(a,b){ return a.reduce((s,v,i)=>s+v*b[i],0); }
     function cross(a,b){ return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
     function mag(a){ return Math.sqrt(a.reduce((s,v)=>s+v*v,0)); }
-
-    document.getElementById('vecSizeSeg').addEventListener('click',(e)=>{
-      const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#vecSizeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      dim=parseInt(b.dataset.size); buildVec(vecA,dim); buildVec(vecB,dim);
-    });
+    document.getElementById('vecSizeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#vecSizeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); dim=parseInt(b.dataset.size); buildVec(vecA,dim); buildVec(vecB,dim); });
     buildVec(vecA,dim); buildVec(vecB,dim);
-
     document.querySelectorAll('#panel-vector [data-vc]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const A=readVec(vecA), B=readVec(vecB); const op=btn.dataset.vc;
@@ -1354,70 +1176,39 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
           else if(op==='cross'){ if(dim!==3){ out.textContent='CrossP ใช้ได้เฉพาะ 3D'; return; } out.textContent='CrossP(A,B) = ('+cross(A,B).map(formatNumber).join(', ')+')'; }
           else if(op==='magA') out.textContent='|A| = '+formatNumber(mag(A));
           else if(op==='unitA'){ const m=mag(A); if(m===0){ out.textContent='|A|=0'; return; } out.textContent='UnitV(A) = ('+A.map(v=>formatNumber(v/m)).join(', ')+')'; }
-          else if(op==='angle'){ const m1=mag(A),m2=mag(B); if(m1===0||m2===0){ out.textContent='เวกเตอร์เป็นศูนย์'; return; }
-            const c=Math.min(1,Math.max(-1, dot(A,B)/(m1*m2))); out.textContent='∠(A,B) = '+formatNumber(Math.acos(c)*180/Math.PI)+'°'; }
+          else if(op==='angle'){ const m1=mag(A),m2=mag(B); if(m1===0||m2===0){ out.textContent='เวกเตอร์เป็นศูนย์'; return; } const c=Math.min(1,Math.max(-1, dot(A,B)/(m1*m2))); out.textContent='∠(A,B) = '+formatNumber(Math.acos(c)*180/Math.PI)+'°'; }
         }catch(err){ out.textContent='Error'; }
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
   })();
 
-  /* ============================================================
-     EQUATION PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: EQUATION
+  // ============================================================
   (function(){
     let eqType='simul', simulN=2, polyN=2;
     const inputs=document.getElementById('eqInputs'), out=document.getElementById('eqOut');
     const typeSeg=document.getElementById('eqTypeSeg'), simulSeg=document.getElementById('eqSimulSeg'), polySeg=document.getElementById('eqPolySeg');
-
-    function buildSimul(n){
-      inputs.style.gridTemplateColumns='repeat('+(n+1)+',1fr)'; inputs.innerHTML='';
-      for(let r=0;r<n;r++){ for(let c=0;c<=n;c++){ const inp=document.createElement('input'); inp.type='number'; inp.value = c===n?'0':(r===c?'1':'0'); inputs.appendChild(inp); } }
-    }
-    function buildPoly(n){
-      inputs.style.gridTemplateColumns='repeat('+(n+1)+',1fr)'; inputs.innerHTML='';
-      for(let c=0;c<=n;c++){ const inp=document.createElement('input'); inp.type='number'; inp.value = c===n?'0':'0'; inputs.appendChild(inp); }
-      inputs.children[0].value='1';
-    }
+    function buildSimul(n){ inputs.style.gridTemplateColumns='repeat('+(n+1)+',1fr)'; inputs.innerHTML=''; for(let r=0;r<n;r++){ for(let c=0;c<=n;c++){ const inp=document.createElement('input'); inp.type='number'; inp.value = c===n?'0':(r===c?'1':'0'); inputs.appendChild(inp); } } }
+    function buildPoly(n){ inputs.style.gridTemplateColumns='repeat('+(n+1)+',1fr)'; inputs.innerHTML=''; for(let c=0;c<=n;c++){ const inp=document.createElement('input'); inp.type='number'; inp.value = c===n?'0':'0'; inputs.appendChild(inp); } inputs.children[0].value='1'; }
     buildSimul(simulN);
-
-    typeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#eqTypeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      eqType=b.dataset.type;
-      simulSeg.style.display = eqType==='simul'?'flex':'none';
-      polySeg.style.display = eqType==='poly'?'flex':'none';
-      if(eqType==='simul') buildSimul(simulN); else buildPoly(polyN);
-    });
-    simulSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#eqSimulSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      simulN=parseInt(b.dataset.n); buildSimul(simulN);
-    });
-    polySeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#eqPolySeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      polyN=parseInt(b.dataset.n); buildPoly(polyN);
-    });
-
+    typeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#eqTypeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); eqType=b.dataset.type; simulSeg.style.display = eqType==='simul'?'flex':'none'; polySeg.style.display = eqType==='poly'?'flex':'none'; if(eqType==='simul') buildSimul(simulN); else buildPoly(polyN); });
+    simulSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#eqSimulSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); simulN=parseInt(b.dataset.n); buildSimul(simulN); });
+    polySeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#eqPolySeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); polyN=parseInt(b.dataset.n); buildPoly(polyN); });
     document.getElementById('eqSolve').addEventListener('click', ()=>{
       const vals=[...inputs.querySelectorAll('input')].map(i=>parseFloat(i.value)||0);
       try{
-        if(eqType==='simul'){
-          const n=simulN; const mat=[]; for(let r=0;r<n;r++) mat.push(vals.slice(r*(n+1), r*(n+1)+n+1));
-          const sol=solveLinear(mat);
-          out.textContent = sol? sol.map((v,i)=>['x','y','z','w'][i]+' = '+formatNumber(v)).join('\n') : 'ไม่มีคำตอบ หรือมีคำตอบไม่จำกัด';
-        } else {
-          const n=polyN; const coeffs=vals.slice(0,n+1);
-          if(Math.abs(coeffs[0])<1e-12){ out.textContent='สัมประสิทธิ์นำ (a₀) ต้องไม่เป็น 0'; return; }
-          const roots=polyRoots(coeffs);
-          out.textContent = roots.map((r,i)=> Math.abs(r.im)<1e-6 ? 'x'+(i+1)+' = '+formatNumber(r.re) : 'x'+(i+1)+' = '+formatNumber(r.re)+(r.im<0?' - ':' + ')+formatNumber(Math.abs(r.im))+'i').join('\n');
-        }
+        if(eqType==='simul'){ const n=simulN; const mat=[]; for(let r=0;r<n;r++) mat.push(vals.slice(r*(n+1), r*(n+1)+n+1)); const sol=solveLinear(mat); out.textContent = sol? sol.map((v,i)=>['x','y','z','w'][i]+' = '+formatNumber(v)).join('\n') : 'ไม่มีคำตอบ หรือมีคำตอบไม่จำกัด'; }
+        else { const n=polyN; const coeffs=vals.slice(0,n+1); if(Math.abs(coeffs[0])<1e-12){ out.textContent='สัมประสิทธิ์นำ (a₀) ต้องไม่เป็น 0'; return; } const roots=polyRoots(coeffs); out.textContent = roots.map((r,i)=> Math.abs(r.im)<1e-6 ? 'x'+(i+1)+' = '+formatNumber(r.re) : 'x'+(i+1)+' = '+formatNumber(r.re)+(r.im<0?' - ':' + ')+formatNumber(Math.abs(r.im))+'i').join('\n'); }
       }catch(err){ out.textContent='Error'; }
-      try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+      haptic();
     });
   })();
 
-  /* ============================================================
-     TABLE PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: TABLE + GRAPH
+  // ============================================================
   document.querySelectorAll('#panel-table .chip-row .chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{ document.getElementById('tblExpr').value += chip.dataset.tok; document.getElementById('tblExpr').focus(); });
   });
@@ -1425,55 +1216,63 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     const src=document.getElementById('tblExpr').value.trim();
     const src2=document.getElementById('tblExpr2').value.trim();
     const scroll=document.getElementById('tblScroll');
+    const canvas=document.getElementById('graphCanvas');
+    const ctx=canvas.getContext('2d');
     const start=parseFloat(document.getElementById('tblStart').value), end=parseFloat(document.getElementById('tblEnd').value), step=parseFloat(document.getElementById('tblStep').value);
     if(!src || isNaN(start)||isNaN(end)||isNaN(step)||step===0){ scroll.innerHTML='<div class="table-empty">กรอกฟังก์ชันและช่วงค่า x ให้ครบ</div>'; return; }
     let tree, tree2;
     try{ tree=compile(src); if(src2) tree2=compile(src2); }catch(e){ scroll.innerHTML='<div class="table-empty">นิพจน์ไม่ถูกต้อง</div>'; return; }
     const count=Math.floor((end-start)/step)+1;
     if(count>500||count<1){ scroll.innerHTML='<div class="table-empty">ช่วงกว้างเกินไป ลองเพิ่มค่า step</div>'; return; }
+    // generate table
     scroll.innerHTML='';
+    let data=[];
     for(let i=0;i<count;i++){
       const x=start+i*step;
       let y,y2;
       try{ y=evalNode(tree,{x},true); }catch(e){ y=NaN; }
       if(tree2){ try{ y2=evalNode(tree2,{x},true); }catch(e){ y2=NaN; } }
+      data.push({x,y,y2});
       const d=document.createElement('div'); d.className='table-row';
       d.innerHTML='<span>x = '+formatNumber(x)+'</span><span>f(x) = '+(isFinite(y)?formatNumber(y):'—')+(tree2?'  g(x) = '+(isFinite(y2)?formatNumber(y2):'—'):'')+'</span>';
       scroll.appendChild(d);
     }
-    try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+    // draw graph
+    const w=canvas.width=canvas.clientWidth*2;
+    const h=canvas.height=canvas.clientHeight*2;
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='#c9e8b8'; ctx.lineWidth=2;
+    let valid=data.filter(d=>isFinite(d.y));
+    if(valid.length<2) return;
+    const xs=valid.map(d=>d.x), ys=valid.map(d=>d.y);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const pad=0.1*(maxY-minY)||1;
+    const yMin=minY-pad, yMax=maxY+pad;
+    const scaleX=(x)=> (x-minX)/(maxX-minX)*w;
+    const scaleY=(y)=> h - (y-yMin)/(yMax-yMin)*h;
+    ctx.beginPath();
+    valid.forEach((d,i)=>{ const px=scaleX(d.x), py=scaleY(d.y); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
+    ctx.stroke();
+    // grid lines
+    ctx.strokeStyle='rgba(201,232,184,0.2)'; ctx.lineWidth=1;
+    for(let i=0;i<5;i++){ const x=minX+(maxX-minX)*i/4; const px=scaleX(x); ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,h); ctx.stroke(); }
+    for(let i=0;i<5;i++){ const y=yMin+(yMax-yMin)*i/4; const py=scaleY(y); ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(w,py); ctx.stroke(); }
+    haptic();
   });
 
-  /* ============================================================
-     STATISTICS PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: STATISTICS
+  // ============================================================
   (function(){
     let svar=1; let data=[];
     const xInput=document.getElementById('statXInput'), yInput=document.getElementById('statYInput');
     const listEl=document.getElementById('statList'), resultsEl=document.getElementById('statResults');
-    document.getElementById('statModeSeg').addEventListener('click',(e)=>{
-      const b=e.target.closest('button'); if(!b) return;
-      document.querySelectorAll('#statModeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      svar=parseInt(b.dataset.svar); yInput.style.display = svar===2?'block':'none'; renderResults();
-    });
+    document.getElementById('statModeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#statModeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); svar=parseInt(b.dataset.svar); yInput.style.display = svar===2?'block':'none'; renderResults(); });
     document.getElementById('statAdd').addEventListener('click', addEntry);
     [xInput,yInput].forEach(inp=>inp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEntry(); }));
-    function addEntry(){
-      const x=parseFloat(xInput.value); if(isNaN(x)) return;
-      let y=0; if(svar===2){ y=parseFloat(yInput.value); if(isNaN(y)) return; }
-      data.push({x,y}); xInput.value=''; yInput.value=''; xInput.focus(); renderList(); renderResults();
-      try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
-    }
+    function addEntry(){ const x=parseFloat(xInput.value); if(isNaN(x)) return; let y=0; if(svar===2){ y=parseFloat(yInput.value); if(isNaN(y)) return; } data.push({x,y}); xInput.value=''; yInput.value=''; xInput.focus(); renderList(); renderResults(); haptic(); }
     document.getElementById('statClear').addEventListener('click', ()=>{ data=[]; renderList(); renderResults(); });
-    function renderList(){
-      listEl.innerHTML='';
-      data.forEach((d,idx)=>{
-        const chip=document.createElement('div'); chip.className='stat-chip';
-        chip.innerHTML='<span>'+(svar===2?('('+formatNumber(d.x)+', '+formatNumber(d.y)+')'):formatNumber(d.x))+'</span><b>×</b>';
-        chip.querySelector('b').addEventListener('click', ()=>{ data.splice(idx,1); renderList(); renderResults(); });
-        listEl.appendChild(chip);
-      });
-    }
+    function renderList(){ listEl.innerHTML=''; data.forEach((d,idx)=>{ const chip=document.createElement('div'); chip.className='stat-chip'; chip.innerHTML='<span>'+(svar===2?('('+formatNumber(d.x)+', '+formatNumber(d.y)+')'):formatNumber(d.x))+'</span><b>×</b>'; chip.querySelector('b').addEventListener('click', ()=>{ data.splice(idx,1); renderList(); renderResults(); }); listEl.appendChild(chip); }); }
     function row(label,val){ const d=document.createElement('div'); d.className='table-row'; d.innerHTML='<span>'+label+'</span><span>'+val+'</span>'; return d; }
     function renderResults(){
       resultsEl.innerHTML='';
@@ -1482,40 +1281,19 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       const xs=data.map(d=>d.x);
       const sumX=xs.reduce((a,b)=>a+b,0), sumX2=xs.reduce((a,b)=>a+b*b,0), meanX=sumX/n;
       const popVar=sumX2/n-meanX*meanX, popSD=Math.sqrt(Math.max(0,popVar)), sampSD=n>1?Math.sqrt(Math.max(0,popVar)*n/(n-1)):0;
-      resultsEl.appendChild(row('n', n));
-      resultsEl.appendChild(row('Σx', formatNumber(sumX)));
-      resultsEl.appendChild(row('Σx²', formatNumber(sumX2)));
-      resultsEl.appendChild(row('x̄ (mean)', formatNumber(meanX)));
-      resultsEl.appendChild(row('σx (population)', formatNumber(popSD)));
-      resultsEl.appendChild(row('sx (sample)', formatNumber(sampSD)));
-      resultsEl.appendChild(row('min / max', formatNumber(Math.min(...xs))+' / '+formatNumber(Math.max(...xs))));
-      if(svar===2 && n>=2){
-        const ys=data.map(d=>d.y); const sumY=ys.reduce((a,b)=>a+b,0), sumY2=ys.reduce((a,b)=>a+b*b,0), sumXY=data.reduce((a,d)=>a+d.x*d.y,0);
-        const denom=n*sumX2-sumX*sumX;
-        if(Math.abs(denom)>1e-12){
-          const b=(n*sumXY-sumX*sumY)/denom, a=(sumY-b*sumX)/n;
-          const denomR=Math.sqrt((n*sumX2-sumX*sumX)*(n*sumY2-sumY*sumY));
-          const r=denomR!==0?(n*sumXY-sumX*sumY)/denomR:NaN;
-          resultsEl.appendChild(row('a (intercept)', formatNumber(a)));
-          resultsEl.appendChild(row('b (slope)', formatNumber(b)));
-          resultsEl.appendChild(row('r (correlation)', isFinite(r)?formatNumber(r):'—'));
-          resultsEl.appendChild(row('ŷ = a + bx', formatNumber(a)+' + '+formatNumber(b)+'x'));
-        } else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>';
-      }
+      resultsEl.appendChild(row('n', n)); resultsEl.appendChild(row('Σx', formatNumber(sumX))); resultsEl.appendChild(row('Σx²', formatNumber(sumX2))); resultsEl.appendChild(row('x̄ (mean)', formatNumber(meanX))); resultsEl.appendChild(row('σx (population)', formatNumber(popSD))); resultsEl.appendChild(row('sx (sample)', formatNumber(sampSD))); resultsEl.appendChild(row('min / max', formatNumber(Math.min(...xs))+' / '+formatNumber(Math.max(...xs))));
+      if(svar===2 && n>=2){ const ys=data.map(d=>d.y); const sumY=ys.reduce((a,b)=>a+b,0), sumY2=ys.reduce((a,b)=>a+b*b,0), sumXY=data.reduce((a,d)=>a+d.x*d.y,0); const denom=n*sumX2-sumX*sumX; if(Math.abs(denom)>1e-12){ const b=(n*sumXY-sumX*sumY)/denom, a=(sumY-b*sumX)/n; const denomR=Math.sqrt((n*sumX2-sumX*sumX)*(n*sumY2-sumY*sumY)); const r=denomR!==0?(n*sumXY-sumX*sumY)/denomR:NaN; resultsEl.appendChild(row('a (intercept)', formatNumber(a))); resultsEl.appendChild(row('b (slope)', formatNumber(b))); resultsEl.appendChild(row('r (correlation)', isFinite(r)?formatNumber(r):'—')); resultsEl.appendChild(row('ŷ = a + bx', formatNumber(a)+' + '+formatNumber(b)+'x')); } else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>'; }
     }
     renderResults();
   })();
 
-  /* ============================================================
-     DISTRIBUTION PANEL (unchanged)
-  ============================================================ */
+  // ============================================================
+  // PANEL: DISTRIBUTION
+  // ============================================================
   (function(){
     const seg=document.getElementById('distTypeSeg');
     const boxes={ normal:document.getElementById('distNormal'), binom:document.getElementById('distBinom'), poisson:document.getElementById('distPoisson') };
-    seg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return;
-      seg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-      Object.values(boxes).forEach(x=>x.style.display='none'); boxes[b.dataset.d].style.display='block';
-    });
+    seg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; seg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); Object.values(boxes).forEach(x=>x.style.display='none'); boxes[b.dataset.d].style.display='block'; });
     const out=document.getElementById('distOut');
     document.querySelectorAll('#distNormal [data-nd]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -1524,7 +1302,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         if(op==='pdf') out.textContent='NormalPD(x) = '+formatNumber(normalPDF(x,mu,s));
         else if(op==='cdf') out.textContent='NormalCD(x) = '+formatNumber(normalCDF(x,mu,s));
         else if(op==='inv'){ const p=parseFloat(document.getElementById('ndP').value)||0.5; out.textContent='InvNorm(p='+p+') = '+formatNumber(invNormal(p,mu,s)); }
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
     document.querySelectorAll('#distBinom [data-bn2]').forEach(btn=>{
@@ -1532,7 +1310,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         const n=parseInt(document.getElementById('bnN').value)||0, p=parseFloat(document.getElementById('bnP').value)||0, x=parseInt(document.getElementById('bnX').value)||0;
         const op=btn.dataset.bn2;
         out.textContent = op==='pdf' ? 'BinomialPD = '+formatNumber(binomPMF(n,p,x)) : 'BinomialCD = '+formatNumber(binomCDF(n,p,x));
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
     document.querySelectorAll('#distPoisson [data-po]').forEach(btn=>{
@@ -1540,35 +1318,40 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         const lam=parseFloat(document.getElementById('poL').value)||0, x=parseInt(document.getElementById('poX').value)||0;
         const op=btn.dataset.po;
         out.textContent = op==='pdf' ? 'PoissonPD = '+formatNumber(poissonPMF(lam,x)) : 'PoissonCD = '+formatNumber(poissonCDF(lam,x));
-        try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+        haptic();
       });
     });
   })();
 
-  /* ============================================================
-     TOOLS PANEL + Unit Converter
-  ============================================================ */
+  // ============================================================
+  // PANEL: TOOLS (Constants + Unit Converter + Math Box)
+  // ============================================================
   (function(){
     const out=document.getElementById('toolsOut');
-    const CONST={ c:{v:299792458, label:'Speed of Light c = 299,792,458 m/s'}, h:{v:6.62607015e-34, label:'Planck h = 6.62607015×10⁻³⁴ J·s'}, g:{v:9.80665, label:'Gravity g = 9.80665 m/s²'} };
-    document.querySelectorAll('[data-const]').forEach(btn=>btn.addEventListener('click', ()=>{ out.textContent=CONST[btn.dataset.const].label; try{ navigator.vibrate && navigator.vibrate(10); }catch(e){} }));
+    const CONST={ c:{v:299792458, label:'Speed of Light c = 299,792,458 m/s'}, h:{v:6.62607015e-34, label:'Planck h = 6.62607015×10⁻³⁴ J·s'}, g:{v:9.80665, label:'Gravity g = 9.80665 m/s²'}, me:{v:9.1093837e-31, label:'Electron mass = 9.1093837×10⁻³¹ kg'}, r:{v:8.314462618, label:'Gas constant R = 8.314462618 J/(mol·K)'} };
+    document.querySelectorAll('[data-const]').forEach(btn=>btn.addEventListener('click', ()=>{ out.textContent=CONST[btn.dataset.const].label; haptic(); }));
 
     // Unit converter
     const units = {
       length: { mm:0.001, cm:0.01, m:1, km:1000, in:0.0254, ft:0.3048, yd:0.9144, mi:1609.344 },
       weight: { mg:0.000001, g:0.001, kg:1, lb:0.453592, oz:0.0283495 },
-      temp: { C:0, F:1, K:2 } // special
+      temp: { C:0, F:1, K:2 },
+      area: { mm2:0.000001, cm2:0.0001, m2:1, km2:1000000, in2:0.00064516, ft2:0.092903, yd2:0.836127, acre:4046.86, ha:10000 },
+      volume: { ml:0.000001, l:0.001, m3:1, in3:0.000016387, ft3:0.0283168, gal:0.00378541 },
+      speed: { mps:1, kmph:0.277778, mph:0.44704, knot:0.514444 }
     };
     const unitLabels = {
       length: { mm:'มิลลิเมตร', cm:'เซนติเมตร', m:'เมตร', km:'กิโลเมตร', in:'นิ้ว', ft:'ฟุต', yd:'หลา', mi:'ไมล์' },
       weight: { mg:'มิลลิกรัม', g:'กรัม', kg:'กิโลกรัม', lb:'ปอนด์', oz:'ออนซ์' },
-      temp: { C:'องศาเซลเซียส', F:'องศาฟาเรนไฮต์', K:'เคลวิน' }
+      temp: { C:'°C', F:'°F', K:'K' },
+      area: { mm2:'มม²', cm2:'ซม²', m2:'ม²', km2:'กม²', in2:'นิ้ว²', ft2:'ฟุต²', yd2:'หลา²', acre:'เอเคอร์', ha:'เฮกตาร์' },
+      volume: { ml:'มล', l:'ลิตร', m3:'ม³', in3:'นิ้ว³', ft3:'ฟุต³', gal:'แกลลอน' },
+      speed: { mps:'ม/ว', kmph:'กม/ชม', mph:'ไมล์/ชม', knot:'นอต' }
     };
     const convCat=document.getElementById('convCategory');
     const convFrom=document.getElementById('convFrom');
     const convTo=document.getElementById('convTo');
     const convValue=document.getElementById('convValue');
-
     function populateUnits(){
       const cat=convCat.value;
       const u=Object.keys(units[cat]);
@@ -1579,7 +1362,6 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }
     populateUnits();
     convCat.addEventListener('change', populateUnits);
-
     document.getElementById('convDo').addEventListener('click', ()=>{
       const cat=convCat.value;
       const from=convFrom.value;
@@ -1588,57 +1370,33 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       if(isNaN(val)){ out.textContent='กรอกตัวเลขให้ถูกต้อง'; return; }
       let result;
       if(cat==='temp'){
-        // convert to Celsius first
-        let c;
-        if(from==='C') c=val;
-        else if(from==='F') c=(val-32)*5/9;
-        else if(from==='K') c=val-273.15;
-        if(to==='C') result=c;
-        else if(to==='F') result=c*9/5+32;
-        else if(to==='K') result=c+273.15;
+        let c; if(from==='C') c=val; else if(from==='F') c=(val-32)*5/9; else if(from==='K') c=val-273.15;
+        if(to==='C') result=c; else if(to==='F') result=c*9/5+32; else if(to==='K') result=c+273.15;
       } else {
         const base = val * units[cat][from];
         result = base / units[cat][to];
       }
       out.textContent = val+' '+unitLabels[cat][from]+' = '+formatNumber(result)+' '+unitLabels[cat][to];
-      try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+      haptic();
     });
 
-    // Math box
+    // Math Box
     document.querySelectorAll('[data-mb]').forEach(btn=>btn.addEventListener('click', ()=>{
       const op=btn.dataset.mb;
       if(op==='coin') out.textContent='Coin Toss: '+(Math.random()<0.5?'HEADS':'TAILS');
       else if(op==='dice') out.textContent='Dice Roll: '+(Math.floor(Math.random()*6)+1);
       else if(op==='ran') out.textContent='Ran# = '+Math.random().toFixed(3);
-      else if(op==='ranint'){ const a=parseInt(document.getElementById('ranA').value)||1, b=parseInt(document.getElementById('ranB').value)||6;
-        const lo=Math.min(a,b), hi=Math.max(a,b); out.textContent='RanInt#('+lo+','+hi+') = '+(Math.floor(Math.random()*(hi-lo+1))+lo); }
-      try{ navigator.vibrate && navigator.vibrate(10); }catch(e){}
+      else if(op==='ranint'){ const a=parseInt(document.getElementById('ranA').value)||1, b=parseInt(document.getElementById('ranB').value)||6; const lo=Math.min(a,b), hi=Math.max(a,b); out.textContent='RanInt#('+lo+','+hi+') = '+(Math.floor(Math.random()*(hi-lo+1))+lo); }
+      haptic();
     }));
   })();
 
-  /* ============================================================
-     SERVICE WORKER REGISTRATION (offline)
-  ============================================================ */
+  // ============================================================
+  // SERVICE WORKER (offline)
+  // ============================================================
   if('serviceWorker' in navigator){
-    // We'll register a simple service worker that caches the current page
-    // For production, you should create a separate sw.js file.
-    // Here we use a minimal inline registration via a blob URL.
     try{
-      const swCode = `
-        self.addEventListener('install', e => {
-          e.waitUntil(
-            caches.open('fx991cw-v1').then(c => c.addAll(['./']))
-          );
-        });
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(r => r || fetch(e.request))
-          );
-        });
-      `;
-      const blob = new Blob([swCode], {type:'application/javascript'});
-      const swUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(swUrl, {scope: './'})
+      navigator.serviceWorker.register('sw.js', {scope: './'})
         .then(()=>console.log('SW registered'))
         .catch(()=>console.log('SW registration failed'));
     }catch(e){}
