@@ -1,8 +1,9 @@
 {
-  "name": "fx-991CW ClassWiz",
+  "name": "fx-991CW Scientific Calculator",
   "short_name": "fx-991CW",
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#1b1d21",
   "theme_color": "#1b1d21",
   "icons": [
@@ -10,13 +11,13 @@
       "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
