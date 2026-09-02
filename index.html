@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>fx-991CW ClassWiz — Scientific Calculator</title>
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,7 +24,7 @@
   --key-num-bg:#f8f8f6; --key-num-bg2:#e6e6e3; --key-num-fg:#1d1e20;
   --key-op-bg:#54585f; --key-op-bg2:#494c53; --key-op-fg:#ffffff;
   --shift:#f2941f; --shift-dim:#8a5c1c;
-  --alpha:#d9483a; --ac:#c94236; --menu:#3d6fb0;
+  --ac:#c94236; --menu:#3d6fb0;
   --equals-1:#f2a63c; --equals-2:#e8871c; --equals-fg:#241300;
   --sub-label:#c9691f;
   --gap:5px; --radius-key:9px;
@@ -37,7 +39,7 @@ body[data-theme="dark"]{
   --key-num-bg:#3a3d43; --key-num-bg2:#2e3136; --key-num-fg:#f0f1f2;
   --key-op-bg:#43474f; --key-op-bg2:#383b42; --key-op-fg:#ffffff;
   --shift:#f2941f; --shift-dim:#8a5c1c;
-  --alpha:#d9483a; --ac:#c94236; --menu:#3d6fb0;
+  --ac:#c94236; --menu:#3d6fb0;
   --equals-1:#f2a63c; --equals-2:#e8871c; --equals-fg:#241300;
   --sub-label:#e8a35c;
 }
@@ -81,7 +83,7 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .lcd-badges span{opacity:.35;}
 .lcd-badges span.on{opacity:1; color:var(--lcd-fg); font-weight:700;}
 .lcd-mode{font-weight:700; color:var(--lcd-fg); opacity:.85; flex:1 1 auto; min-width:0; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin:0 4px;}
-.lcd-body{display:flex; flex-direction:column; justify-content:flex-end; min-height:78px;}
+.lcd-body{display:flex; flex-direction:column; justify-content:flex-end; min-height:78px; position:relative;}
 .expr{font-family:'JetBrains Mono',monospace; font-size:calc(12.5px * var(--font-scale)); color:var(--lcd-fg); opacity:.72;
   text-align:right; min-height:15px; white-space:nowrap; overflow-x:auto; scrollbar-width:none; letter-spacing:.01em; cursor:pointer;}
 .expr::-webkit-scrollbar{display:none;}
@@ -96,8 +98,14 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
   display:none; flex-direction:column; gap:3px; overflow-y:auto; z-index:5;}
 .hist-panel.open{display:flex;}
 .hist-panel-title{font-family:'JetBrains Mono',monospace; font-size:9px; color:#c7cabf; letter-spacing:.1em; margin-bottom:2px; display:flex; justify-content:space-between;}
-.hist-item{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#e7e9df; text-align:right; padding:3px 2px; border-bottom:1px solid #3c3f34; cursor:pointer;}
+.hist-item{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#e7e9df; padding:3px 4px; border-bottom:1px solid #3c3f34; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:6px;}
+.hist-item-text{flex:1; text-align:right; overflow-wrap:anywhere;}
+.hist-del{flex:0 0 auto; appearance:none; border:none; background:rgba(255,255,255,.08); color:#e7e9df; width:18px; height:18px; border-radius:5px; font-size:11px; line-height:1; cursor:pointer;}
+.hist-del:active{background:rgba(255,255,255,.2);}
 .hist-empty{font-family:'JetBrains Mono',monospace; font-size:11px; color:#8b8e82; text-align:center; margin-top:12px;}
+.expr-cursor{display:inline-block; width:1px; height:.95em; background:currentColor; vertical-align:-2px; margin:0 .5px; animation:exprblink 1s step-end infinite;}
+.expr-ch{display:inline-block; white-space:pre;}
+@keyframes exprblink{50%{opacity:0;}}
 .hist-btn{flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--lcd-dim);
   background:none; border:1px solid rgba(32,38,28,.35); border-radius:4px; padding:1px 5px; cursor:pointer; z-index:6;}
 .hist-btn.on{color:var(--lcd-fg); border-color:var(--lcd-fg);}
@@ -183,7 +191,7 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
   padding:4px 7px; display:flex; align-items:center; gap:5px;}
 .stat-chip b{cursor:pointer; color:#ffb0a6; font-weight:700;}
 .stat-list{display:flex; flex-wrap:wrap; gap:5px; max-height:56px; overflow-y:auto; flex:0 0 auto;}
-.grid{flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(9,minmax(0,1fr)); gap:var(--gap);}
+.grid{flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(10,minmax(0,1fr)); gap:var(--gap);}
 .key{appearance:none; border:none; width:100%; height:100%; min-width:0; min-height:0; font-family:'IBM Plex Sans',sans-serif;
   font-size:clamp(11.5px,3.6vw,14px); font-weight:600; border-radius:var(--radius-key); padding:0 2px; display:flex; flex-direction:column;
   align-items:center; justify-content:center; cursor:pointer; user-select:none; position:relative; transition:transform .05s, background .1s; gap:1px;}
@@ -244,16 +252,18 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <div class="screen-frame" style="position:relative;">
     <div class="lcd">
-      <div class="hist-panel" id="histPanel"><div class="hist-panel-title">HISTORY <button class="hist-clear" id="histClear">ล้างทั้งหมด</button></div><div id="histList"></div></div>
       <div class="lcd-top">
         <div class="lcd-badges">
           <span id="badgeDeg" class="on">D</span><span id="badgeRad">R</span><span id="badgeM">M</span><span id="badgeShift">SHIFT</span>
           <span id="badgeSto">STO</span>
         </div>
         <div class="lcd-mode" id="lcdMode">CALCULATE</div>
+        <button class="hist-btn" id="curLeftBtn" title="เลื่อนเคอร์เซอร์ซ้าย">◀</button>
+        <button class="hist-btn" id="curRightBtn" title="เลื่อนเคอร์เซอร์ขวา">▶</button>
         <button class="hist-btn" id="histBtn">HIST</button>
       </div>
       <div class="lcd-body">
+        <div class="hist-panel" id="histPanel"><div class="hist-panel-title">HISTORY <button class="hist-clear" id="histClear">ล้างทั้งหมด</button></div><div id="histList"></div></div>
         <div class="expr" id="expr">&nbsp;</div>
         <div class="result-row">
           <div class="result" id="result">0</div>
@@ -302,6 +312,14 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="color-row"><span>สีปุ่มฟังก์ชัน</span><input type="color" id="colorKeyFn" value="#3d4149"></div>
       <button class="reset-colors" id="colorReset">รีเซ็ตสี</button>
     </div>
+    <div class="set-block"><div class="set-label">สำรอง / กู้คืนข้อมูล</div>
+      <div class="color-row" style="gap:8px;"><button class="reset-colors" id="backupExportBtn" style="flex:1;">&#128190; ดาวน์โหลดไฟล์สำรอง</button></div>
+      <div class="color-row" style="gap:8px; margin-top:6px;">
+        <button class="reset-colors" id="backupImportBtn" style="flex:1;">&#128194; นำเข้าไฟล์สำรอง</button>
+        <input type="file" id="backupFileInput" accept="application/json" style="display:none;">
+      </div>
+      <div class="guide-a" style="margin-top:6px;">บันทึกประวัติ, ตัวแปร A/B/C, หน่วยความจำ และธีมไว้เป็นไฟล์ กันข้อมูลหายตอนล้างแคชหรือย้ายเครื่อง</div>
+    </div>
   </div>
 
   <!-- GUIDE -->
@@ -315,7 +333,22 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div class="guide-item"><div class="guide-q">S⇔D (เศษส่วน/ทศนิยม)</div><div class="guide-a">กดปุ่ม <b>S⇔D</b> ในแถวชิป</div></div>
     <div class="guide-item"><div class="guide-q">คัดลอกผลลัพธ์</div><div class="guide-a">กดปุ่ม &#128203; ข้างผลลัพธ์ หรือแตะค้างที่ผลลัพธ์</div></div>
     <div class="guide-item"><div class="guide-q">ดูประวัติ</div><div class="guide-a">กด <b>HIST</b> มุมขวาบนจอ</div></div>
-    <div class="guide-item"><div class="guide-q">Undo / Redo</div><div class="guide-a">ใช้ <b>Ctrl+Z</b> (ย้อนกลับ) และ <b>Ctrl+Y</b> (เลิกย้อนกลับ)</div></div>
+    <div class="guide-item"><div class="guide-q">Undo / Redo</div><div class="guide-a">ใช้ <b>Ctrl+Z</b> (ย้อนกลับ) และ <b>Ctrl+Y</b> (เลิกย้อนกลับ) หรือลากปุ่ม &#9664;/&#9654; ข้าง HIST เพื่อขยับเคอร์เซอร์แก้ไขกลางสมการ</div></div>
+    <div class="guide-item"><div class="guide-q">เลขเชิงซ้อนในหน้าคำนวณหลัก</div><div class="guide-a">พิมพ์ <b>i</b> ต่อท้ายตัวเลขได้เลย เช่น <b>3+4i</b> หรือ <b>sqrt(-4)</b></div></div>
+    <div class="guide-item"><div class="guide-q">สำรอง/กู้คืนข้อมูล</div><div class="guide-a">ไปที่ตั้งค่า (&#9881;) แล้วกด "ดาวน์โหลดไฟล์สำรอง" เก็บไว้ กู้คืนได้ด้วยปุ่ม "นำเข้าไฟล์สำรอง"</div></div>
+  </div>
+
+  <!-- VARIABLE PICKER (STO/RCL) -->
+  <div class="sheet-overlay" id="varOverlay" style="bottom:auto; height:auto; max-height:60vh;">
+    <div class="sheet-head"><div class="sheet-title" id="varTitle">เลือกตัวแปร</div><button class="sheet-close" id="varClose">&#10005;</button></div>
+    <div class="set-block" style="margin-bottom:8px;">
+      <div class="theme-seg" id="varSeg">
+        <button data-var="A">A</button>
+        <button data-var="B">B</button>
+        <button data-var="C">C</button>
+      </div>
+    </div>
+    <div class="guide-a" id="varHint"></div>
   </div>
 
   <!-- ===== PANEL: CALCULATE ===== -->
@@ -381,9 +414,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="key key-num" data-action="input" data-val=".">.</button>
       <button class="key key-util" data-action="input" data-val="%">%</button>
       <button class="key key-util" data-action="negate">±</button>
-      <!-- ปุ่ม STO/RCL เพิ่ม -->
-      <button class="key key-util" data-action="sto" style="font-size:10px;">STO</button>
-      <button class="key key-util" data-action="rcl" style="font-size:10px;">RCL</button>
+      <!-- ปุ่ม STO/RCL เก็บ/เรียกค่าตัวแปร A B C — เติมเต็มแถวที่ 10 พอดี (span 2 + span 3 = 5 คอลัมน์) -->
+      <button class="key key-util" data-action="sto" style="font-size:10px; grid-column:span 2;">STO</button>
+      <button class="key key-util" data-action="rcl" style="font-size:10px; grid-column:span 3;">RCL</button>
     </div>
   </div>
 
@@ -491,6 +524,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <input id="tblStep" type="number" placeholder="step" value="1"></div>
     <button class="pbtn acc" id="tblGenerate">Generate Table</button>
     <canvas id="graphCanvas"></canvas>
+    <div class="table-empty" id="graphLegend" style="display:none; margin:2px 0 4px; text-align:center;">
+      <span style="color:#c9e8b8;">■ f(x)</span>&nbsp;&nbsp;<span style="color:#ffb054;">■ g(x)</span>
+    </div>
     <div class="table-scroll" id="tblScroll"><div class="table-empty">ยังไม่มีข้อมูล</div></div>
   </div>
 
@@ -629,6 +665,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         else if(word==='e') tokens.push({type:'num', value:Math.E});
         else if(word==='ans') tokens.push({type:'var', name:'ans'});
         else if(word==='x') tokens.push({type:'var', name:'x'});
+        else if(word==='i') tokens.push({type:'var', name:'i'});
         else throw new Error('unknown token: '+word);
         i=j; continue;
       }
@@ -775,6 +812,65 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   const cAbs=(a)=>Math.hypot(a.re,a.im);
   const cArgDeg=(a)=>Math.atan2(a.im,a.re)*180/Math.PI;
   function fmtC(a){ const re=formatNumber(a.re), im=formatNumber(Math.abs(a.im)); return a.im<0? re+' - '+im+'i' : re+' + '+im+'i'; }
+
+  // ----- COMPLEX MODE สำหรับหน้าคำนวณหลัก (รองรับพิมพ์ 3+4i, sqrt(-4) ฯลฯ) -----
+  function tokensHaveImaginary(tokens){ return tokens.some(t=>t.type==='var' && t.name==='i'); }
+  function cPow(a,b){
+    if(Math.abs(b.im)<1e-9){
+      const r=cAbs(a), theta=Math.atan2(a.im,a.re);
+      if(r===0) return {re:0,im:0};
+      const nr=Math.pow(r,b.re), na=theta*b.re;
+      return {re:nr*Math.cos(na), im:nr*Math.sin(na)};
+    }
+    const lnA={re:Math.log(cAbs(a)), im:Math.atan2(a.im,a.re)};
+    const p=cMul(b,lnA); const ex=Math.exp(p.re);
+    return {re:ex*Math.cos(p.im), im:ex*Math.sin(p.im)};
+  }
+  function cSqrt(a){
+    if(Math.abs(a.im)<1e-12) return a.re>=0 ? {re:Math.sqrt(a.re), im:0} : {re:0, im:Math.sqrt(-a.re)};
+    const r=cAbs(a), theta=Math.atan2(a.im,a.re), sr=Math.sqrt(r);
+    return {re:sr*Math.cos(theta/2), im:sr*Math.sin(theta/2)};
+  }
+  function evalComplex(node, scope, deg){
+    switch(node.type){
+      case 'num': return {re:node.value, im:0};
+      case 'var': { const v=scope[node.name]; if(v===undefined) throw new Error('undefined var'); return (v&&v.re!==undefined)?v:{re:v,im:0}; }
+      case 'neg': { const v=evalComplex(node.node,scope,deg); return {re:-v.re, im:-v.im}; }
+      case 'bin': {
+        const l=evalComplex(node.left,scope,deg), r=evalComplex(node.right,scope,deg);
+        if(node.op==='+') return cAdd(l,r);
+        if(node.op==='-') return cSub(l,r);
+        if(node.op==='*') return cMul(l,r);
+        if(node.op==='/'){ if(cAbs(r)<1e-300) throw new Error('div0'); return cDiv(l,r); }
+        if(node.op==='^') return cPow(l,r);
+        break;
+      }
+      case 'post': {
+        const v=evalComplex(node.node,scope,deg);
+        if(node.op==='!'){ if(Math.abs(v.im)>1e-9) throw new Error('bad factorial'); return {re:factorial(v.re), im:0}; }
+        if(node.op==='%') return {re:v.re/100, im:v.im/100};
+        break;
+      }
+      case 'call': {
+        const v0=evalComplex(node.args[0],scope,deg);
+        if(node.name==='sqrt') return cSqrt(v0);
+        if(node.name==='abs') return {re:cAbs(v0), im:0};
+        if(Math.abs(v0.im)>1e-9) throw new Error('ฟังก์ชัน '+node.name+' รองรับเฉพาะค่าจริง');
+        const x=v0.re;
+        switch(node.name){
+          case 'sin': return {re:Math.sin(toRad(x,deg)), im:0};
+          case 'cos': return {re:Math.cos(toRad(x,deg)), im:0};
+          case 'tan': return {re:Math.tan(toRad(x,deg)), im:0};
+          case 'ln': return {re:Math.log(x), im:0};
+          case 'log': return {re:Math.log10(x), im:0};
+          case 'exp': return {re:Math.exp(x), im:0};
+          case 'cbrt': return {re:Math.cbrt(x), im:0};
+        }
+        throw new Error('ฟังก์ชัน '+node.name+' ยังไม่รองรับเลขเชิงซ้อน');
+      }
+    }
+    throw new Error('eval error');
+  }
 
   // ----- POLY ROOTS -----
   function polyRoots(coeffs){
@@ -925,6 +1021,40 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     document.getElementById('themeSeg').addEventListener('click', ()=>{ if(!savedColors) setTimeout(prefillFromComputed, 0); });
   })();
 
+  // ----- สำรอง / กู้คืนข้อมูล -----
+  (function(){
+    const exportBtn=document.getElementById('backupExportBtn'), importBtn=document.getElementById('backupImportBtn'),
+      fileInput=document.getElementById('backupFileInput');
+    exportBtn.addEventListener('click', ()=>{
+      const data={};
+      for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && k.indexOf('fx991cw-')===0) data[k]=localStorage.getItem(k); }
+      const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      const dateStr=new Date().toISOString().slice(0,10);
+      a.href=url; a.download='fx991cw-backup-'+dateStr+'.json'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+    });
+    importBtn.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', ()=>{
+      const file=fileInput.files[0]; if(!file) return;
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const data=JSON.parse(reader.result);
+          const keys=Object.keys(data).filter(k=>k.indexOf('fx991cw-')===0);
+          if(!keys.length) throw new Error('empty');
+          if(!confirm('นำเข้าไฟล์สำรองจะเขียนทับข้อมูลปัจจุบันทั้งหมด ต้องการดำเนินการต่อหรือไม่?')) return;
+          keys.forEach(k=>localStorage.setItem(k, data[k]));
+          alert('กู้คืนข้อมูลสำเร็จ กำลังโหลดแอปใหม่');
+          location.reload();
+        }catch(e){ alert('ไฟล์สำรองไม่ถูกต้อง'); }
+      };
+      reader.readAsText(file);
+      fileInput.value='';
+    });
+  })();
+
   // ============================================================
   // GUIDE
   // ============================================================
@@ -956,6 +1086,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     let currentDisplay = '0';
     let vars = loadState('vars', {A:0, B:0, C:0});
     let stoTarget = null;
+    let cursorPos = expr.length;
 
     let undoStack = [], redoStack = [];
     const MAX_UNDO = 30;
@@ -973,17 +1104,52 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       if(hasSto) badgeSto.textContent = 'STO '+stoTarget;
       saveState('deg', isDeg); saveState('memory', memory); saveState('vars', vars);
     }
-    function renderExpr(){ exprEl.textContent = expr.length? expr : '\u00A0'; livePreview(); }
+    function renderExpr(){
+      if(cursorPos>expr.length) cursorPos=expr.length;
+      if(cursorPos<0) cursorPos=0;
+      exprEl.innerHTML='';
+      if(!expr.length){ exprEl.innerHTML='&nbsp;'; livePreview(); return; }
+      for(let idx=0; idx<=expr.length; idx++){
+        if(idx===cursorPos){ const cur=document.createElement('span'); cur.className='expr-cursor'; exprEl.appendChild(cur); }
+        if(idx<expr.length){ const ch=document.createElement('span'); ch.className='expr-ch'; ch.textContent=expr[idx]; ch.dataset.idx=idx; exprEl.appendChild(ch); }
+      }
+      livePreview();
+    }
+    exprEl.addEventListener('click', (e)=>{
+      const ch=e.target.closest('.expr-ch');
+      cursorPos = ch ? parseInt(ch.dataset.idx) : expr.length;
+      renderExpr();
+    });
+    function cursorLeft(){ if(justEvaluated) return; cursorPos=Math.max(0,cursorPos-1); renderExpr(); haptic(); }
+    function cursorRight(){ if(justEvaluated) return; cursorPos=Math.min(expr.length,cursorPos+1); renderExpr(); haptic(); }
     function renderResult(text, err){ resultEl.textContent=text; resultEl.classList.toggle('error', !!err); currentDisplay=text; if(!err) currentValue=parseFloat(text)||0; }
     let currentValue=0;
+    // ประเมินนิพจน์แบบฉลาด: ถ้ามี i (หน่วยจินตภาพ) จะคำนวณเป็นเลขเชิงซ้อนอัตโนมัติ
+    function evalExprSmart(exprStr, deg){
+      const tokens=tokenize(autoCloseParens(exprStr));
+      const tree=parse(tokens);
+      if(tokensHaveImaginary(tokens)){
+        const cscope={ans:{re:lastAnswer,im:0}, A:{re:vars.A,im:0}, B:{re:vars.B,im:0}, C:{re:vars.C,im:0}, i:{re:0,im:1}};
+        const v=evalComplex(tree, cscope, deg);
+        return {isComplex:true, value:v, text:fmtC(v), valid:isFinite(v.re)&&isFinite(v.im)};
+      }
+      const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C};
+      let v; try{ v=evalNode(tree, scope, deg); }catch(e){ v=NaN; }
+      if(isFinite(v) && !Number.isNaN(v)) return {isComplex:false, value:v, text:formatNumber(v), valid:true};
+      // ค่าจริงคำนวณไม่ได้ (เช่น sqrt(-4)) — ลองประเมินเป็นเลขเชิงซ้อนอัตโนมัติ
+      try{
+        const cscope={ans:{re:lastAnswer,im:0}, A:{re:vars.A,im:0}, B:{re:vars.B,im:0}, C:{re:vars.C,im:0}, i:{re:0,im:1}};
+        const cv=evalComplex(tree, cscope, deg);
+        if(isFinite(cv.re) && isFinite(cv.im) && Math.abs(cv.im)>1e-9) return {isComplex:true, value:cv, text:fmtC(cv), valid:true};
+      }catch(e){}
+      return {isComplex:false, value:v, text:formatNumber(v), valid:false};
+    }
     function livePreview(){
       if(justEvaluated) return;
       if(!expr.trim()){ renderResult('0', false); return; }
       try{
-        const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C};
-        const tree=compile(expr);
-        const value=evalNode(tree, scope, isDeg);
-        if(isFinite(value) && !Number.isNaN(value)) renderResult(formatNumber(value), false);
+        const r=evalExprSmart(expr, isDeg);
+        if(r.valid) renderResult(r.text, false);
       }catch(err){}
     }
     function renderHistory(){
@@ -992,8 +1158,12 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       history.slice().reverse().forEach(h=>{
         const d=document.createElement('div'); d.className='hist-item';
         const time = h.time ? new Date(h.time).toLocaleString() : '';
-        d.textContent = h.expr+' = '+h.result + (time ? '  ('+time+')' : '');
-        d.addEventListener('click', ()=>{ expr = h.expr; justEvaluated = false; renderExpr(); histPanel.classList.remove('open'); histBtn.classList.remove('on'); });
+        const txt=document.createElement('div'); txt.className='hist-item-text';
+        txt.textContent = h.expr+' = '+h.result + (time ? '  ('+time+')' : '');
+        txt.addEventListener('click', ()=>{ expr = h.expr; cursorPos = expr.length; justEvaluated = false; renderExpr(); histPanel.classList.remove('open'); histBtn.classList.remove('on'); });
+        const delBtn=document.createElement('button'); delBtn.className='hist-del'; delBtn.textContent='✕'; delBtn.title='ลบรายการนี้';
+        delBtn.addEventListener('click', (e)=>{ e.stopPropagation(); const idx=history.indexOf(h); if(idx>-1) history.splice(idx,1); saveAll(); renderHistory(); haptic(); });
+        d.appendChild(txt); d.appendChild(delBtn);
         histList.appendChild(d);
       });
     }
@@ -1001,28 +1171,28 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     function evaluate(){
       if(!expr.trim()) return;
       try{
-        const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C};
-        const tree=compile(expr);
-        const value=evalNode(tree, scope, isDeg);
-        const formatted=formatNumber(value);
+        const r=evalExprSmart(expr, isDeg);
+        const formatted=r.text;
         renderResult(formatted,false);
         history.push({expr, result:formatted, time:Date.now()});
         if(history.length>50) history.shift();
-        lastAnswer=value; justEvaluated=true; fracMode=false;
+        lastAnswer = r.isComplex ? r.value.re : r.value;
+        justEvaluated=true; fracMode=false;
         saveAll(); renderHistory();
         haptic(); playClick();
       }catch(err){ renderResult('Error', true); justEvaluated=false; }
     }
     function insert(val){
-      if(justEvaluated){ const isOperator=['+','-','*','/','^'].includes(val); expr = isOperator? resultEl.textContent+val : val; justEvaluated=false; }
-      else expr += val;
-      pushUndo(); renderExpr(); haptic(); playClick();
+      pushUndo();
+      if(justEvaluated){ const isOperator=['+','-','*','/','^'].includes(val); expr = isOperator? resultEl.textContent+val : val; justEvaluated=false; cursorPos=expr.length; }
+      else { expr = expr.slice(0,cursorPos)+val+expr.slice(cursorPos); cursorPos+=val.length; }
+      renderExpr(); haptic(); playClick();
     }
-    function clearAll(){ pushUndo(); expr=''; justEvaluated=false; fracMode=false; renderExpr(); renderResult('0', false); saveAll(); haptic(); playClick(); }
-    function del(){ if(justEvaluated){ clearAll(); return; } pushUndo(); expr=expr.slice(0,-1); renderExpr(); haptic(); playClick(); }
-    function negate(){ pushUndo(); if(justEvaluated){ expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; justEvaluated=false; renderExpr(); return; } if(!expr){ expr='-('; renderExpr(); return; } expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; renderExpr(); haptic(); playClick(); }
+    function clearAll(){ pushUndo(); expr=''; cursorPos=0; justEvaluated=false; fracMode=false; renderExpr(); renderResult('0', false); saveAll(); haptic(); playClick(); }
+    function del(){ if(justEvaluated){ clearAll(); return; } pushUndo(); if(cursorPos>0){ expr=expr.slice(0,cursorPos-1)+expr.slice(cursorPos); cursorPos--; } renderExpr(); haptic(); playClick(); }
+    function negate(){ pushUndo(); if(justEvaluated){ expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; justEvaluated=false; cursorPos=expr.length; renderExpr(); return; } if(!expr){ expr='-('; cursorPos=expr.length; renderExpr(); return; } expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; cursorPos=expr.length; renderExpr(); haptic(); playClick(); }
     function currentValueForMemory(){
-      try{ const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C}; const tree=compile(expr||resultEl.textContent); return evalNode(tree, scope, isDeg); }catch(e){ const n=parseFloat(resultEl.textContent); return isNaN(n)?0:n; }
+      try{ const r=evalExprSmart(expr||resultEl.textContent, isDeg); return r.isComplex ? r.value.re : r.value; }catch(e){ const n=parseFloat(resultEl.textContent); return isNaN(n)?0:n; }
     }
     function toggleFraction(){
       if(!justEvaluated || fracMode){ fracMode=false; renderResult(currentDisplay, false); return; }
@@ -1060,19 +1230,54 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       else if(action==='mrecall') insert(formatNumber(memory));
       else if(action==='second'){ isSecond=!isSecond; updateBadges(); haptic(); playClick(); }
       else if(action==='toggleDeg'){ isDeg=!isDeg; updateBadges(); btn.textContent=isDeg?'Deg':'Rad'; haptic(); playClick(); }
-      else if(action==='sto'){ const target=prompt('เก็บลงตัวแปร A, B หรือ C?', 'A'); if(target && ['A','B','C'].includes(target.toUpperCase())){ stoTarget=target.toUpperCase(); vars[stoTarget]=currentValueForMemory(); updateBadges(); saveAll(); showToast('เก็บค่า = '+formatNumber(vars[stoTarget])+' ลง '+stoTarget); haptic(); } }
-      else if(action==='rcl'){ const target=prompt('เรียกตัวแปร A, B หรือ C?', 'A'); if(target && ['A','B','C'].includes(target.toUpperCase())){ const val=vars[target.toUpperCase()]; if(val!==undefined) insert(formatNumber(val)); else showToast('ตัวแปร '+target+' ยังไม่มีค่า'); haptic(); } }
+      else if(action==='sto') openVarPicker('sto');
+      else if(action==='rcl') openVarPicker('rcl');
+    });
+
+    // ----- VARIABLE PICKER (STO/RCL) แทน prompt() ของเบราว์เซอร์ -----
+    const varOverlay=document.getElementById('varOverlay'), varTitle=document.getElementById('varTitle'),
+      varClose=document.getElementById('varClose'), varSeg=document.getElementById('varSeg'), varHint=document.getElementById('varHint');
+    let varMode=null;
+    function openVarPicker(mode){
+      varMode=mode;
+      varTitle.textContent = mode==='sto' ? 'เก็บค่าไว้ที่ตัวแปร' : 'เรียกค่าจากตัวแปร';
+      varHint.textContent = 'ค่าปัจจุบัน — A = '+formatNumber(vars.A)+'   B = '+formatNumber(vars.B)+'   C = '+formatNumber(vars.C);
+      varOverlay.classList.add('open');
+    }
+    function closeVarPicker(){ varOverlay.classList.remove('open'); varMode=null; }
+    varClose.addEventListener('click', closeVarPicker);
+    varOverlay.addEventListener('click',(e)=>{ if(e.target===varOverlay) closeVarPicker(); });
+    varSeg.addEventListener('click',(e)=>{
+      const b=e.target.closest('button[data-var]'); if(!b) return;
+      const v=b.dataset.var;
+      if(varMode==='sto'){
+        stoTarget=v; vars[v]=currentValueForMemory(); updateBadges(); saveAll();
+        showToast('เก็บค่า = '+formatNumber(vars[v])+' ลง '+v);
+      } else if(varMode==='rcl'){
+        const val=vars[v];
+        if(val!==undefined) insert(formatNumber(val)); else showToast('ตัวแปร '+v+' ยังไม่มีค่า');
+      }
+      haptic(); closeVarPicker();
     });
     sdBtn.addEventListener('click', toggleFraction);
+    document.getElementById('curLeftBtn').addEventListener('click', cursorLeft);
+    document.getElementById('curRightBtn').addEventListener('click', cursorRight);
+    // ปุ่มชิปฟังก์ชันแถวบน (nPr, GCD, Σ, ∫dx ฯลฯ) — เดิมไม่มี listener เลยกดไม่ทำงาน
+    document.getElementById('calcChips').addEventListener('click',(e)=>{
+      const chip=e.target.closest('.chip[data-tok]'); if(!chip) return;
+      insert(chip.dataset.tok);
+    });
     histBtn.addEventListener('click', ()=>{ const open=histPanel.classList.toggle('open'); histBtn.classList.toggle('on', open); if(open) renderHistory(); });
     histClear.addEventListener('click', ()=>{ history=[]; saveAll(); renderHistory(); showToast('ล้างประวัติแล้ว'); haptic(); });
     document.addEventListener('keydown', (e)=>{
       if(!panels.calc.classList.contains('active')) return;
       if(e.ctrlKey && e.key==='z'){ e.preventDefault(); undo(); }
       if(e.ctrlKey && e.key==='y'){ e.preventDefault(); redo(); }
+      if(e.key==='ArrowLeft'){ e.preventDefault(); cursorLeft(); }
+      if(e.key==='ArrowRight'){ e.preventDefault(); cursorRight(); }
     });
     updateBadges(); renderExpr();
-    if(expr){ try{ const scope={ans:lastAnswer, A:vars.A, B:vars.B, C:vars.C}; const tree=compile(expr); const v=evalNode(tree, scope, isDeg); if(isFinite(v)) renderResult(formatNumber(v), false); }catch(e){} }
+    if(expr){ try{ const r=evalExprSmart(expr, isDeg); if(r.valid) renderResult(r.text, false); }catch(e){} }
     saveAll();
     window.undo=undo; window.redo=redo;
   })();
@@ -1241,22 +1446,36 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     const w=canvas.width=canvas.clientWidth*2;
     const h=canvas.height=canvas.clientHeight*2;
     ctx.clearRect(0,0,w,h);
-    ctx.strokeStyle='#c9e8b8'; ctx.lineWidth=2;
     let valid=data.filter(d=>isFinite(d.y));
-    if(valid.length<2) return;
-    const xs=valid.map(d=>d.x), ys=valid.map(d=>d.y);
+    let valid2=tree2 ? data.filter(d=>isFinite(d.y2)) : [];
+    if(valid.length<2){ return; }
+    const xs=valid.map(d=>d.x);
+    const ys=valid.map(d=>d.y).concat(valid2.map(d=>d.y2));
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
     const pad=0.1*(maxY-minY)||1;
     const yMin=minY-pad, yMax=maxY+pad;
     const scaleX=(x)=> (x-minX)/(maxX-minX)*w;
     const scaleY=(y)=> h - (y-yMin)/(yMax-yMin)*h;
+    // grid lines + axis labels
+    ctx.strokeStyle='rgba(201,232,184,0.2)'; ctx.lineWidth=1;
+    ctx.fillStyle='rgba(201,232,184,0.55)'; ctx.font=(20)+'px JetBrains Mono, monospace';
+    for(let i=0;i<5;i++){ const x=minX+(maxX-minX)*i/4; const px=scaleX(x); ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,h); ctx.stroke();
+      ctx.textAlign = i===0?'left':(i===4?'right':'center'); ctx.fillText(formatNumber(parseFloat(x.toFixed(3))), px, h-6); }
+    for(let i=0;i<5;i++){ const y=yMin+(yMax-yMin)*i/4; const py=scaleY(y); ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(w,py); ctx.stroke();
+      ctx.textAlign='left'; ctx.fillText(formatNumber(parseFloat(y.toFixed(3))), 4, Math.min(Math.max(py-4,16),h-4)); }
+    // เส้น f(x)
+    ctx.strokeStyle='#c9e8b8'; ctx.lineWidth=3;
     ctx.beginPath();
     valid.forEach((d,i)=>{ const px=scaleX(d.x), py=scaleY(d.y); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
     ctx.stroke();
-    // grid lines
-    ctx.strokeStyle='rgba(201,232,184,0.2)'; ctx.lineWidth=1;
-    for(let i=0;i<5;i++){ const x=minX+(maxX-minX)*i/4; const px=scaleX(x); ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,h); ctx.stroke(); }
-    for(let i=0;i<5;i++){ const y=yMin+(yMax-yMin)*i/4; const py=scaleY(y); ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(w,py); ctx.stroke(); }
+    // เส้น g(x) — เดิมคำนวณค่าไว้แต่ไม่เคยวาด ตอนนี้วาดเป็นสีส้มให้แยกจาก f(x)
+    if(valid2.length>=2){
+      ctx.strokeStyle='#ffb054'; ctx.lineWidth=3;
+      ctx.beginPath();
+      valid2.forEach((d,i)=>{ const px=scaleX(d.x), py=scaleY(d.y2); if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
+      ctx.stroke();
+    }
+    document.getElementById('graphLegend').style.display = valid2.length>=2 ? 'block' : 'none';
     haptic();
   });
 
