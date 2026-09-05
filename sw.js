@@ -1,5 +1,5 @@
 // sw.js — แคชไฟล์หลักของแอปไว้ใช้งานออฟไลน์หลังโหลดครั้งแรก
-const CACHE = 'fx991cw-v7';
+const CACHE = 'fx991cw-v8';
 const ASSETS = [
   './',
   './index.html',

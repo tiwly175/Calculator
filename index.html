@@ -1942,6 +1942,16 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   })();
 
   // ============================================================
+  // แก้ปัญหาเลข 0 ค้างในช่องกรอกตัวเลข — แตะเข้าไปแล้วเลือกข้อความเดิมทั้งหมดทันที
+  // (ใช้ได้กับทุกช่อง input type=number ในทุกแผง: Vector, Matrix, Base-N, Table, Equation, Statistics, Convert ฯลฯ)
+  // ============================================================
+  document.addEventListener('focusin', (e)=>{
+    if(e.target.tagName==='INPUT' && e.target.type==='number'){
+      requestAnimationFrame(()=> e.target.select());
+    }
+  });
+
+  // ============================================================
   // CUSTOM SELECT (แทน native dropdown สีขาว ให้เข้าธีมเสมอทุกที่)
   // ============================================================
   (function(){
