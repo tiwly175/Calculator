@@ -44,6 +44,8 @@ body[data-theme="dark"]{
   --sub-label:#e8a35c;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html{color-scheme:light;}
+body[data-theme="dark"]{color-scheme:dark;}
 html,body{height:100%; margin:0; background:radial-gradient(120% 90% at 50% -10%,#f4f5f6 0%,#c7c9cc 55%,#9a9da2 100%);}
 body[data-theme="dark"]{background:radial-gradient(120% 90% at 50% -10%,#3a3c40 0%,#1d1e21 55%,#101113 100%);}
 body{height:100dvh; display:flex; align-items:stretch; justify-content:center;
@@ -58,6 +60,13 @@ body{height:100dvh; display:flex; align-items:stretch; justify-content:center;
   display:flex; flex-direction:column; min-height:0;
   filter:brightness(var(--brightness));
   transition:background .25s, filter .1s;
+}
+/* จอกว้างขึ้น (แท็บเล็ต/คอม) — ขยายเครื่องคิดเลขให้ใหญ่ขึ้นแบบคงสัดส่วน ไม่ทำเต็มจอเพื่อรักษาความรู้สึกเหมือนเครื่องจริง */
+@media (min-width:600px){
+  .device{ max-width:520px; max-height:1060px; }
+}
+@media (min-width:900px){
+  .device{ max-width:560px; max-height:1140px; }
 }
 body[data-theme="dark"] .device{box-shadow:0 30px 60px -20px rgba(0,0,0,.8),0 2px 0 rgba(255,255,255,.08) inset,0 -2px 0 rgba(0,0,0,.3) inset;}
 .brand{flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 3px 6px; gap:6px;}
@@ -164,6 +173,12 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .field-row input, .field-row select{flex:1; min-width:0; background:#fff; border:1px solid #b9bcc0; border-radius:7px;
   color:#1d1e20; font-family:'JetBrains Mono',monospace; font-size:12.5px; padding:6px 8px; outline:none;}
 .field-row input:focus, .field-row select:focus{border-color:var(--menu);}
+.csel-btn{flex:1; min-width:0; background:#fff; border:1px solid #b9bcc0; border-radius:7px;
+  color:#1d1e20; font-family:'JetBrains Mono',monospace; font-size:12.5px; padding:6px 8px; outline:none;
+  text-align:left; display:flex; align-items:center; justify-content:space-between; gap:4px; cursor:pointer; appearance:none;}
+.csel-btn::after{content:'▾'; opacity:.5; font-size:10px; flex:0 0 auto;}
+body[data-theme="dark"] .csel-btn{background:#26282c; color:#e9eaec; border-color:#43464d;}
+.csel-btn:active{opacity:.8;}
 .seg{display:flex; gap:5px; flex:0 0 auto;}
 .seg button{flex:1; background:#dfe1e3; color:#4a4d52; border:none; border-radius:8px; font-weight:700; font-size:11.5px;
   padding:7px 0; cursor:pointer;}
@@ -454,6 +469,12 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div id="preAnsList" style="display:flex; flex-direction:column; gap:4px;"></div>
   </div>
 
+  <!-- CUSTOM SELECT PICKER (แทน native dropdown สีขาวของระบบ ให้เข้าธีมเสมอ) -->
+  <div class="sheet-overlay" id="cselOverlay" style="bottom:auto; height:auto; max-height:70vh; overflow-y:auto;">
+    <div class="sheet-head"><div class="sheet-title" id="cselTitle">เลือก</div><button class="sheet-close" id="cselClose">&#10005;</button></div>
+    <div id="cselList" style="display:flex; flex-direction:column; gap:4px;"></div>
+  </div>
+
   <!-- CONST / CONV PICKER -->
   <div class="sheet-overlay" id="constConvOverlay" style="bottom:auto; height:auto; max-height:70vh; overflow-y:auto;">
     <div class="sheet-head"><div class="sheet-title">ค่าคงที่ / แปลงหน่วย</div><button class="sheet-close" id="constConvClose">&#10005;</button></div>
@@ -708,38 +729,38 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <!-- ===== PANEL: TOOLS (รวมตัวแปลงหน่วยครบ) ===== -->
   <div class="panel" id="panel-tools">
-    <div class="mini-title">Physical Constants</div>
+    <div class="mini-title">Physical Constants (ค่าคงที่ทางฟิสิกส์)</div>
     <div class="btnrow">
-      <button class="pbtn" data-const="c">Speed of Light c</button>
-      <button class="pbtn" data-const="h">Planck h</button>
-      <button class="pbtn" data-const="g">Gravity g</button>
-      <button class="pbtn" data-const="me">Electron mass</button>
-      <button class="pbtn" data-const="r">Gas constant</button>
+      <button class="pbtn" data-const="c">Speed of Light c (ความเร็วแสง)</button>
+      <button class="pbtn" data-const="h">Planck h (ค่าคงที่พลังค์)</button>
+      <button class="pbtn" data-const="g">Gravity g (แรงโน้มถ่วง)</button>
+      <button class="pbtn" data-const="me">Electron mass (มวลอิเล็กตรอน)</button>
+      <button class="pbtn" data-const="r">Gas constant (ค่าคงที่แก๊ส)</button>
     </div>
-    <div class="mini-title">Unit Converter</div>
-    <div class="field-row"><label>ประเภท</label>
+    <div class="mini-title">Unit Converter (ตัวแปลงหน่วย)</div>
+    <div class="field-row"><label>Category (ประเภท)</label>
       <select id="convCategory">
-        <option value="length">ความยาว</option>
-        <option value="weight">น้ำหนัก</option>
-        <option value="temp">อุณหภูมิ</option>
-        <option value="area">พื้นที่</option>
-        <option value="volume">ปริมาตร</option>
-        <option value="speed">ความเร็ว</option>
+        <option value="length">Length (ความยาว)</option>
+        <option value="weight">Weight (น้ำหนัก)</option>
+        <option value="temp">Temperature (อุณหภูมิ)</option>
+        <option value="area">Area (พื้นที่)</option>
+        <option value="volume">Volume (ปริมาตร)</option>
+        <option value="speed">Speed (ความเร็ว)</option>
       </select>
     </div>
     <div class="conv-group">
       <select id="convFrom"></select>
       <select id="convTo"></select>
     </div>
-    <div class="field-row"><label>ค่า</label><input id="convValue" type="number" value="1"><button class="pbtn" style="flex:0 0 70px;" id="convDo">Convert</button></div>
-    <div class="out" id="toolsOut">ผลลัพธ์จะแสดงที่นี่</div>
-    <div class="mini-title">Math Box</div>
+    <div class="field-row"><label>Value (ค่า)</label><input id="convValue" type="number" value="1"><button class="pbtn" style="flex:0 0 70px;" id="convDo">Convert</button></div>
+    <div class="out" id="toolsOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+    <div class="mini-title">Math Box (กล่องคณิตศาสตร์)</div>
     <div class="btnrow">
-      <button class="pbtn" data-mb="coin">Coin Toss</button>
-      <button class="pbtn" data-mb="dice">Dice Roll</button>
-      <button class="pbtn" data-mb="ran">Ran#</button>
+      <button class="pbtn" data-mb="coin">Coin Toss (โยนเหรียญ)</button>
+      <button class="pbtn" data-mb="dice">Dice Roll (ทอยลูกเต๋า)</button>
+      <button class="pbtn" data-mb="ran">Ran# (สุ่มเลข)</button>
     </div>
-    <div class="field-row"><label>RanInt</label><input id="ranA" type="number" value="1" style="max-width:60px;">
+    <div class="field-row"><label>RanInt (สุ่มจำนวนเต็ม)</label><input id="ranA" type="number" value="1" style="max-width:60px;">
       <input id="ranB" type="number" value="6" style="max-width:60px;"><button class="pbtn" style="flex:0 0 70px;" data-mb="ranint">Roll</button></div>
   </div>
 
@@ -1854,7 +1875,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   // ============================================================
   (function(){
     const out=document.getElementById('toolsOut');
-    const CONST={ c:{v:299792458, label:'Speed of Light c = 299,792,458 m/s'}, h:{v:6.62607015e-34, label:'Planck h = 6.62607015×10⁻³⁴ J·s'}, g:{v:9.80665, label:'Gravity g = 9.80665 m/s²'}, me:{v:9.1093837e-31, label:'Electron mass = 9.1093837×10⁻³¹ kg'}, r:{v:8.314462618, label:'Gas constant R = 8.314462618 J/(mol·K)'} };
+    const CONST={ c:{v:299792458, label:'Speed of Light c (ความเร็วแสง) = 299,792,458 m/s'}, h:{v:6.62607015e-34, label:'Planck h (ค่าคงที่พลังค์) = 6.62607015×10⁻³⁴ J·s'}, g:{v:9.80665, label:'Gravity g (แรงโน้มถ่วง) = 9.80665 m/s²'}, me:{v:9.1093837e-31, label:'Electron mass (มวลอิเล็กตรอน) = 9.1093837×10⁻³¹ kg'}, r:{v:8.314462618, label:'Gas constant R (ค่าคงที่แก๊ส) = 8.314462618 J/(mol·K)'} };
     document.querySelectorAll('[data-const]').forEach(btn=>btn.addEventListener('click', ()=>{ out.textContent=CONST[btn.dataset.const].label; haptic(); }));
 
     // Unit converter
@@ -1867,12 +1888,12 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       speed: { mps:1, kmph:0.277778, mph:0.44704, knot:0.514444 }
     };
     const unitLabels = {
-      length: { mm:'มิลลิเมตร', cm:'เซนติเมตร', m:'เมตร', km:'กิโลเมตร', in:'นิ้ว', ft:'ฟุต', yd:'หลา', mi:'ไมล์' },
-      weight: { mg:'มิลลิกรัม', g:'กรัม', kg:'กิโลกรัม', lb:'ปอนด์', oz:'ออนซ์' },
-      temp: { C:'°C', F:'°F', K:'K' },
-      area: { mm2:'มม²', cm2:'ซม²', m2:'ม²', km2:'กม²', in2:'นิ้ว²', ft2:'ฟุต²', yd2:'หลา²', acre:'เอเคอร์', ha:'เฮกตาร์' },
-      volume: { ml:'มล', l:'ลิตร', m3:'ม³', in3:'นิ้ว³', ft3:'ฟุต³', gal:'แกลลอน' },
-      speed: { mps:'ม/ว', kmph:'กม/ชม', mph:'ไมล์/ชม', knot:'นอต' }
+      length: { mm:'mm (มิลลิเมตร)', cm:'cm (เซนติเมตร)', m:'m (เมตร)', km:'km (กิโลเมตร)', in:'in (นิ้ว)', ft:'ft (ฟุต)', yd:'yd (หลา)', mi:'mi (ไมล์)' },
+      weight: { mg:'mg (มิลลิกรัม)', g:'g (กรัม)', kg:'kg (กิโลกรัม)', lb:'lb (ปอนด์)', oz:'oz (ออนซ์)' },
+      temp: { C:'°C (เซลเซียส)', F:'°F (ฟาเรนไฮต์)', K:'K (เคลวิน)' },
+      area: { mm2:'mm² (ตร.มม.)', cm2:'cm² (ตร.ซม.)', m2:'m² (ตร.ม.)', km2:'km² (ตร.กม.)', in2:'in² (ตร.นิ้ว)', ft2:'ft² (ตร.ฟุต)', yd2:'yd² (ตร.หลา)', acre:'acre (เอเคอร์)', ha:'ha (เฮกตาร์)' },
+      volume: { ml:'mL (มิลลิลิตร)', l:'L (ลิตร)', m3:'m³ (ลบ.ม.)', in3:'in³ (ลบ.นิ้ว)', ft3:'ft³ (ลบ.ฟุต)', gal:'gal (แกลลอน)' },
+      speed: { mps:'m/s (เมตร/วินาที)', kmph:'km/h (กม./ชม.)', mph:'mph (ไมล์/ชม.)', knot:'knot (นอต)' }
     };
     const convCat=document.getElementById('convCategory');
     const convFrom=document.getElementById('convFrom');
@@ -1885,6 +1906,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       convTo.innerHTML = u.map(k=>'<option value="'+k+'">'+unitLabels[cat][k]+'</option>').join('');
       if(u.length>1){ convTo.value = u[1]; }
       if(u.length>0){ convFrom.value = u[0]; }
+      // sync ปุ่ม custom-select ให้ตรงกับค่าที่ตั้งจริง (กันเคส MutationObserver ยิงเร็วเกินไปตอน rebuild ตัวเลือก)
+      if(convFrom._cselBtn && convFrom.options[convFrom.selectedIndex]) convFrom._cselBtn.textContent = convFrom.options[convFrom.selectedIndex].text;
+      if(convTo._cselBtn && convTo.options[convTo.selectedIndex]) convTo._cselBtn.textContent = convTo.options[convTo.selectedIndex].text;
     }
     populateUnits();
     convCat.addEventListener('change', populateUnits);
@@ -1893,7 +1917,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       const from=convFrom.value;
       const to=convTo.value;
       const val=parseFloat(convValue.value);
-      if(isNaN(val)){ out.textContent='กรอกตัวเลขให้ถูกต้อง'; return; }
+      if(isNaN(val)){ out.textContent='กรอกตัวเลขให้ถูกต้อง (Please enter a valid number)'; return; }
       let result;
       if(cat==='temp'){
         let c; if(from==='C') c=val; else if(from==='F') c=(val-32)*5/9; else if(from==='K') c=val-273.15;
@@ -1909,12 +1933,63 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     // Math Box
     document.querySelectorAll('[data-mb]').forEach(btn=>btn.addEventListener('click', ()=>{
       const op=btn.dataset.mb;
-      if(op==='coin') out.textContent='Coin Toss: '+(Math.random()<0.5?'HEADS':'TAILS');
+      if(op==='coin') out.textContent='Coin Toss: '+(Math.random()<0.5?'HEADS (หัว)':'TAILS (ก้อย)');
       else if(op==='dice') out.textContent='Dice Roll: '+(Math.floor(Math.random()*6)+1);
-      else if(op==='ran') out.textContent='Ran# = '+Math.random().toFixed(3);
+      else if(op==='ran') out.textContent='Ran# (สุ่มเลข) = '+Math.random().toFixed(3);
       else if(op==='ranint'){ const a=parseInt(document.getElementById('ranA').value)||1, b=parseInt(document.getElementById('ranB').value)||6; const lo=Math.min(a,b), hi=Math.max(a,b); out.textContent='RanInt#('+lo+','+hi+') = '+(Math.floor(Math.random()*(hi-lo+1))+lo); }
       haptic();
     }));
+  })();
+
+  // ============================================================
+  // CUSTOM SELECT (แทน native dropdown สีขาว ให้เข้าธีมเสมอทุกที่)
+  // ============================================================
+  (function(){
+    const cselOverlay=document.getElementById('cselOverlay'), cselList=document.getElementById('cselList'),
+      cselTitle=document.getElementById('cselTitle'), cselClose=document.getElementById('cselClose');
+    let cselTarget=null;
+    function closeCsel(){ cselOverlay.classList.remove('open'); cselTarget=null; }
+    function openCsel(sel){
+      cselTarget=sel;
+      cselTitle.textContent = sel.dataset.cselLabel || 'เลือก';
+      cselList.innerHTML='';
+      Array.from(sel.options).forEach(opt=>{
+        const d=document.createElement('div'); d.className='hist-item';
+        const txt=document.createElement('div'); txt.className='hist-item-text'; txt.style.textAlign='left';
+        txt.textContent = (opt.value===sel.value ? '● ' : '○ ') + opt.text;
+        txt.addEventListener('click', ()=>{
+          sel.value = opt.value;
+          if(sel._cselBtn) sel._cselBtn.textContent = opt.text;
+          sel.dispatchEvent(new Event('change', {bubbles:true}));
+          closeCsel();
+          haptic(); playClick();
+        });
+        d.appendChild(txt); cselList.appendChild(d);
+      });
+      cselOverlay.classList.add('open');
+      haptic(); playClick();
+    }
+    cselClose.addEventListener('click', closeCsel);
+    cselOverlay.addEventListener('click',(e)=>{ if(e.target===cselOverlay) closeCsel(); });
+    function makeCustomSelect(sel, label){
+      sel.dataset.cselLabel = label;
+      sel.style.display='none';
+      const btn=document.createElement('button');
+      btn.type='button'; btn.className='csel-btn';
+      btn.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
+      sel._cselBtn = btn;
+      sel.parentNode.insertBefore(btn, sel.nextSibling);
+      btn.addEventListener('click', ()=> openCsel(sel));
+      // เผื่อโค้ดอื่นสั่ง .value = ... ตรงๆ (ไม่ผ่าน change event) ให้ label sync ตามด้วย
+      const obs=new MutationObserver(()=>{ if(sel.options[sel.selectedIndex]) btn.textContent = sel.options[sel.selectedIndex].text; });
+      obs.observe(sel, {childList:true, subtree:true});
+      sel.addEventListener('change', ()=>{ if(sel.options[sel.selectedIndex]) btn.textContent = sel.options[sel.selectedIndex].text; });
+    }
+    makeCustomSelect(document.getElementById('baseAMode'), 'เลือกฐานเลข A');
+    makeCustomSelect(document.getElementById('baseBMode'), 'เลือกฐานเลข B');
+    makeCustomSelect(document.getElementById('convCategory'), 'เลือกประเภทหน่วย');
+    makeCustomSelect(document.getElementById('convFrom'), 'แปลงจากหน่วย');
+    makeCustomSelect(document.getElementById('convTo'), 'แปลงเป็นหน่วย');
   })();
 
   // ============================================================
