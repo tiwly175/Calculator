@@ -1,7 +1,8 @@
 {
   "name": "fx-991CW Scientific Calculator",
   "short_name": "fx-991CW",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1b1d21",
