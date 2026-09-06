@@ -124,11 +124,13 @@ body[data-theme="dark"] .icon-btn:active{background:rgba(255,255,255,.18);}
 .menu-overlay .sheet-head{margin:-10px -10px 10px; padding:10px 10px 8px; border-radius:12px 12px 0 0;}
 .menu-overlay.open{display:block;}
 .menu-title{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#e6e8de; letter-spacing:.12em; margin-bottom:8px; text-align:center;}
-.menu-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
-.menu-item{background:#2a2d24; border:1px solid #3d4133; border-radius:10px; padding:10px 4px; text-align:center; cursor:pointer; color:#e6e8de;}
-.menu-item:active{background:#363a2c;}
-.menu-item .n{font-family:'JetBrains Mono',monospace; color:var(--shift); font-size:10px; display:block;}
-.menu-item .t{font-size:10.5px; font-weight:600; display:block; margin-top:3px; line-height:1.2;}
+.menu-list{display:flex; flex-direction:column; gap:0;}
+.menu-item{background:transparent; border:none; border-bottom:1px solid #3d4133; padding:12px 4px; text-align:left; cursor:pointer; color:#e6e8de; display:flex; align-items:center; gap:12px;}
+.menu-item:active{background:#2a2d24;}
+.menu-item .n{font-family:'JetBrains Mono',monospace; color:var(--shift); font-size:15px; font-weight:700; flex:0 0 20px;}
+.menu-item .tw{flex:1; min-width:0;}
+.menu-item .t{font-size:15px; font-weight:700; display:block; line-height:1.3;}
+.menu-item .d{font-size:11px; color:#a9ac9e; display:block; margin-top:2px; line-height:1.3;}
 .sheet-overlay{position:absolute; inset:11px 11px auto 11px; top:52px; bottom:64px; background:rgba(20,22,18,.97);
   border-radius:12px; display:none; padding:12px; z-index:25; overflow-y:auto; color:#e6e8de;
   font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif;}
@@ -214,6 +216,19 @@ body[data-theme="dark"] .csel-btn{background:#26282c; color:#e9eaec; border-colo
   align-items:center; justify-content:center; cursor:pointer; user-select:none; position:relative; transition:transform .05s, background .1s; gap:1px;}
 .key:active,.key.pressed{transform:translateY(2px);}
 .key .shiftlbl{font-family:'JetBrains Mono',monospace; font-size:7.5px; color:var(--sub-label); font-weight:700; line-height:1; opacity:.85; transition:opacity .12s, color .12s, transform .12s;}
+.minifrac{display:inline-flex; flex-direction:column; align-items:center; line-height:1; vertical-align:middle; font-size:.95em;}
+.minifrac .num{display:block;}
+.minifrac .den{display:block; border-top:1.4px solid currentColor; margin-top:1px; padding-top:1px;}
+.minifrac-result{display:inline-flex; flex-direction:column; align-items:center; line-height:1.15; vertical-align:middle; margin:0 2px;}
+.minifrac-result .num{display:block;}
+.minifrac-result .den{display:block; border-top:2px solid currentColor; margin-top:1px; padding-top:1px;}
+.minifrac-result .slash{display:none;}
+.radical{display:inline-flex; align-items:flex-end; margin:0 1px;}
+.radical .rsign{font-size:1.05em; line-height:1;}
+.radical .radicand{border-top:1.6px solid currentColor; padding:0 3px 0 2px; margin-left:-1px;}
+.radical .ridx{font-size:.55em; line-height:1; position:relative; top:3px; margin-right:-3px;}
+.natural-preview{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--lcd-fg); opacity:.75; min-height:20px; text-align:right; overflow-x:auto; overflow-y:hidden; white-space:nowrap; padding-bottom:2px;}
+.natural-preview:empty{display:none;}
 .key .primarylbl{transition:opacity .12s, transform .12s;}
 .grid.shift-active .key .shiftlbl{opacity:1; color:var(--shift); transform:scale(1.12); text-shadow:0 0 4px rgba(242,148,31,.5);}
 .grid.shift-active .key .primarylbl{opacity:.4;}
@@ -259,9 +274,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 <body>
 <div class="device">
   <div class="brand">
-    <div class="brand-left"><div class="solar"></div><span class="brand-name">CASINO</span></div>
+    <div class="brand-left"><div class="solar"></div><span class="brand-name">CASIO</span></div>
     <div class="brand-meta">
-      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">tiw-patcharaphon</div></div>
+      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">ClassWiz</div></div>
       <div class="brand-right">
         <button class="icon-btn" id="backMenuBtn" title="กลับไปเมนู">&#9776;</button>
         <button class="icon-btn" id="guideBtn" title="คู่มือการใช้งาน">&#63;</button>
@@ -285,6 +300,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="lcd-body">
         <div class="hist-panel" id="histPanel"><div class="hist-panel-title">HISTORY <button class="hist-clear" id="histClear">ล้างทั้งหมด</button></div><div id="histList"></div></div>
         <div class="expr" id="expr">&nbsp;</div>
+        <div class="natural-preview" id="naturalPreview"></div>
         <div class="result-row">
           <div class="result" id="result">0</div>
           <button class="copy-btn" id="copyResult" title="คัดลอกผลลัพธ์">&#128203;</button>
@@ -296,17 +312,17 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   <!-- MENU OVERLAY -->
   <div class="menu-overlay" id="menuOverlay">
     <div class="sheet-head"><div class="menu-title" style="margin-bottom:0;">MENU — เลือกโหมด</div><button class="sheet-close" id="menuClose">&#10005;</button></div>
-    <div class="menu-grid">
-      <div class="menu-item" data-mode="calc"><span class="n">1</span><span class="t">Calculate</span></div>
-      <div class="menu-item" data-mode="complex"><span class="n">2</span><span class="t">Complex</span></div>
-      <div class="menu-item" data-mode="basen"><span class="n">3</span><span class="t">Base-N</span></div>
-      <div class="menu-item" data-mode="matrix"><span class="n">4</span><span class="t">Matrix</span></div>
-      <div class="menu-item" data-mode="vector"><span class="n">5</span><span class="t">Vector</span></div>
-      <div class="menu-item" data-mode="equation"><span class="n">6</span><span class="t">Equation</span></div>
-      <div class="menu-item" data-mode="table"><span class="n">7</span><span class="t">Table</span></div>
-      <div class="menu-item" data-mode="stat"><span class="n">8</span><span class="t">Statistics</span></div>
-      <div class="menu-item" data-mode="dist"><span class="n">9</span><span class="t">Distribution</span></div>
-      <div class="menu-item" data-mode="tools"><span class="n">0</span><span class="t">Tools</span></div>
+    <div class="menu-list">
+      <div class="menu-item" data-mode="calc"><span class="n">1</span><span class="tw"><span class="t">Calculate</span><span class="d">การคำนวณทั่วไป</span></span></div>
+      <div class="menu-item" data-mode="complex"><span class="n">2</span><span class="tw"><span class="t">Complex</span><span class="d">การคำนวณจำนวนเชิงซ้อน</span></span></div>
+      <div class="menu-item" data-mode="basen"><span class="n">3</span><span class="tw"><span class="t">Base-N</span><span class="d">การคำนวณเลขฐาน (ไบนารี, ฐานแปด, ฐานสิบ, ฐานสิบหก)</span></span></div>
+      <div class="menu-item" data-mode="matrix"><span class="n">4</span><span class="tw"><span class="t">Matrix</span><span class="d">การคำนวณเมทริกซ์</span></span></div>
+      <div class="menu-item" data-mode="vector"><span class="n">5</span><span class="tw"><span class="t">Vector</span><span class="d">การคำนวณเวกเตอร์</span></span></div>
+      <div class="menu-item" data-mode="equation"><span class="n">6</span><span class="tw"><span class="t">Equation</span><span class="d">แก้ระบบสมการเชิงเส้นและสมการพหุนาม</span></span></div>
+      <div class="menu-item" data-mode="table"><span class="n">7</span><span class="tw"><span class="t">Table</span><span class="d">การสร้างตารางและกราฟตัวเลขตามนิพจน์</span></span></div>
+      <div class="menu-item" data-mode="stat"><span class="n">8</span><span class="tw"><span class="t">Statistics</span><span class="d">การคำนวณทางสถิติและถดถอย (Regression)</span></span></div>
+      <div class="menu-item" data-mode="dist"><span class="n">9</span><span class="tw"><span class="t">Distribution</span><span class="d">การแจกแจงความน่าจะเป็น (Normal, Binomial, Poisson)</span></span></div>
+      <div class="menu-item" data-mode="tools"><span class="n">0</span><span class="tw"><span class="t">Tools</span><span class="d">ค่าคงที่ทางฟิสิกส์, ตัวแปลงหน่วย, สุ่มตัวเลข</span></span></div>
     </div>
   </div>
 
@@ -388,6 +404,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="guide-example">กด: 1+4= , 2+3= &nbsp;→&nbsp; กด <b>HIST</b><br>รายการที่เห็น: "1+4 = 5" และ "2+3 = 5"</div></div>
     <div class="guide-item"><div class="guide-q">Undo / Redo / เคอร์เซอร์</div><div class="guide-a">Ctrl+Z ย้อนกลับ, Ctrl+Y ทำซ้ำ, ปุ่ม &#9664;/&#9654; ข้าง HIST หรือแตะกลางสมการเพื่อขยับเคอร์เซอร์ไปแก้ตรงกลาง</div>
       <div class="guide-example">พิมพ์: 12+5 &nbsp;(อยากแก้ 12 เป็น 120)<br>แตะระหว่างเลข 2 กับเครื่องหมาย + &nbsp;→&nbsp; เคอร์เซอร์กระพริบตรงนั้น<br>กด <b>0</b> &nbsp;→&nbsp; จอกลายเป็น: 120+5</div></div>
+    <div class="guide-item"><div class="guide-q">พรีวิวสมการแบบธรรมชาติ</div><div class="guide-a">พิมพ์สมการแล้วดูใต้บรรทัดพิมพ์ จะเห็นรูปแบบทางคณิตศาสตร์จริง (รูท, เศษส่วนซ้อน, ยกกำลัง) อัปเดตสดขณะพิมพ์</div></div>
     <div class="guide-item"><div class="guide-q">เลขเชิงซ้อนในหน้าคำนวณหลัก</div><div class="guide-a">พิมพ์ <b>i</b> ต่อท้ายตัวเลขได้เลย หรือกรอกแบบมุมด้วยชิป <b>∠</b></div>
       <div class="guide-example">กด: 3 + 4 <b>i</b> = &nbsp;→&nbsp; ผลลัพธ์: <b>3 + 4i</b><br>กด: <b>√x</b>(  −4  ) = &nbsp;(sqrt(-4))&nbsp; →&nbsp; ผลลัพธ์: <b>0 + 2i</b></div></div>
     <div class="guide-item"><div class="guide-q">สำรอง/กู้คืนข้อมูล</div><div class="guide-a">ไปที่ตั้งค่า (&#9881;) แล้วกด "ดาวน์โหลดไฟล์สำรอง" เก็บไว้ กู้คืนได้ด้วยปุ่ม "นำเข้าไฟล์สำรอง"</div></div>
@@ -489,10 +506,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="chip-row" style="flex-wrap:wrap; overflow:visible;">
         <button class="chip" data-tok="299792458">c (แสง)</button>
         <button class="chip" data-tok="9.80665">g (โน้มถ่วง)</button>
-        <button class="chip" data-tok="6.62607015*10^-34">h (พลังค์)</button>
-        <button class="chip" data-tok="6.02214076*10^23">Nₐ (อาโวกาโดร)</button>
+        <button class="chip" data-tok="6.62607015×10^-34">h (พลังค์)</button>
+        <button class="chip" data-tok="6.02214076×10^23">Nₐ (อาโวกาโดร)</button>
         <button class="chip" data-tok="8.31446">R (แก๊ส)</button>
-        <button class="chip" data-tok="1.602176634*10^-19">e (ประจุอิเล็กตรอน)</button>
+        <button class="chip" data-tok="1.602176634×10^-19">e (ประจุอิเล็กตรอน)</button>
       </div>
     </div>
     <div class="set-block">
@@ -556,9 +573,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="key key-util" data-action="exp">EXP</button>
       <button class="key key-fn" data-action="func" data-primary="x²" data-secondary="x³" data-vprimary="^2" data-vsecondary="^3"><span class="shiftlbl">x³</span><span class="primarylbl">x²</span></button>
       <button class="key key-fn" data-action="func" data-primary="√x" data-secondary="∛x" data-vprimary="sqrt(" data-vsecondary="cbrt("><span class="shiftlbl">∛x</span><span class="primarylbl">√x</span></button>
-      <button class="key key-fn" data-action="func" data-primary="x^y" data-secondary="y√x" data-vprimary="^" data-vsecondary="^(1/"><span class="shiftlbl">y√x</span><span class="primarylbl">x^y</span></button>
-      <button class="key key-fn" data-action="func" data-primary="log" data-secondary="10^x" data-vprimary="log(" data-vsecondary="10^"><span class="shiftlbl">10^x</span><span class="primarylbl">log</span></button>
-      <button class="key key-fn" data-action="func" data-primary="ln" data-secondary="e^x" data-vprimary="ln(" data-vsecondary="exp("><span class="shiftlbl">e^x</span><span class="primarylbl">ln</span></button>
+      <button class="key key-fn" data-action="func" data-primary="x^y" data-secondary="y√x" data-vprimary="^" data-vsecondary="^(1÷"><span class="shiftlbl"><sup>y</sup>&radic;x</span><span class="primarylbl">x<sup>y</sup></span></button>
+      <button class="key key-fn" data-action="func" data-primary="log" data-secondary="10^x" data-vprimary="log(" data-vsecondary="10^"><span class="shiftlbl">10<sup>x</sup></span><span class="primarylbl">log</span></button>
+      <button class="key key-fn" data-action="func" data-primary="ln" data-secondary="e^x" data-vprimary="ln(" data-vsecondary="exp("><span class="shiftlbl">e<sup>x</sup></span><span class="primarylbl">ln</span></button>
       <button class="key key-fn" data-action="func" data-primary="sin" data-secondary="sin⁻¹" data-vprimary="sin(" data-vsecondary="asin("><span class="shiftlbl">sin⁻¹</span><span class="primarylbl">sin</span></button>
       <button class="key key-fn" data-action="func" data-primary="cos" data-secondary="cos⁻¹" data-vprimary="cos(" data-vsecondary="acos("><span class="shiftlbl">cos⁻¹</span><span class="primarylbl">cos</span></button>
       <button class="key key-fn" data-action="func" data-primary="tan" data-secondary="tan⁻¹" data-vprimary="tan(" data-vsecondary="atan("><span class="shiftlbl">tan⁻¹</span><span class="primarylbl">tan</span></button>
@@ -566,18 +583,18 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="key key-fn" data-action="input" data-val="e"><span class="shiftlbl">&nbsp;</span><span class="primarylbl">e</span></button>
       <button class="key key-util danger" data-action="clear">AC</button>
       <button class="key key-util" data-action="del">DEL</button>
-      <button class="key key-fn" data-action="input" data-val="1/("><span class="shiftlbl">&nbsp;</span><span class="primarylbl">1/x</span></button>
+      <button class="key key-fn" data-action="input" data-val="1÷("><span class="shiftlbl">&nbsp;</span><span class="primarylbl"><span class="minifrac"><span class="num">1</span><span class="den">x</span></span></span></button>
       <button class="key key-fn" data-action="input" data-val="!"><span class="shiftlbl">&nbsp;</span><span class="primarylbl">n!</span></button>
-      <button class="key key-op" data-action="input" data-val="/">÷</button>
+      <button class="key key-op" data-action="input" data-val="÷">÷</button>
       <button class="key key-num" data-action="input" data-val="7">7</button>
       <button class="key key-num" data-action="input" data-val="8">8</button>
       <button class="key key-num" data-action="input" data-val="9">9</button>
-      <button class="key key-op" data-action="input" data-val="*">×</button>
+      <button class="key key-op" data-action="input" data-val="×">×</button>
       <button class="key key-op" data-action="ans">Ans</button>
       <button class="key key-num" data-action="input" data-val="4">4</button>
       <button class="key key-num" data-action="input" data-val="5">5</button>
       <button class="key key-num" data-action="input" data-val="6">6</button>
-      <button class="key key-op" data-action="input" data-val="-">−</button>
+      <button class="key key-op" data-action="input" data-val="−">−</button>
       <button class="key key-op equals" data-action="equals">=</button>
       <button class="key key-num" data-action="input" data-val="1">1</button>
       <button class="key key-num" data-action="input" data-val="2">2</button>
@@ -1028,6 +1045,60 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }
     return num+'/'+den;
   }
+  function formatFractionHTML(num, den){
+    if(den===1) return {html:String(num), plain:String(num)};
+    const g=gcd2(Math.abs(num),Math.abs(den)); num/=g; den/=g;
+    if(den<0){ num=-num; den=-den; }
+    function fracSpan(n,d){ return '<span class="minifrac-result"><span class="num">'+n+'</span><span class="slash">/</span><span class="den">'+d+'</span></span>'; }
+    if(Math.abs(num)>=den){
+      const whole=Math.floor(num/den);
+      const rem=Math.abs(num%den);
+      if(rem===0) return {html:String(whole), plain:String(whole)};
+      return {html: whole+' '+fracSpan(rem,den), plain: whole+' '+rem+'/'+den};
+    }
+    return {html: fracSpan(num,den), plain: num+'/'+den};
+  }
+
+  // ----- NATURAL (TEXTBOOK) DISPLAY สำหรับพรีวิวสมการ -----
+  // เรนเดอร์จาก AST (ไม่แตะระบบเคอร์เซอร์/แก้ไขตัวอักษรเดิมเลย เป็นแค่ภาพพรีวิวเสริม)
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function naturalPrec(node){
+    if(node.type==='bin'){
+      if(node.op==='/') return 6;
+      if(node.op==='^') return 4;
+      if(node.op==='*') return 2;
+      return 1;
+    }
+    if(node.type==='neg') return 3;
+    if(node.type==='post') return 5;
+    return 6;
+  }
+  function naturalWrap(node, minPrec){
+    const html=renderNatural(node);
+    return naturalPrec(node) < minPrec ? '('+html+')' : html;
+  }
+  function renderNatural(node){
+    switch(node.type){
+      case 'num': return String(node.value);
+      case 'var': return node.name==='ans' ? 'Ans' : (node.name==='i' ? '<i>i</i>' : escapeHtml(node.name));
+      case 'neg': return '−'+naturalWrap(node.node, 3);
+      case 'bin': {
+        if(node.op==='/') return '<span class="minifrac-result"><span class="num">'+renderNatural(node.left)+'</span><span class="slash">/</span><span class="den">'+renderNatural(node.right)+'</span></span>';
+        if(node.op==='^') return naturalWrap(node.left,4)+'<sup>'+renderNatural(node.right)+'</sup>';
+        if(node.op==='*') return naturalWrap(node.left,2)+'×'+naturalWrap(node.right,2);
+        return naturalWrap(node.left,1) + (node.op==='+'?'+':'−') + naturalWrap(node.right, node.op==='-'?2:1);
+      }
+      case 'post': return naturalWrap(node.node,5) + (node.op==='!'?'!':'%');
+      case 'call': {
+        if(node.name==='sqrt') return '<span class="radical"><span class="rsign">&radic;</span><span class="radicand">'+renderNatural(node.args[0])+'</span></span>';
+        if(node.name==='cbrt') return '<span class="radical"><sup class="ridx">3</sup><span class="rsign">&radic;</span><span class="radicand">'+renderNatural(node.args[0])+'</span></span>';
+        if(node.name==='abs') return '|'+renderNatural(node.args[0])+'|';
+        return escapeHtml(node.name)+'('+node.args.map(a=>renderNatural(a)).join(', ')+')';
+      }
+      case 'polar': return renderNatural(node.r)+'∠'+renderNatural(node.theta);
+    }
+    return '';
+  }
 
   // ----- COMPLEX helpers -----
   const cAdd=(a,b)=>({re:a.re+b.re, im:a.im+b.im});
@@ -1381,16 +1452,25 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       if(hasSto) badgeSto.textContent = 'STO '+stoTarget;
       saveState('deg', isDeg); saveState('memory', memory); saveState('vars', vars);
     }
+    const naturalPreviewEl=document.getElementById('naturalPreview');
+    function updateNaturalPreview(){
+      try{
+        if(!expr.trim()){ naturalPreviewEl.innerHTML=''; return; }
+        const tree=parse(tokenize(autoCloseParens(expr)));
+        naturalPreviewEl.innerHTML=renderNatural(tree);
+      }catch(e){ naturalPreviewEl.innerHTML=''; }
+    }
     function renderExpr(){
       if(cursorPos>expr.length) cursorPos=expr.length;
       if(cursorPos<0) cursorPos=0;
       exprEl.innerHTML='';
-      if(!expr.length){ exprEl.innerHTML='&nbsp;'; livePreview(); return; }
+      if(!expr.length){ exprEl.innerHTML='&nbsp;'; livePreview(); updateNaturalPreview(); return; }
       for(let idx=0; idx<=expr.length; idx++){
         if(idx===cursorPos){ const cur=document.createElement('span'); cur.className='expr-cursor'; exprEl.appendChild(cur); }
         if(idx<expr.length){ const ch=document.createElement('span'); ch.className='expr-ch'; ch.textContent=expr[idx]; ch.dataset.idx=idx; exprEl.appendChild(ch); }
       }
       livePreview();
+      updateNaturalPreview();
     }
     exprEl.addEventListener('click', (e)=>{
       const ch=e.target.closest('.expr-ch');
@@ -1400,6 +1480,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     function cursorLeft(){ if(justEvaluated) return; cursorPos=Math.max(0,cursorPos-1); renderExpr(); haptic(); }
     function cursorRight(){ if(justEvaluated) return; cursorPos=Math.min(expr.length,cursorPos+1); renderExpr(); haptic(); }
     function renderResult(text, err){ resultEl.textContent=text; resultEl.classList.toggle('error', !!err); currentDisplay=text; if(!err) currentValue=parseFloat(text)||0; }
+    function renderResultHTML(html, plain){ resultEl.innerHTML=html; resultEl.classList.remove('error'); currentDisplay=plain; currentValue=parseFloat(plain)||0; }
     let currentValue=0;
     function realScope(){ return Object.assign({ans:lastAnswer}, vars); }
     function complexScope(){ const o={ans:{re:lastAnswer,im:0}, i:{re:0,im:1}}; Object.keys(vars).forEach(k=>o[k]={re:vars[k],im:0}); return o; }
@@ -1477,13 +1558,13 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }
     function insert(val){
       pushUndo();
-      if(justEvaluated){ const isOperator=['+','-','*','/','^'].includes(val); expr = isOperator? resultEl.textContent+val : val; justEvaluated=false; cursorPos=expr.length; }
+      if(justEvaluated){ const isOperator=['+','-','−','*','×','/','÷','^'].includes(val); expr = isOperator? resultEl.textContent+val : val; justEvaluated=false; cursorPos=expr.length; }
       else { expr = expr.slice(0,cursorPos)+val+expr.slice(cursorPos); cursorPos+=val.length; }
       renderExpr(); haptic(); playClick();
     }
     function clearAll(){ pushUndo(); expr=''; cursorPos=0; justEvaluated=false; fracMode=false; renderExpr(); renderResult('0', false); saveAll(); haptic(); playClick(); }
     function del(){ if(justEvaluated){ clearAll(); return; } pushUndo(); if(cursorPos>0){ expr=expr.slice(0,cursorPos-1)+expr.slice(cursorPos); cursorPos--; } renderExpr(); haptic(); playClick(); }
-    function negate(){ pushUndo(); if(justEvaluated){ expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; justEvaluated=false; cursorPos=expr.length; renderExpr(); return; } if(!expr){ expr='-('; cursorPos=expr.length; renderExpr(); return; } expr=(expr.startsWith('-(')&&expr.endsWith(')'))?expr.slice(2,-1):'-('+expr+')'; cursorPos=expr.length; renderExpr(); haptic(); playClick(); }
+    function negate(){ pushUndo(); if(justEvaluated){ expr=(expr.startsWith('−(')&&expr.endsWith(')'))?expr.slice(2,-1):'−('+expr+')'; justEvaluated=false; cursorPos=expr.length; renderExpr(); return; } if(!expr){ expr='−('; cursorPos=expr.length; renderExpr(); return; } expr=(expr.startsWith('−(')&&expr.endsWith(')'))?expr.slice(2,-1):'−('+expr+')'; cursorPos=expr.length; renderExpr(); haptic(); playClick(); }
     function currentValueForMemory(){
       try{ const r=evalExprSmart(expr||resultEl.textContent, isDeg); return r.isComplex ? r.value.re : r.value; }catch(e){ const n=parseFloat(resultEl.textContent); return isNaN(n)?0:n; }
     }
@@ -1492,7 +1573,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       const v=parseFloat(resultEl.textContent);
       if(isNaN(v)||!isFinite(v)) return;
       const frac=decimalToFraction(v, 1e-6);
-      if(frac && frac[1]>1){ const fStr=formatFraction(frac[0], frac[1]); renderResult(fStr, false); fracMode=true; } else { showToast('ไม่สามารถแปลงเป็นเศษส่วนได้'); }
+      if(frac && frac[1]>1){ const f=formatFractionHTML(frac[0], frac[1]); renderResultHTML(f.html, f.plain); fracMode=true; } else { showToast('ไม่สามารถแปลงเป็นเศษส่วนได้'); }
     }
     copyBtn.addEventListener('click', ()=>{
       const text=resultEl.textContent;
@@ -1514,7 +1595,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       else if(action==='del') del();
       else if(action==='equals') evaluate();
       else if(action==='ans') insert('Ans');
-      else if(action==='exp') insert('*10^');
+      else if(action==='exp') insert('×10^');
       else if(action==='negate') negate();
       else if(action==='menu') openMenu();
       else if(action==='mc'){ memory=0; updateBadges(); saveAll(); haptic(); playClick(); }
@@ -1636,7 +1717,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       if(e.key==='ArrowRight'){ e.preventDefault(); cursorRight(); return; }
       if(e.ctrlKey || e.metaKey || e.altKey) return;
       if(/^[0-9.]$/.test(e.key)){ e.preventDefault(); insert(e.key); return; }
-      if(['+','-','*','/','^','%'].includes(e.key)){ e.preventDefault(); insert(e.key); return; }
+      if(['+','-','*','/','^','%'].includes(e.key)){ e.preventDefault(); const map={'-':'−','*':'×','/':'÷'}; insert(map[e.key]||e.key); return; }
       if(e.key==='('||e.key===')'){ e.preventDefault(); insert(e.key); return; }
       if(e.key==='Enter'||e.key==='='){ e.preventDefault(); evaluate(); return; }
       if(e.key==='Backspace'){ e.preventDefault(); del(); return; }
