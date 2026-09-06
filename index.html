@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>fx-991CW by-Patcharaphon — Scientific Calculator</title>
+<title>fx-991CW ClassWiz — Scientific Calculator</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -261,7 +261,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   <div class="brand">
     <div class="brand-left"><div class="solar"></div><span class="brand-name">CASIO</span></div>
     <div class="brand-meta">
-      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">by-Patcharaphon</div></div>
+      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">ClassWiz</div></div>
       <div class="brand-right">
         <button class="icon-btn" id="backMenuBtn" title="กลับไปเมนู">&#9776;</button>
         <button class="icon-btn" id="guideBtn" title="คู่มือการใช้งาน">&#63;</button>
@@ -343,8 +343,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="guide-a" style="margin-top:6px;">iPhone/Safari ไม่รองรับการสั่นจากเว็บเลย (ข้อจำกัดของ iOS เอง) จะรู้สึกได้เฉพาะ Android เท่านั้น</div>
     </div>
     <div class="set-block"><div class="set-label">รูปแบบตัวเลข</div>
-      <div class="theme-seg" id="numModeSeg"><button class="on" data-nummode="norm">NORM</button><button data-nummode="fix">FIX</button></div>
+      <div class="theme-seg" id="numModeSeg"><button class="on" data-nummode="norm">NORM</button><button data-nummode="fix">FIX</button><button data-nummode="sci">SCI</button></div>
       <div class="bright-row" id="fixDigitsRow" style="display:none; margin-top:6px;"><span>ทศนิยม</span><input type="range" id="fixDigitsRange" min="0" max="9" value="2" step="1"><span class="bright-val" id="fixDigitsVal">2</span></div>
+      <div class="bright-row" id="sciDigitsRow" style="display:none; margin-top:6px;"><span>เลขนัยสำคัญ</span><input type="range" id="sciDigitsRange" min="0" max="9" value="4" step="1"><span class="bright-val" id="sciDigitsVal">4</span></div>
     </div>
     <div class="set-block"><div class="set-label">ปรับแต่งสี</div>
       <div class="color-row"><span>สีเน้น</span><input type="color" id="colorAccent" value="#f2941f"></div>
@@ -397,8 +398,13 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="guide-example">กด: <b>Pol(</b> 3 , 4 ) = &nbsp;→&nbsp; ผลลัพธ์: <b>r=5, θ=53.13°</b></div></div>
     <div class="guide-item"><div class="guide-q">ค่าคงที่ / แปลงหน่วย</div><div class="guide-a">กดชิป "CONST/CONV" เพื่อแทรกค่าคงที่ทางฟิสิกส์หรือแปลงหน่วยได้ทันที</div>
       <div class="guide-example">กด: <b>CONST/CONV</b> → แตะ "กม.→ไมล์" &nbsp;→&nbsp; จอแทรก: kmtomi(<br>พิมพ์ 10 ) = &nbsp;→&nbsp; ผลลัพธ์: <b>6.21371</b> ไมล์</div></div>
-    <div class="guide-item"><div class="guide-q">รูปแบบตัวเลข NORM/FIX</div><div class="guide-a">ไปที่ตั้งค่า (&#9881;) เลือก FIX เพื่อตรึงจำนวนทศนิยม (0-9 ตำแหน่ง)</div>
-      <div class="guide-example">ตั้งค่า → FIX → เลื่อนเป็น 2 ตำแหน่ง<br>กด: 1 ÷ 3 = &nbsp;→&nbsp; ผลลัพธ์: <b>0.33</b> (แทนที่จะเป็น 0.3333333333)</div></div>
+    <div class="guide-item"><div class="guide-q">รูปแบบตัวเลข NORM/FIX/SCI</div><div class="guide-a">ไปที่ตั้งค่า (&#9881;) เลือก FIX เพื่อตรึงจำนวนทศนิยม หรือ SCI เพื่อแสดงแบบวิทยาศาสตร์ (กำหนดเลขนัยสำคัญได้ 0-9 ตำแหน่ง)</div>
+      <div class="guide-example">ตั้งค่า → SCI → 4 ตำแหน่ง<br>กด: 12345.6789 = &nbsp;→&nbsp; ผลลัพธ์: <b>1.2346e4</b></div></div>
+    <div class="guide-item"><div class="guide-q">dB (เดซิเบล)</div><div class="guide-a">ชิป dBV( และ dBP( ในหน้าหลัก สำหรับงานไฟฟ้า/สัญญาณ: dBV=20·log(V/Vref), dBP=10·log(P/Pref)</div>
+      <div class="guide-example">กด: <b>dBV(</b> 2 , 1 ) = &nbsp;→&nbsp; ผลลัพธ์: <b>6.02</b> dB</div></div>
+    <div class="guide-item"><div class="guide-q">หน่วยวิศวกรรม (ความดัน/พลังงาน/กำลัง/แรง)</div><div class="guide-a">ใน Tools (MENU→0) หมวด Category เพิ่ม Pressure, Energy, Power, Force ครบสำหรับงานวิศวกรรม</div></div>
+    <div class="guide-item"><div class="guide-q">Regression หลายแบบ</div><div class="guide-a">Statistics 2-VAR เลือกได้ 5 แบบ: Linear, Quadratic, Exponential, Logarithmic, Power — เหมาะกับข้อมูลทดลองที่ไม่เป็นเส้นตรง</div></div>
+    <div class="guide-item"><div class="guide-q">Matrix: Rank / Eigenvalues</div><div class="guide-a">MENU→4 Matrix มีปุ่ม Rank(A) หา rank และ Eigen(A) หาค่าไอเกน (รองรับ 2×2 และ 3×3 รวมค่าเชิงซ้อน)</div></div>
     <div class="guide-item"><div class="guide-q">พิมพ์จากคีย์บอร์ด</div><div class="guide-a">รองรับเลข, + − × ÷ ^ % ( ), Enter=คำนวณ, Backspace=ลบ, Esc=ล้าง, ลูกศร=เลื่อนเคอร์เซอร์</div></div>
     <div class="guide-item"><div class="guide-q">เสียง/การสั่น</div><div class="guide-a">ตั้งค่า (&#9881;) เลือกสไตล์เสียงคลิกได้ 5 แบบ (แตะฟังตัวอย่างได้เลย) และปรับความแรงการสั่นได้ ปิด/เบา/แรง — iOS ไม่รองรับการสั่นจากเว็บ</div></div>
     <div class="guide-item"><div class="guide-q">CLRv / CLR ALL</div><div class="guide-a">ชิป "CLRv" ล้างค่าตัวแปรทั้งหมด, ปุ่ม "CLR ALL" ในตั้งค่า (&#9881;) รีเซ็ตประวัติ/ตัวแปร/หน่วยความจำทั้งหมด</div></div>
@@ -533,6 +539,8 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="chip" data-tok="∠">∠</button>
       <button class="chip" id="pasteBtn">&#128203;Paste</button>
       <button class="chip" id="constConvBtn">CONST/CONV</button>
+      <button class="chip" data-tok="dbv(">dBV(</button>
+      <button class="chip" data-tok="dbp(">dBP(</button>
       <button class="chip" id="clrVarsBtn" style="background:var(--ac);">CLRv</button>
     </div>
     <div class="grid" id="grid">
@@ -587,43 +595,43 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <!-- ===== PANEL: COMPLEX ===== -->
   <div class="panel" id="panel-complex">
-    <div class="mini-title">Complex A</div>
+    <div class="mini-title">Complex A (เชิงซ้อน เอ)</div>
     <div class="field-row"><label>Re(A)</label><input id="cxAr" type="number" value="0"><label style="width:26px">Im(A)</label><input id="cxAi" type="number" value="0"></div>
-    <div class="mini-title">Complex B</div>
+    <div class="mini-title">Complex B (เชิงซ้อน บี)</div>
     <div class="field-row"><label>Re(B)</label><input id="cxBr" type="number" value="0"><label style="width:26px">Im(B)</label><input id="cxBi" type="number" value="0"></div>
     <div class="btnrow">
       <button class="pbtn" data-cx="add">A+B</button>
       <button class="pbtn" data-cx="sub">A−B</button>
       <button class="pbtn" data-cx="mul">A×B</button>
       <button class="pbtn" data-cx="div">A÷B</button>
-      <button class="pbtn" data-cx="conjg">Conjg(A)</button>
-      <button class="pbtn" data-cx="abs">|A|</button>
-      <button class="pbtn" data-cx="arg">Arg(A)</button>
-      <button class="pbtn acc" data-cx="polar">A → r∠θ</button>
+      <button class="pbtn" data-cx="conjg">Conjg(A) (สังยุค)</button>
+      <button class="pbtn" data-cx="abs">|A| (ขนาด)</button>
+      <button class="pbtn" data-cx="arg">Arg(A) (มุม)</button>
+      <button class="pbtn acc" data-cx="polar">A → r∠θ (แปลงเชิงขั้ว)</button>
     </div>
-    <div class="out" id="cxOut">ผลลัพธ์จะแสดงที่นี่</div>
+    <div class="out" id="cxOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
   </div>
 
   <!-- ===== PANEL: BASE-N ===== -->
   <div class="panel" id="panel-basen">
     <div class="mini-title">ค่า A</div>
     <div class="field-row"><label>ฐาน</label>
-      <select id="baseAMode"><option value="10">DEC</option><option value="16">HEX</option><option value="2">BIN</option><option value="8">OCT</option></select>
+      <select id="baseAMode"><option value="10">DEC (ฐาน 10)</option><option value="16">HEX (ฐาน 16)</option><option value="2">BIN (ฐาน 2)</option><option value="8">OCT (ฐาน 8)</option></select>
       <input id="baseAVal" value="0">
     </div>
     <div class="out" id="baseAConv" style="min-height:44px;"></div>
-    <div class="mini-title">ค่า B (Bitwise)</div>
+    <div class="mini-title">ค่า B (Bitwise การกระทำระดับบิต)</div>
     <div class="field-row"><label>ฐาน</label>
-      <select id="baseBMode"><option value="10">DEC</option><option value="16">HEX</option><option value="2">BIN</option><option value="8">OCT</option></select>
+      <select id="baseBMode"><option value="10">DEC (ฐาน 10)</option><option value="16">HEX (ฐาน 16)</option><option value="2">BIN (ฐาน 2)</option><option value="8">OCT (ฐาน 8)</option></select>
       <input id="baseBVal" value="0">
     </div>
     <div class="btnrow">
-      <button class="pbtn" data-bn="AND">AND</button>
-      <button class="pbtn" data-bn="OR">OR</button>
-      <button class="pbtn" data-bn="XOR">XOR</button>
-      <button class="pbtn" data-bn="XNOR">XNOR</button>
-      <button class="pbtn" data-bn="NOT">NOT(A)</button>
-      <button class="pbtn" data-bn="NEG">Neg(A)</button>
+      <button class="pbtn" data-bn="AND">AND (และ)</button>
+      <button class="pbtn" data-bn="OR">OR (หรือ)</button>
+      <button class="pbtn" data-bn="XOR">XOR (หรือเฉพาะ)</button>
+      <button class="pbtn" data-bn="XNOR">XNOR (นิเสธของ XOR)</button>
+      <button class="pbtn" data-bn="NOT">NOT(A) (นิเสธ)</button>
+      <button class="pbtn" data-bn="NEG">Neg(A) (ค่าตรงข้าม)</button>
     </div>
     <div class="out" id="baseOut">ผลลัพธ์ Bitwise (32-bit)</div>
   </div>
@@ -631,46 +639,48 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   <!-- ===== PANEL: MATRIX ===== -->
   <div class="panel" id="panel-matrix">
     <div class="seg" id="matSizeSeg"><button class="on" data-size="2">2×2</button><button data-size="3">3×3</button></div>
-    <div class="mini-title">MatA</div>
+    <div class="mini-title">MatA (เมทริกซ์ เอ)</div>
     <div class="grid-inputs" id="matA"></div>
-    <div class="mini-title">MatB</div>
+    <div class="mini-title">MatB (เมทริกซ์ บี)</div>
     <div class="grid-inputs" id="matB"></div>
     <div class="btnrow">
-      <button class="pbtn" data-mx="detA">Det(A)</button>
-      <button class="pbtn" data-mx="trnA">Trn(A)</button>
-      <button class="pbtn" data-mx="invA">Mat⁻¹(A)</button>
+      <button class="pbtn" data-mx="detA">Det(A) (ดีเทอร์มิแนนต์)</button>
+      <button class="pbtn" data-mx="trnA">Trn(A) (ทรานสโพส)</button>
+      <button class="pbtn" data-mx="invA">Mat⁻¹(A) (อินเวอร์ส)</button>
       <button class="pbtn" data-mx="add">A+B</button>
       <button class="pbtn" data-mx="sub">A−B</button>
       <button class="pbtn" data-mx="mul">A×B</button>
-      <button class="pbtn acc" data-mx="ident">Identity</button>
+      <button class="pbtn" data-mx="rank">Rank(A) (อันดับ)</button>
+      <button class="pbtn" data-mx="eigen">Eigen(A) (ค่าไอเกน)</button>
+      <button class="pbtn acc" data-mx="ident">Identity (เมทริกซ์เอกลักษณ์)</button>
     </div>
-    <div class="out" id="matOut">ผลลัพธ์เมทริกซ์</div>
+    <div class="out" id="matOut">ผลลัพธ์เมทริกซ์ (Result)</div>
   </div>
 
   <!-- ===== PANEL: VECTOR ===== -->
   <div class="panel" id="panel-vector">
     <div class="seg" id="vecSizeSeg"><button data-size="2">2D</button><button class="on" data-size="3">3D</button></div>
-    <div class="mini-title">VctA</div>
+    <div class="mini-title">VctA (เวกเตอร์ เอ)</div>
     <div class="grid-inputs" id="vecA" style="grid-template-columns:repeat(3,1fr);"></div>
-    <div class="mini-title">VctB</div>
+    <div class="mini-title">VctB (เวกเตอร์ บี)</div>
     <div class="grid-inputs" id="vecB" style="grid-template-columns:repeat(3,1fr);"></div>
     <div class="btnrow">
-      <button class="pbtn" data-vc="dot">DotP(A,B)</button>
-      <button class="pbtn" data-vc="cross">CrossP(A,B)</button>
-      <button class="pbtn" data-vc="magA">|A|</button>
-      <button class="pbtn" data-vc="unitA">UnitV(A)</button>
-      <button class="pbtn acc" data-vc="angle">∠(A,B)</button>
+      <button class="pbtn" data-vc="dot">DotP(A,B) (ผลคูณจุด)</button>
+      <button class="pbtn" data-vc="cross">CrossP(A,B) (ผลคูณไขว้)</button>
+      <button class="pbtn" data-vc="magA">|A| (ขนาดเวกเตอร์)</button>
+      <button class="pbtn" data-vc="unitA">UnitV(A) (เวกเตอร์หนึ่งหน่วย)</button>
+      <button class="pbtn acc" data-vc="angle">∠(A,B) (มุมระหว่างเวกเตอร์)</button>
     </div>
-    <div class="out" id="vecOut">ผลลัพธ์เวกเตอร์</div>
+    <div class="out" id="vecOut">ผลลัพธ์เวกเตอร์ (Result)</div>
   </div>
 
   <!-- ===== PANEL: EQUATION ===== -->
   <div class="panel" id="panel-equation">
-    <div class="seg" id="eqTypeSeg"><button class="on" data-type="simul">SIMUL</button><button data-type="poly">POLY</button></div>
+    <div class="seg" id="eqTypeSeg"><button class="on" data-type="simul">SIMUL (ระบบสมการ)</button><button data-type="poly">POLY (พหุนาม)</button></div>
     <div class="seg" id="eqSimulSeg"><button class="on" data-n="2">2 ตัวแปร</button><button data-n="3">3 ตัวแปร</button><button data-n="4">4 ตัวแปร</button></div>
-    <div class="seg" id="eqPolySeg" style="display:none;"><button class="on" data-n="2">Degree 2</button><button data-n="3">Degree 3</button><button data-n="4">Degree 4</button></div>
+    <div class="seg" id="eqPolySeg" style="display:none;"><button class="on" data-n="2">Degree 2 (ดีกรี 2)</button><button data-n="3">Degree 3 (ดีกรี 3)</button><button data-n="4">Degree 4 (ดีกรี 4)</button></div>
     <div class="grid-inputs" id="eqInputs"></div>
-    <button class="pbtn acc" id="eqSolve">SOLVE</button>
+    <button class="pbtn acc" id="eqSolve">SOLVE (แก้สมการ)</button>
     <div class="out" id="eqOut">ป้อนสัมประสิทธิ์แล้วกด SOLVE</div>
   </div>
 
@@ -687,7 +697,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div class="field-row"><input id="tblStart" type="number" placeholder="start" value="-5">
       <input id="tblEnd" type="number" placeholder="end" value="5">
       <input id="tblStep" type="number" placeholder="step" value="1"></div>
-    <button class="pbtn acc" id="tblGenerate">Generate Table</button>
+    <button class="pbtn acc" id="tblGenerate">Generate Table (สร้างตาราง)</button>
     <canvas id="graphCanvas"></canvas>
     <div class="table-empty" id="graphLegend" style="display:none; margin:2px 0 4px; text-align:center;">
       <span style="color:#c9e8b8;">■ f(x)</span>&nbsp;&nbsp;<span style="color:#ffb054;">■ g(x)</span>
@@ -697,7 +707,14 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <!-- ===== PANEL: STATISTICS ===== -->
   <div class="panel" id="panel-stat">
-    <div class="seg" id="statModeSeg"><button class="on" data-svar="1">1-VAR</button><button data-svar="2">2-VAR (Regression)</button></div>
+    <div class="seg" id="statModeSeg"><button class="on" data-svar="1">1-VAR (ตัวแปรเดียว)</button><button data-svar="2">2-VAR (ถดถอย)</button></div>
+    <div class="seg" id="regTypeSeg" style="display:none; flex-wrap:wrap; margin-top:6px;">
+      <button class="on" data-reg="linear">Linear (เชิงเส้น)</button>
+      <button data-reg="quad">Quadratic (กำลังสอง)</button>
+      <button data-reg="exp">Exponential (เอ็กซ์โพเนนเชียล)</button>
+      <button data-reg="log">Logarithmic (ลอการิทึม)</button>
+      <button data-reg="power">Power (เลขยกกำลัง)</button>
+    </div>
     <div class="field-row"><input id="statXInput" type="number" placeholder="x" inputmode="decimal">
       <input id="statYInput" type="number" placeholder="y" inputmode="decimal" style="display:none;">
       <button class="pbtn acc" id="statAdd" style="flex:0 0 44px;">+</button></div>
@@ -708,23 +725,23 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <!-- ===== PANEL: DISTRIBUTION ===== -->
   <div class="panel" id="panel-dist">
-    <div class="seg" id="distTypeSeg"><button class="on" data-d="normal">Normal</button><button data-d="binom">Binomial</button><button data-d="poisson">Poisson</button></div>
+    <div class="seg" id="distTypeSeg"><button class="on" data-d="normal">Normal (ปกติ)</button><button data-d="binom">Binomial (ทวินาม)</button><button data-d="poisson">Poisson (ปัวซง)</button></div>
     <div id="distNormal">
       <div class="field-row"><label>x</label><input id="ndX" type="number" value="0"></div>
       <div class="field-row"><label>μ</label><input id="ndMu" type="number" value="0"><label style="width:20px">σ</label><input id="ndSigma" type="number" value="1"></div>
-      <div class="btnrow"><button class="pbtn" data-nd="pdf">Normal PD</button><button class="pbtn" data-nd="cdf">Normal CD</button></div>
-      <div class="field-row"><label>p</label><input id="ndP" type="number" value="0.5" step="0.01"><button class="pbtn acc" data-nd="inv" style="flex:0 0 90px;">InvNorm</button></div>
+      <div class="btnrow"><button class="pbtn" data-nd="pdf">Normal PD (ความหนาแน่น)</button><button class="pbtn" data-nd="cdf">Normal CD (สะสม)</button></div>
+      <div class="field-row"><label>p</label><input id="ndP" type="number" value="0.5" step="0.01"><button class="pbtn acc" data-nd="inv" style="flex:0 0 90px;">InvNorm (ผกผัน)</button></div>
     </div>
     <div id="distBinom" style="display:none;">
       <div class="field-row"><label>n</label><input id="bnN" type="number" value="10"><label style="width:20px">p</label><input id="bnP" type="number" value="0.5" step="0.01"></div>
       <div class="field-row"><label>x</label><input id="bnX" type="number" value="3"></div>
-      <div class="btnrow"><button class="pbtn" data-bn2="pdf">Binomial PD</button><button class="pbtn" data-bn2="cdf">Binomial CD</button></div>
+      <div class="btnrow"><button class="pbtn" data-bn2="pdf">Binomial PD (ความหนาแน่น)</button><button class="pbtn" data-bn2="cdf">Binomial CD (สะสม)</button></div>
     </div>
     <div id="distPoisson" style="display:none;">
       <div class="field-row"><label>λ</label><input id="poL" type="number" value="4"><label style="width:20px">x</label><input id="poX" type="number" value="2"></div>
-      <div class="btnrow"><button class="pbtn" data-po="pdf">Poisson PD</button><button class="pbtn" data-po="cdf">Poisson CD</button></div>
+      <div class="btnrow"><button class="pbtn" data-po="pdf">Poisson PD (ความหนาแน่น)</button><button class="pbtn" data-po="cdf">Poisson CD (สะสม)</button></div>
     </div>
-    <div class="out" id="distOut">ผลลัพธ์การแจกแจง</div>
+    <div class="out" id="distOut">ผลลัพธ์การแจกแจง (Result)</div>
   </div>
 
   <!-- ===== PANEL: TOOLS (รวมตัวแปลงหน่วยครบ) ===== -->
@@ -746,6 +763,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
         <option value="area">Area (พื้นที่)</option>
         <option value="volume">Volume (ปริมาตร)</option>
         <option value="speed">Speed (ความเร็ว)</option>
+        <option value="pressure">Pressure (ความดัน)</option>
+        <option value="energy">Energy (พลังงาน)</option>
+        <option value="power">Power (กำลังไฟฟ้า)</option>
+        <option value="force">Force (แรง)</option>
       </select>
     </div>
     <div class="conv-group">
@@ -825,7 +846,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   // ============================================================
   const FUNCS = ['sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','asinh','acosh','atanh',
     'log','ln','sqrt','cbrt','exp','abs','gcd','lcm','npr','ncr','rnd','logb','diff','integrate','sum','product','solve',
-    'ceil','floor','ran','ranint','pol','rec','kmtomi','mitokm','kgtolb','lbtokg','ctof','ftoc','mtoft','fttom'];
+    'ceil','floor','ran','ranint','pol','rec','kmtomi','mitokm','kgtolb','lbtokg','ctof','ftoc','mtoft','fttom','dbv','dbp'];
   const MEMVARS = ['a','b','c','d','f','m','n','t','y'];
   function tokenize(src){
     const s = src.replace(/π/g,'pi').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
@@ -952,6 +973,8 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
           case 'mtoft': return v0*3.28084; case 'fttom': return v0/3.28084;
           case 'pol': { const x=v0, y=evalNode(A[1],scope,deg); return Math.hypot(x,y); }
           case 'rec': { const r=v0, th=evalNode(A[1],scope,deg); return r*Math.cos(toRad(th,deg)); }
+          case 'dbv': { const vref=evalNode(A[1],scope,deg); return 20*Math.log10(v0/vref); }
+          case 'dbp': { const pref=evalNode(A[1],scope,deg); return 10*Math.log10(v0/pref); }
         }
         break;
       }
@@ -961,14 +984,19 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   }
   function autoCloseParens(s){ let open=0; for(const c of s){ if(c==='(') open++; else if(c===')') open=Math.max(0,open-1); } return s+')'.repeat(open); }
   function compile(exprStr){ return parse(tokenize(autoCloseParens(exprStr))); }
-  let numMode = loadState('numMode','norm'); // 'norm' | 'fix'
+  let numMode = loadState('numMode','norm'); // 'norm' | 'fix' | 'sci'
   let fixDigits = loadState('fixDigits', 2);
+  let sciDigits = loadState('sciDigits', 4);
   function formatNumber(n){
     if(!isFinite(n)) return n>0?'Overflow':(n<0?'-Overflow':'Error');
     if(Number.isNaN(n)) return 'Error';
     if(numMode==='fix'){
       if(Math.abs(n)>1e15) return n.toExponential(fixDigits).replace(/e\+?/,'e');
       return n.toFixed(fixDigits);
+    }
+    if(numMode==='sci'){
+      if(n===0) return (0).toExponential(sciDigits).replace(/e\+?/,'e');
+      return n.toExponential(sciDigits).replace(/e\+?/,'e');
     }
     if(Math.abs(n)>1e15 || (Math.abs(n)<1e-9 && n!==0)) return n.toExponential(6).replace(/e\+?/,'e');
     return parseFloat(n.toFixed(10)).toString();
@@ -1158,7 +1186,8 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       soundSeg=document.getElementById('soundSeg'), soundStyleSeg=document.getElementById('soundStyleSeg'),
       hapticSeg=document.getElementById('hapticSeg'),
       numModeSeg=document.getElementById('numModeSeg'), fixDigitsRow=document.getElementById('fixDigitsRow'),
-      fixDigitsRange=document.getElementById('fixDigitsRange'), fixDigitsVal=document.getElementById('fixDigitsVal');
+      fixDigitsRange=document.getElementById('fixDigitsRange'), fixDigitsVal=document.getElementById('fixDigitsVal'),
+      sciDigitsRow=document.getElementById('sciDigitsRow'), sciDigitsRange=document.getElementById('sciDigitsRange'), sciDigitsVal=document.getElementById('sciDigitsVal');
     let saved={};
     try{ saved=JSON.parse(localStorage.getItem('fx991cw-prefs')||'{}'); }catch(e){ saved={}; }
     function applyTheme(t){
@@ -1199,6 +1228,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       numMode = mode;
       numModeSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.nummode===mode));
       fixDigitsRow.style.display = mode==='fix' ? 'flex' : 'none';
+      sciDigitsRow.style.display = mode==='sci' ? 'flex' : 'none';
       saveState('numMode', numMode);
       if(window.renderExpr) window.renderExpr();
     }
@@ -1206,6 +1236,12 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       fixDigits = parseInt(v);
       fixDigitsRange.value=v; fixDigitsVal.textContent=v;
       saveState('fixDigits', fixDigits);
+      if(window.renderExpr) window.renderExpr();
+    }
+    function applySciDigits(v){
+      sciDigits = parseInt(v);
+      sciDigitsRange.value=v; sciDigitsVal.textContent=v;
+      saveState('sciDigits', sciDigits);
       if(window.renderExpr) window.renderExpr();
     }
     applyTheme(saved.theme==='dark'?'dark':'light');
@@ -1216,6 +1252,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     applyHaptic(loadState('hapticEnabled',true) ? loadState('hapticStrength','light') : 'off');
     applyNumMode(numMode);
     applyFixDigits(fixDigits);
+    applySciDigits(sciDigits);
     settingsBtn.addEventListener('click', ()=>{ settingsOverlay.classList.add('open'); });
     settingsClose.addEventListener('click', ()=>{ settingsOverlay.classList.remove('open'); });
     themeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applyTheme(b.dataset.theme); });
@@ -1225,6 +1262,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     soundStyleSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applySoundStyle(b.dataset.style, true); });
     hapticSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applyHaptic(b.dataset.haptic); });
     numModeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; applyNumMode(b.dataset.nummode); });
+    sciDigitsRange.addEventListener('input', ()=>{ applySciDigits(sciDigitsRange.value); });
     fixDigitsRange.addEventListener('input', ()=>{ applyFixDigits(fixDigitsRange.value); });
   })();
 
@@ -1669,6 +1707,25 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     function inverse(m){ const n=m.length; const d=det(m); if(Math.abs(d)<1e-12) return null; const cof=[]; for(let i=0;i<n;i++){ cof.push([]); for(let j=0;j<n;j++){ const minor=m.filter((_,ri)=>ri!==i).map(row=>row.filter((_,ci)=>ci!==j)); cof[i][j]=(((i+j)%2===0)?1:-1)*det(minor); } } const adj=transpose(cof); return adj.map(row=>row.map(v=>v/d)); }
     function matAdd(a,b,sign){ return a.map((row,i)=>row.map((v,j)=>v+sign*b[i][j])); }
     function matMul(a,b){ const n=a.length; const r=[]; for(let i=0;i<n;i++){ r.push([]); for(let j=0;j<n;j++){ let s=0; for(let k=0;k<n;k++) s+=a[i][k]*b[k][j]; r[i][j]=s; } } return r; }
+    function rank(m){
+      const n=m.length; const M=m.map(r=>r.slice()); let rk=0;
+      for(let col=0; col<n && rk<n; col++){
+        let piv=-1; for(let r=rk;r<n;r++){ if(Math.abs(M[r][col])>1e-9){ piv=r; break; } }
+        if(piv===-1) continue;
+        [M[rk],M[piv]]=[M[piv],M[rk]];
+        for(let r=0;r<n;r++){ if(r!==rk){ const f=M[r][col]/M[rk][col]; for(let c=0;c<n;c++) M[r][c]-=f*M[rk][c]; } }
+        rk++;
+      }
+      return rk;
+    }
+    function eigenvalues(m){
+      const n=m.length;
+      if(n===2){ const tr=m[0][0]+m[1][1], dt=det(m); return polyRoots([1,-tr,dt]); }
+      const tr=m[0][0]+m[1][1]+m[2][2];
+      const M12=m[0][0]*m[1][1]-m[0][1]*m[1][0], M13=m[0][0]*m[2][2]-m[0][2]*m[2][0], M23=m[1][1]*m[2][2]-m[1][2]*m[2][1];
+      const c1=M12+M13+M23, dt=det(m);
+      return polyRoots([1,-tr,c1,-dt]);
+    }
     document.getElementById('matSizeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#matSizeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); size=parseInt(b.dataset.size); buildGrid(matA,size); buildGrid(matB,size); });
     buildGrid(matA,size); buildGrid(matB,size);
     document.querySelectorAll('#panel-matrix [data-mx]').forEach(btn=>{
@@ -1681,6 +1738,8 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
           else if(op==='add') out.textContent='A+B =\n'+fmtMat(matAdd(A,B,1));
           else if(op==='sub') out.textContent='A-B =\n'+fmtMat(matAdd(A,B,-1));
           else if(op==='mul') out.textContent='A×B =\n'+fmtMat(matMul(A,B));
+          else if(op==='rank') out.textContent='Rank(A) = '+rank(A);
+          else if(op==='eigen'){ const ev=eigenvalues(A); out.textContent='Eigenvalues(A):\n'+ev.map((e,i)=>'λ'+(i+1)+' = '+(Math.abs(e.im)<1e-7?formatNumber(e.re):fmtC(e))).join('\n'); }
           else if(op==='ident'){ const id=[]; for(let i=0;i<size;i++){ id.push([]); for(let j=0;j<size;j++) id[i][j]=(i===j?1:0); } out.textContent='Identity =\n'+fmtMat(id); }
         }catch(err){ out.textContent='Error'; }
         haptic();
@@ -1811,16 +1870,28 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
   // PANEL: STATISTICS
   // ============================================================
   (function(){
-    let svar=1; let data=[];
+    let svar=1; let data=[]; let regType='linear';
     const xInput=document.getElementById('statXInput'), yInput=document.getElementById('statYInput');
     const listEl=document.getElementById('statList'), resultsEl=document.getElementById('statResults');
-    document.getElementById('statModeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#statModeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); svar=parseInt(b.dataset.svar); yInput.style.display = svar===2?'block':'none'; renderResults(); });
+    const regTypeSeg=document.getElementById('regTypeSeg');
+    document.getElementById('statModeSeg').addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; document.querySelectorAll('#statModeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); svar=parseInt(b.dataset.svar); yInput.style.display = svar===2?'block':'none'; regTypeSeg.style.display = svar===2?'flex':'none'; renderResults(); });
+    regTypeSeg.addEventListener('click',(e)=>{ const b=e.target.closest('button'); if(!b) return; regTypeSeg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); regType=b.dataset.reg; renderResults(); });
     document.getElementById('statAdd').addEventListener('click', addEntry);
     [xInput,yInput].forEach(inp=>inp.addEventListener('keydown', e=>{ if(e.key==='Enter') addEntry(); }));
     function addEntry(){ const x=parseFloat(xInput.value); if(isNaN(x)) return; let y=0; if(svar===2){ y=parseFloat(yInput.value); if(isNaN(y)) return; } data.push({x,y}); xInput.value=''; yInput.value=''; xInput.focus(); renderList(); renderResults(); haptic(); }
     document.getElementById('statClear').addEventListener('click', ()=>{ data=[]; renderList(); renderResults(); });
     function renderList(){ listEl.innerHTML=''; data.forEach((d,idx)=>{ const chip=document.createElement('div'); chip.className='stat-chip'; chip.innerHTML='<span>'+(svar===2?('('+formatNumber(d.x)+', '+formatNumber(d.y)+')'):formatNumber(d.x))+'</span><b>×</b>'; chip.querySelector('b').addEventListener('click', ()=>{ data.splice(idx,1); renderList(); renderResults(); }); listEl.appendChild(chip); }); }
     function row(label,val){ const d=document.createElement('div'); d.className='table-row'; d.innerHTML='<span>'+label+'</span><span>'+val+'</span>'; return d; }
+    // regression เชิงเส้นพื้นฐาน (ใช้ร่วมกับ exponential/logarithmic/power หลังแปลงตัวแปรเป็น log แล้ว)
+    function linReg(xs,ys){
+      const n=xs.length; const sumX=xs.reduce((a,b)=>a+b,0), sumY=ys.reduce((a,b)=>a+b,0);
+      const sumX2=xs.reduce((a,b)=>a+b*b,0), sumXY=xs.reduce((s,x,i)=>s+x*ys[i],0), sumY2=ys.reduce((a,b)=>a+b*b,0);
+      const denom=n*sumX2-sumX*sumX; if(Math.abs(denom)<1e-12) return null;
+      const b=(n*sumXY-sumX*sumY)/denom, a=(sumY-b*sumX)/n;
+      const denomR=Math.sqrt((n*sumX2-sumX*sumX)*(n*sumY2-sumY*sumY));
+      const r=denomR!==0?(n*sumXY-sumX*sumY)/denomR:NaN;
+      return {a,b,r};
+    }
     function renderResults(){
       resultsEl.innerHTML='';
       const n=data.length;
@@ -1829,7 +1900,36 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       const sumX=xs.reduce((a,b)=>a+b,0), sumX2=xs.reduce((a,b)=>a+b*b,0), meanX=sumX/n;
       const popVar=sumX2/n-meanX*meanX, popSD=Math.sqrt(Math.max(0,popVar)), sampSD=n>1?Math.sqrt(Math.max(0,popVar)*n/(n-1)):0;
       resultsEl.appendChild(row('n', n)); resultsEl.appendChild(row('Σx', formatNumber(sumX))); resultsEl.appendChild(row('Σx²', formatNumber(sumX2))); resultsEl.appendChild(row('x̄ (mean)', formatNumber(meanX))); resultsEl.appendChild(row('σx (population)', formatNumber(popSD))); resultsEl.appendChild(row('sx (sample)', formatNumber(sampSD))); resultsEl.appendChild(row('min / max', formatNumber(Math.min(...xs))+' / '+formatNumber(Math.max(...xs))));
-      if(svar===2 && n>=2){ const ys=data.map(d=>d.y); const sumY=ys.reduce((a,b)=>a+b,0), sumY2=ys.reduce((a,b)=>a+b*b,0), sumXY=data.reduce((a,d)=>a+d.x*d.y,0); const denom=n*sumX2-sumX*sumX; if(Math.abs(denom)>1e-12){ const b=(n*sumXY-sumX*sumY)/denom, a=(sumY-b*sumX)/n; const denomR=Math.sqrt((n*sumX2-sumX*sumX)*(n*sumY2-sumY*sumY)); const r=denomR!==0?(n*sumXY-sumX*sumY)/denomR:NaN; resultsEl.appendChild(row('a (intercept)', formatNumber(a))); resultsEl.appendChild(row('b (slope)', formatNumber(b))); resultsEl.appendChild(row('r (correlation)', isFinite(r)?formatNumber(r):'—')); resultsEl.appendChild(row('ŷ = a + bx', formatNumber(a)+' + '+formatNumber(b)+'x')); } else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>'; }
+      if(svar===2 && n>=2){
+        const ys=data.map(d=>d.y);
+        if(regType==='linear'){
+          const R=linReg(xs,ys);
+          if(R){ resultsEl.appendChild(row('a (intercept)', formatNumber(R.a))); resultsEl.appendChild(row('b (slope)', formatNumber(R.b))); resultsEl.appendChild(row('r (correlation)', isFinite(R.r)?formatNumber(R.r):'—')); resultsEl.appendChild(row('ŷ = a + bx', formatNumber(R.a)+' + '+formatNumber(R.b)+'x')); }
+          else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>';
+        } else if(regType==='quad'){
+          if(n<3){ resultsEl.innerHTML += '<div class="table-empty">Quadratic ต้องการอย่างน้อย 3 จุด</div>'; return; }
+          const sx=xs.reduce((a,b)=>a+b,0), sx2=xs.reduce((a,b)=>a+b*b,0), sx3=xs.reduce((a,x)=>a+x**3,0), sx4=xs.reduce((a,x)=>a+x**4,0);
+          const sy=ys.reduce((a,b)=>a+b,0), sxy=data.reduce((a,d)=>a+d.x*d.y,0), sx2y=data.reduce((a,d)=>a+d.x*d.x*d.y,0);
+          const sol=solveLinear([[n,sx,sx2,sy],[sx,sx2,sx3,sxy],[sx2,sx3,sx4,sx2y]]);
+          if(sol){ const [a,b,c]=sol; resultsEl.appendChild(row('a', formatNumber(a))); resultsEl.appendChild(row('b', formatNumber(b))); resultsEl.appendChild(row('c', formatNumber(c))); resultsEl.appendChild(row('ŷ = a+bx+cx²', formatNumber(a)+' + '+formatNumber(b)+'x + '+formatNumber(c)+'x²')); }
+          else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้ (ข้อมูลอาจซ้ำ/เรียงเป็นเส้นตรงเกินไป)</div>';
+        } else if(regType==='exp'){
+          if(ys.some(y=>y<=0)){ resultsEl.innerHTML += '<div class="table-empty">Exponential ต้องการค่า y เป็นบวกทั้งหมด</div>'; return; }
+          const R=linReg(xs, ys.map(Math.log));
+          if(R){ const a=Math.exp(R.a); resultsEl.appendChild(row('a', formatNumber(a))); resultsEl.appendChild(row('b', formatNumber(R.b))); resultsEl.appendChild(row('r', isFinite(R.r)?formatNumber(R.r):'—')); resultsEl.appendChild(row('ŷ = a·e^(bx)', formatNumber(a)+'·e^('+formatNumber(R.b)+'x)')); }
+          else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>';
+        } else if(regType==='log'){
+          if(xs.some(x=>x<=0)){ resultsEl.innerHTML += '<div class="table-empty">Logarithmic ต้องการค่า x เป็นบวกทั้งหมด</div>'; return; }
+          const R=linReg(xs.map(Math.log), ys);
+          if(R){ resultsEl.appendChild(row('a', formatNumber(R.a))); resultsEl.appendChild(row('b', formatNumber(R.b))); resultsEl.appendChild(row('r', isFinite(R.r)?formatNumber(R.r):'—')); resultsEl.appendChild(row('ŷ = a + b·ln(x)', formatNumber(R.a)+' + '+formatNumber(R.b)+'·ln(x)')); }
+          else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>';
+        } else if(regType==='power'){
+          if(xs.some(x=>x<=0) || ys.some(y=>y<=0)){ resultsEl.innerHTML += '<div class="table-empty">Power ต้องการค่า x และ y เป็นบวกทั้งหมด</div>'; return; }
+          const R=linReg(xs.map(Math.log), ys.map(Math.log));
+          if(R){ const a=Math.exp(R.a); resultsEl.appendChild(row('a', formatNumber(a))); resultsEl.appendChild(row('b', formatNumber(R.b))); resultsEl.appendChild(row('r', isFinite(R.r)?formatNumber(R.r):'—')); resultsEl.appendChild(row('ŷ = a·x^b', formatNumber(a)+'·x^'+formatNumber(R.b))); }
+          else resultsEl.innerHTML += '<div class="table-empty">ไม่สามารถคำนวณ regression ได้</div>';
+        }
+      }
     }
     renderResults();
   })();
@@ -1885,7 +1985,11 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       temp: { C:0, F:1, K:2 },
       area: { mm2:0.000001, cm2:0.0001, m2:1, km2:1000000, in2:0.00064516, ft2:0.092903, yd2:0.836127, acre:4046.86, ha:10000 },
       volume: { ml:0.000001, l:0.001, m3:1, in3:0.000016387, ft3:0.0283168, gal:0.00378541 },
-      speed: { mps:1, kmph:0.277778, mph:0.44704, knot:0.514444 }
+      speed: { mps:1, kmph:0.277778, mph:0.44704, knot:0.514444 },
+      pressure: { Pa:1, kPa:1000, bar:100000, atm:101325, psi:6894.76, mmHg:133.322 },
+      energy: { J:1, kJ:1000, cal:4.184, kcal:4184, Wh:3600, kWh:3600000, BTU:1055.06 },
+      power: { W:1, kW:1000, MW:1000000, hp:745.7, BTUh:0.293071 },
+      force: { N:1, kN:1000, kgf:9.80665, lbf:4.44822 }
     };
     const unitLabels = {
       length: { mm:'mm (มิลลิเมตร)', cm:'cm (เซนติเมตร)', m:'m (เมตร)', km:'km (กิโลเมตร)', in:'in (นิ้ว)', ft:'ft (ฟุต)', yd:'yd (หลา)', mi:'mi (ไมล์)' },
@@ -1893,7 +1997,11 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       temp: { C:'°C (เซลเซียส)', F:'°F (ฟาเรนไฮต์)', K:'K (เคลวิน)' },
       area: { mm2:'mm² (ตร.มม.)', cm2:'cm² (ตร.ซม.)', m2:'m² (ตร.ม.)', km2:'km² (ตร.กม.)', in2:'in² (ตร.นิ้ว)', ft2:'ft² (ตร.ฟุต)', yd2:'yd² (ตร.หลา)', acre:'acre (เอเคอร์)', ha:'ha (เฮกตาร์)' },
       volume: { ml:'mL (มิลลิลิตร)', l:'L (ลิตร)', m3:'m³ (ลบ.ม.)', in3:'in³ (ลบ.นิ้ว)', ft3:'ft³ (ลบ.ฟุต)', gal:'gal (แกลลอน)' },
-      speed: { mps:'m/s (เมตร/วินาที)', kmph:'km/h (กม./ชม.)', mph:'mph (ไมล์/ชม.)', knot:'knot (นอต)' }
+      speed: { mps:'m/s (เมตร/วินาที)', kmph:'km/h (กม./ชม.)', mph:'mph (ไมล์/ชม.)', knot:'knot (นอต)' },
+      pressure: { Pa:'Pa (ปาสกาล)', kPa:'kPa (กิโลปาสกาล)', bar:'bar (บาร์)', atm:'atm (บรรยากาศ)', psi:'psi (ปอนด์/ตร.นิ้ว)', mmHg:'mmHg (มม.ปรอท)' },
+      energy: { J:'J (จูล)', kJ:'kJ (กิโลจูล)', cal:'cal (แคลอรี)', kcal:'kcal (กิโลแคลอรี)', Wh:'Wh (วัตต์-ชม.)', kWh:'kWh (กิโลวัตต์-ชม.)', BTU:'BTU (บีทียู)' },
+      power: { W:'W (วัตต์)', kW:'kW (กิโลวัตต์)', MW:'MW (เมกะวัตต์)', hp:'hp (แรงม้า)', BTUh:'BTU/h (บีทียู/ชม.)' },
+      force: { N:'N (นิวตัน)', kN:'kN (กิโลนิวตัน)', kgf:'kgf (กิโลกรัมแรง)', lbf:'lbf (ปอนด์แรง)' }
     };
     const convCat=document.getElementById('convCategory');
     const convFrom=document.getElementById('convFrom');
