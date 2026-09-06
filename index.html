@@ -192,6 +192,18 @@ body[data-theme="dark"] .csel-btn{background:#26282c; color:#e9eaec; border-colo
 .pbtn.acc{background:linear-gradient(180deg,var(--equals-1),var(--equals-2)); color:var(--equals-fg);}
 .out{background:#0f1a12; color:#c9e8b8; border-radius:9px; padding:9px 11px; font-family:'JetBrains Mono',monospace;
   font-size:12px; white-space:pre-wrap; word-break:break-word; flex:1 1 auto; min-height:60px; overflow-y:auto;}
+.stock-grid{display:grid; gap:4px; margin:2px 0;}
+.stock-cell{position:relative; aspect-ratio:1; background:var(--key-fn-bg); border:none; border-radius:6px; color:#fff;
+  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; overflow:hidden; padding:0;}
+.stock-cell .fill{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(180deg, rgba(242,148,31,.5), rgba(242,148,31,.85)); transition:height .3s ease;}
+.stock-cell .num{position:relative; z-index:1; text-shadow:0 1px 2px rgba(0,0,0,.6);}
+.stock-cell.override{box-shadow:inset 0 0 0 2px var(--shift);}
+.stock-cell.pop{animation:cellpop .3s ease;}
+@keyframes cellpop{0%{transform:scale(1);} 40%{transform:scale(1.2);} 100%{transform:scale(1);}}
+#stockTotal{font-size:14.5px; font-weight:700; text-align:center; transition:color .2s;}
+#stockTotal.bump{animation:totalbump .35s ease;}
+@keyframes totalbump{0%{transform:scale(1);} 35%{transform:scale(1.08); color:var(--shift);} 100%{transform:scale(1);}}
 .grid-inputs{display:grid; gap:5px;}
 .grid-inputs input{background:#fff; border:1px solid #b9bcc0; border-radius:6px; text-align:center; font-family:'JetBrains Mono',monospace;
   font-size:12px; padding:6px 2px; outline:none; width:100%;}
@@ -274,9 +286,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 <body>
 <div class="device">
   <div class="brand">
-    <div class="brand-left"><div class="solar"></div><span class="brand-name">CASINO</span></div>
+    <div class="brand-left"><div class="solar"></div><span class="brand-name">CASIO</span></div>
     <div class="brand-meta">
-      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">TiW-Patcharaphon</div></div>
+      <div><div class="brand-model">fx‑991CW</div><div class="brand-sub">ClassWiz</div></div>
       <div class="brand-right">
         <button class="icon-btn" id="backMenuBtn" title="กลับไปเมนู">&#9776;</button>
         <button class="icon-btn" id="guideBtn" title="คู่มือการใช้งาน">&#63;</button>
@@ -323,6 +335,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="menu-item" data-mode="stat"><span class="n">8</span><span class="tw"><span class="t">Statistics</span><span class="d">การคำนวณทางสถิติและถดถอย (Regression)</span></span></div>
       <div class="menu-item" data-mode="dist"><span class="n">9</span><span class="tw"><span class="t">Distribution</span><span class="d">การแจกแจงความน่าจะเป็น (Normal, Binomial, Poisson)</span></span></div>
       <div class="menu-item" data-mode="tools"><span class="n">0</span><span class="tw"><span class="t">Tools</span><span class="d">ค่าคงที่ทางฟิสิกส์, ตัวแปลงหน่วย, สุ่มตัวเลข</span></span></div>
+      <div class="menu-item" data-mode="stock"><span class="n">&#128230;</span><span class="tw"><span class="t">Stock Count</span><span class="d">นับสินค้าคงคลังเป็นตาราง แถว×คอลัมน์ ปรับความสูงแต่ละจุดได้อิสระ</span></span></div>
     </div>
   </div>
 
@@ -471,6 +484,13 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
     <div class="guide-item"><div class="guide-q">🧰 ค่าคงที่/แปลงหน่วยแบบละเอียด (MENU → 0 Tools)</div>
       <div class="guide-a">มีตัวแปลงหน่วยครบ 6 หมวด (ความยาว น้ำหนัก อุณหภูมิ พื้นที่ ปริมาตร ความเร็ว) เลือกหน่วยต้นทาง-ปลายทางจาก dropdown ได้ละเอียดกว่าปุ่ม CONST/CONV ในหน้าหลัก และมี Coin Toss/Dice Roll ไว้เล่นด้วย</div></div>
+
+    <div class="guide-item"><div class="guide-q">📦 นับสินค้าคงคลัง (MENU → Stock Count)</div>
+      <div class="guide-a">1) ตั้งจำนวนแถว/คอลัมน์ และค่าเริ่มต้นต่อจุด แล้วกด <b>สร้างตาราง</b><br>
+      2) แตะจุดไหนก็ได้เพื่อแก้จำนวนเฉพาะจุดนั้น (เช่น จุดที่ของไม่ครบ)<br>
+      3) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ ผลรวมทั้งหมดคำนวณให้อัตโนมัติ</div>
+      <div class="guide-example"><b>ตัวอย่าง:</b> วางสินค้า 5 แถว × 8 คอลัมน์ ปกติจุดละ 10 ชิ้น → สร้างตาราง → ได้ 400 ชิ้น<br>
+      พบว่าแถวสุดท้ายคอลัมน์ที่ 5 มีของแค่ 5 ชิ้น → แตะจุดนั้น พิมพ์ 5 กดบันทึก → ยอดรวมลดเหลือ 395 ชิ้นทันที</div></div>
   </div>
 
   <!-- VARIABLE PICKER (STO/RCL) -->
@@ -800,6 +820,22 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     </div>
     <div class="field-row"><label>RanInt (สุ่มจำนวนเต็ม)</label><input id="ranA" type="number" value="1" style="max-width:60px;">
       <input id="ranB" type="number" value="6" style="max-width:60px;"><button class="pbtn" style="flex:0 0 70px;" data-mb="ranint">Roll</button></div>
+  </div>
+
+  <!-- ===== PANEL: STOCK COUNT (นับสินค้าคงคลัง) ===== -->
+  <div class="panel" id="panel-stock">
+    <div class="field-row"><label>แถว (Rows)</label><input id="stkRows" type="number" value="5" min="1" max="20">
+      <label style="width:70px">คอลัมน์ (Cols)</label><input id="stkCols" type="number" value="8" min="1" max="20"></div>
+    <div class="field-row"><label>ค่าเริ่มต้น/จุด</label><input id="stkDefault" type="number" value="10" min="0">
+      <button class="pbtn acc" id="stkGenerate" style="flex:0 0 90px;">สร้างตาราง</button></div>
+    <div class="stock-grid" id="stockGrid"></div>
+    <div class="field-row" id="stockEditRow" style="display:none;">
+      <label id="stockEditLabel" style="width:auto; flex:0 0 auto;">แถว - / คอลัมน์ -</label>
+      <input id="stockEditVal" type="number" value="0">
+      <button class="pbtn acc" id="stockEditSave" style="flex:0 0 70px;">บันทึก</button>
+    </div>
+    <div class="out" id="stockTotal">รวมทั้งหมด: 0 ชิ้น</div>
+    <div class="guide-a" style="margin-top:2px;">แตะจุดไหนก็ได้ในตารางเพื่อแก้ไขจำนวนเฉพาะจุดนั้น (เช่น แถวสุดท้ายมีของไม่ครบ) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ให้สังเกตง่าย</div>
   </div>
 
 </div> <!-- end .device -->
@@ -1228,9 +1264,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     basen:document.getElementById('panel-basen'), matrix:document.getElementById('panel-matrix'),
     vector:document.getElementById('panel-vector'), equation:document.getElementById('panel-equation'),
     table:document.getElementById('panel-table'), stat:document.getElementById('panel-stat'),
-    dist:document.getElementById('panel-dist'), tools:document.getElementById('panel-tools') };
+    dist:document.getElementById('panel-dist'), tools:document.getElementById('panel-tools'),
+    stock:document.getElementById('panel-stock') };
   const modeNames={ calc:'CALCULATE', complex:'COMPLEX', basen:'BASE-N', matrix:'MATRIX', vector:'VECTOR',
-    equation:'EQUATION', table:'TABLE', stat:'STATISTICS', dist:'DISTRIBUTION', tools:'TOOLS' };
+    equation:'EQUATION', table:'TABLE', stat:'STATISTICS', dist:'DISTRIBUTION', tools:'TOOLS', stock:'STOCK COUNT' };
   function openMenu(){ menuOverlay.classList.add('open'); haptic(); playClick(); }
   function closeMenu(){ menuOverlay.classList.remove('open'); }
   function setMode(m){
@@ -2189,6 +2226,70 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     makeCustomSelect(document.getElementById('convCategory'), 'เลือกประเภทหน่วย');
     makeCustomSelect(document.getElementById('convFrom'), 'แปลงจากหน่วย');
     makeCustomSelect(document.getElementById('convTo'), 'แปลงเป็นหน่วย');
+  })();
+
+  // ============================================================
+  // PANEL: STOCK COUNT (นับสินค้าคงคลัง)
+  // ============================================================
+  (function(){
+    const rowsInput=document.getElementById('stkRows'), colsInput=document.getElementById('stkCols'), defInput=document.getElementById('stkDefault');
+    const gridEl=document.getElementById('stockGrid'), totalEl=document.getElementById('stockTotal');
+    const editRow=document.getElementById('stockEditRow'), editLabel=document.getElementById('stockEditLabel'),
+      editVal=document.getElementById('stockEditVal'), editSave=document.getElementById('stockEditSave');
+    let rows=5, cols=8, defVal=10, data=[], selected=null;
+    function generate(){
+      rows=Math.max(1,Math.min(20,parseInt(rowsInput.value)||5));
+      cols=Math.max(1,Math.min(20,parseInt(colsInput.value)||8));
+      defVal=Math.max(0,parseInt(defInput.value)||0);
+      rowsInput.value=rows; colsInput.value=cols; defInput.value=defVal;
+      data=[]; for(let r=0;r<rows;r++) data.push(new Array(cols).fill(defVal));
+      selected=null; editRow.style.display='none';
+      renderGrid(); updateTotal(false);
+      haptic(); playClick();
+    }
+    function renderGrid(){
+      gridEl.style.gridTemplateColumns='repeat('+cols+',1fr)';
+      gridEl.innerHTML='';
+      let maxV=defVal; data.forEach(row=>row.forEach(v=>{ if(v>maxV) maxV=v; })); if(maxV<=0) maxV=1;
+      for(let r=0;r<rows;r++){
+        for(let c=0;c<cols;c++){
+          const btn=document.createElement('button'); btn.type='button'; btn.className='stock-cell';
+          if(data[r][c]!==defVal) btn.classList.add('override');
+          const fill=document.createElement('span'); fill.className='fill'; fill.style.height=Math.max(4,Math.min(100,(data[r][c]/maxV)*100))+'%';
+          const num=document.createElement('span'); num.className='num'; num.textContent=data[r][c];
+          btn.appendChild(fill); btn.appendChild(num);
+          btn.addEventListener('click', ()=>selectCell(r,c));
+          gridEl.appendChild(btn);
+        }
+      }
+    }
+    function selectCell(r,c){
+      selected={r,c};
+      editLabel.textContent='แถว '+(r+1)+' / คอลัมน์ '+(c+1);
+      editVal.value=data[r][c];
+      editRow.style.display='flex';
+      editVal.focus();
+      haptic();
+    }
+    function saveEdit(){
+      if(!selected) return;
+      const v=Math.max(0, parseInt(editVal.value)||0);
+      data[selected.r][selected.c]=v;
+      renderGrid(); updateTotal(true);
+      const idx=selected.r*cols+selected.c;
+      const cellEl=gridEl.children[idx];
+      if(cellEl){ cellEl.classList.add('pop'); setTimeout(()=>cellEl.classList.remove('pop'),300); }
+      haptic(); playClick();
+    }
+    function updateTotal(bump){
+      const sum=data.reduce((a,row)=>a+row.reduce((x,y)=>x+y,0),0);
+      totalEl.textContent='รวมทั้งหมด (Total): '+sum+' ชิ้น — '+rows+'×'+cols+' จุด';
+      if(bump){ totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump'); }
+    }
+    document.getElementById('stkGenerate').addEventListener('click', generate);
+    editSave.addEventListener('click', saveEdit);
+    editVal.addEventListener('keydown', e=>{ if(e.key==='Enter') saveEdit(); });
+    generate();
   })();
 
   // ============================================================
