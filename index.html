@@ -487,10 +487,10 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
     <div class="guide-item"><div class="guide-q">📦 นับสินค้าคงคลัง (MENU → Stock Count)</div>
       <div class="guide-a">1) ตั้งจำนวนแถว/คอลัมน์ และค่าเริ่มต้นต่อจุด แล้วกด <b>สร้างตาราง</b><br>
-      2) แตะจุดไหนก็ได้เพื่อแก้จำนวนเฉพาะจุดนั้น (เช่น จุดที่ของไม่ครบ)<br>
-      3) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ ผลรวมทั้งหมดคำนวณให้อัตโนมัติ</div>
+      2) แตะจุดไหนก็ได้ → กด <b>บันทึก</b> แก้เฉพาะจุดนั้น, กด <b>แก้ทั้งแถวนี้</b>/<b>แก้ทั้งคอลัมน์นี้</b> เพื่อแก้ทีเดียวทั้งแนว<br>
+      3) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ ผลรวมคำนวณอัตโนมัติ และ<b>บันทึกไว้ให้เองทุกครั้ง</b> ปิดแอปแล้วเปิดใหม่ข้อมูลยังอยู่</div>
       <div class="guide-example"><b>ตัวอย่าง:</b> วางสินค้า 5 แถว × 8 คอลัมน์ ปกติจุดละ 10 ชิ้น → สร้างตาราง → ได้ 400 ชิ้น<br>
-      พบว่าแถวสุดท้ายคอลัมน์ที่ 5 มีของแค่ 5 ชิ้น → แตะจุดนั้น พิมพ์ 5 กดบันทึก → ยอดรวมลดเหลือ 395 ชิ้นทันที</div></div>
+      พบว่าแถวที่ 5 ทั้งแถวมีของไม่ครบ เหลือแถวละ 5 ชิ้น → แตะช่องไหนก็ได้ในแถว 5 → พิมพ์ 5 → กด <b>แก้ทั้งแถว 5</b> → ทั้ง 8 ช่องในแถวนั้นเปลี่ยนเป็น 5 พร้อมกัน ยอดรวมลดเหลือ 360 ชิ้นทันที</div></div>
   </div>
 
   <!-- VARIABLE PICKER (STO/RCL) -->
@@ -834,8 +834,12 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <input id="stockEditVal" type="number" value="0">
       <button class="pbtn acc" id="stockEditSave" style="flex:0 0 70px;">บันทึก</button>
     </div>
+    <div class="btnrow" id="stockBulkRow" style="display:none;">
+      <button class="pbtn" id="stockEditRowBtn">แก้ทั้งแถวนี้</button>
+      <button class="pbtn" id="stockEditColBtn">แก้ทั้งคอลัมน์นี้</button>
+    </div>
     <div class="out" id="stockTotal">รวมทั้งหมด: 0 ชิ้น</div>
-    <div class="guide-a" style="margin-top:2px;">แตะจุดไหนก็ได้ในตารางเพื่อแก้ไขจำนวนเฉพาะจุดนั้น (เช่น แถวสุดท้ายมีของไม่ครบ) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ให้สังเกตง่าย</div>
+    <div class="guide-a" style="margin-top:2px;">แตะจุดไหนก็ได้ในตารางเพื่อแก้ไขจำนวน — เลือกได้ว่าจะแก้เฉพาะจุดนั้น หรือแก้ทั้งแถว/ทั้งคอลัมน์ในทีเดียว ข้อมูลจะถูกบันทึกอัตโนมัติ</div>
   </div>
 
 </div> <!-- end .device -->
@@ -2236,16 +2240,21 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     const gridEl=document.getElementById('stockGrid'), totalEl=document.getElementById('stockTotal');
     const editRow=document.getElementById('stockEditRow'), editLabel=document.getElementById('stockEditLabel'),
       editVal=document.getElementById('stockEditVal'), editSave=document.getElementById('stockEditSave');
+    const bulkRow=document.getElementById('stockBulkRow'), editRowBtn=document.getElementById('stockEditRowBtn'), editColBtn=document.getElementById('stockEditColBtn');
     let rows=5, cols=8, defVal=10, data=[], selected=null;
-    function generate(){
-      rows=Math.max(1,Math.min(20,parseInt(rowsInput.value)||5));
-      cols=Math.max(1,Math.min(20,parseInt(colsInput.value)||8));
-      defVal=Math.max(0,parseInt(defInput.value)||0);
+    function persist(){ saveState('stockCount', {rows, cols, defVal, data}); }
+    function generate(fromSaved){
+      if(!fromSaved){
+        rows=Math.max(1,Math.min(20,parseInt(rowsInput.value)||5));
+        cols=Math.max(1,Math.min(20,parseInt(colsInput.value)||8));
+        defVal=Math.max(0,parseInt(defInput.value)||0);
+        data=[]; for(let r=0;r<rows;r++) data.push(new Array(cols).fill(defVal));
+        haptic(); playClick();
+      }
       rowsInput.value=rows; colsInput.value=cols; defInput.value=defVal;
-      data=[]; for(let r=0;r<rows;r++) data.push(new Array(cols).fill(defVal));
-      selected=null; editRow.style.display='none';
+      selected=null; editRow.style.display='none'; bulkRow.style.display='none';
       renderGrid(); updateTotal(false);
-      haptic(); playClick();
+      persist();
     }
     function renderGrid(){
       gridEl.style.gridTemplateColumns='repeat('+cols+',1fr)';
@@ -2268,28 +2277,63 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       editLabel.textContent='แถว '+(r+1)+' / คอลัมน์ '+(c+1);
       editVal.value=data[r][c];
       editRow.style.display='flex';
+      bulkRow.style.display='flex';
+      editRowBtn.textContent='แก้ทั้งแถว '+(r+1);
+      editColBtn.textContent='แก้ทั้งคอลัมน์ '+(c+1);
       editVal.focus();
       haptic();
+    }
+    function popCell(r,c){
+      const idx=r*cols+c;
+      const cellEl=gridEl.children[idx];
+      if(cellEl){ cellEl.classList.add('pop'); setTimeout(()=>cellEl.classList.remove('pop'),300); }
     }
     function saveEdit(){
       if(!selected) return;
       const v=Math.max(0, parseInt(editVal.value)||0);
       data[selected.r][selected.c]=v;
-      renderGrid(); updateTotal(true);
-      const idx=selected.r*cols+selected.c;
-      const cellEl=gridEl.children[idx];
-      if(cellEl){ cellEl.classList.add('pop'); setTimeout(()=>cellEl.classList.remove('pop'),300); }
+      renderGrid(); updateTotal(true); popCell(selected.r,selected.c);
+      persist();
       haptic(); playClick();
+    }
+    function saveWholeRow(){
+      if(!selected) return;
+      const v=Math.max(0, parseInt(editVal.value)||0);
+      for(let c=0;c<cols;c++) data[selected.r][c]=v;
+      renderGrid(); updateTotal(true);
+      for(let c=0;c<cols;c++) popCell(selected.r,c);
+      persist();
+      haptic(); playClick();
+      showToast('แก้ทั้งแถว '+(selected.r+1)+' เป็น '+v+' แล้ว');
+    }
+    function saveWholeCol(){
+      if(!selected) return;
+      const v=Math.max(0, parseInt(editVal.value)||0);
+      for(let r=0;r<rows;r++) data[r][selected.c]=v;
+      renderGrid(); updateTotal(true);
+      for(let r=0;r<rows;r++) popCell(r,selected.c);
+      persist();
+      haptic(); playClick();
+      showToast('แก้ทั้งคอลัมน์ '+(selected.c+1)+' เป็น '+v+' แล้ว');
     }
     function updateTotal(bump){
       const sum=data.reduce((a,row)=>a+row.reduce((x,y)=>x+y,0),0);
       totalEl.textContent='รวมทั้งหมด (Total): '+sum+' ชิ้น — '+rows+'×'+cols+' จุด';
       if(bump){ totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump'); }
     }
-    document.getElementById('stkGenerate').addEventListener('click', generate);
+    document.getElementById('stkGenerate').addEventListener('click', ()=>generate(false));
     editSave.addEventListener('click', saveEdit);
+    editRowBtn.addEventListener('click', saveWholeRow);
+    editColBtn.addEventListener('click', saveWholeCol);
     editVal.addEventListener('keydown', e=>{ if(e.key==='Enter') saveEdit(); });
-    generate();
+    // โหลดข้อมูลที่บันทึกไว้ (ถ้ามี) แทนที่จะสร้างตารางใหม่ทุกครั้งที่เข้าโหมดนี้
+    const saved=loadState('stockCount', null);
+    if(saved && saved.data && saved.data.length){
+      rows=saved.rows; cols=saved.cols; defVal=saved.defVal; data=saved.data;
+      generate(true);
+    } else {
+      generate(false);
+    }
   })();
 
   // ============================================================
