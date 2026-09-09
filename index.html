@@ -199,6 +199,7 @@ body[data-theme="dark"] .csel-btn{background:#26282c; color:#e9eaec; border-colo
 .stock-cell .fill{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(180deg, rgba(242,148,31,.5), rgba(242,148,31,.85)); transition:height .3s ease;}
 .stock-cell .num{position:relative; z-index:1; text-shadow:0 1px 2px rgba(0,0,0,.6);}
 .stock-cell.override{box-shadow:inset 0 0 0 2px var(--shift);}
+.chip.active-session{background:var(--shift); color:#20261c; font-weight:800;}
 .stock-cell.pop{animation:cellpop .3s ease;}
 @keyframes cellpop{0%{transform:scale(1);} 40%{transform:scale(1.2);} 100%{transform:scale(1);}}
 #stockTotal{font-size:14.5px; font-weight:700; text-align:center; transition:color .2s;}
@@ -336,6 +337,7 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <div class="menu-item" data-mode="dist"><span class="n">9</span><span class="tw"><span class="t">Distribution</span><span class="d">การแจกแจงความน่าจะเป็น (Normal, Binomial, Poisson)</span></span></div>
       <div class="menu-item" data-mode="tools"><span class="n">0</span><span class="tw"><span class="t">Tools</span><span class="d">ค่าคงที่ทางฟิสิกส์, ตัวแปลงหน่วย, สุ่มตัวเลข</span></span></div>
       <div class="menu-item" data-mode="stock"><span class="n">&#128230;</span><span class="tw"><span class="t">Stock Count</span><span class="d">นับสินค้าคงคลังเป็นตาราง แถว×คอลัมน์ ปรับความสูงแต่ละจุดได้อิสระ</span></span></div>
+      <div class="menu-item" data-mode="logistics"><span class="n">&#128666;</span><span class="tw"><span class="t">Logistics</span><span class="d">คาดคะเนสต๊อก, จุดสั่งซื้อซ้ำ, EOQ, น้ำหนักปริมาตร, แปลงลัง/พาเลท</span></span></div>
     </div>
   </div>
 
@@ -488,9 +490,15 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     <div class="guide-item"><div class="guide-q">📦 นับสินค้าคงคลัง (MENU → Stock Count)</div>
       <div class="guide-a">1) ตั้งจำนวนแถว/คอลัมน์ และค่าเริ่มต้นต่อจุด แล้วกด <b>สร้างตาราง</b><br>
       2) แตะจุดไหนก็ได้ → กด <b>บันทึก</b> แก้เฉพาะจุดนั้น, กด <b>แก้ทั้งแถวนี้</b>/<b>แก้ทั้งคอลัมน์นี้</b> เพื่อแก้ทีเดียวทั้งแนว<br>
-      3) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ ผลรวมคำนวณอัตโนมัติ และ<b>บันทึกไว้ให้เองทุกครั้ง</b> ปิดแอปแล้วเปิดใหม่ข้อมูลยังอยู่</div>
+      3) จุดที่ถูกแก้จะมีกรอบสีส้มล้อมไว้ ผลรวมคำนวณอัตโนมัติ และ<b>บันทึกไว้ให้เองทุกครั้ง</b> ปิดแอปแล้วเปิดใหม่ข้อมูลยังอยู่<br>
+      4) นับหลายสินค้าพร้อมกันได้ — แถบชิปด้านบนคือ "รายการนับ" กด <b>+ ใหม่</b> เพื่อเริ่มนับสินค้าอีกชิ้นแยกกัน แตะชื่อรายการเพื่อสลับไปมา พิมพ์ชื่อในช่องด้านล่างแล้วกด <b>บันทึกชื่อ</b> เพื่อเปลี่ยนชื่อรายการ<br>
+      5) กดปุ่ม <b>🧊 3D</b> เพื่อดูตารางเป็นกล่อง 3 มิติ สูงตามจำนวนสินค้าจริง ลากหมุนดูรอบทิศได้ หยิกนิ้วซูมเข้า-ออก แตะกล่องไหนก็แก้ไขได้เลยเหมือนโหมด 2D (ต้องมีไฟล์ three.module.min.js และ OrbitControls.js อยู่ในโปรเจกต์ด้วย)</div>
       <div class="guide-example"><b>ตัวอย่าง:</b> วางสินค้า 5 แถว × 8 คอลัมน์ ปกติจุดละ 10 ชิ้น → สร้างตาราง → ได้ 400 ชิ้น<br>
-      พบว่าแถวที่ 5 ทั้งแถวมีของไม่ครบ เหลือแถวละ 5 ชิ้น → แตะช่องไหนก็ได้ในแถว 5 → พิมพ์ 5 → กด <b>แก้ทั้งแถว 5</b> → ทั้ง 8 ช่องในแถวนั้นเปลี่ยนเป็น 5 พร้อมกัน ยอดรวมลดเหลือ 360 ชิ้นทันที</div></div>
+      พบว่าแถวที่ 5 ทั้งแถวมีของไม่ครบ เหลือแถวละ 5 ชิ้น → แตะช่องไหนก็ได้ในแถว 5 → พิมพ์ 5 → กด <b>แก้ทั้งแถว 5</b> → ทั้ง 8 ช่องในแถวนั้นเปลี่ยนเป็น 5 พร้อมกัน ยอดรวมลดเหลือ 360 ชิ้นทันที<br>
+      อยากนับสินค้า B ต่อโดยไม่ทับของเดิม → กด <b>+ ใหม่</b> → ตั้งค่าตารางของสินค้า B แยกกันได้เลย ของสินค้า A ยังอยู่ครบ กดที่ชื่อ "รายการที่ 1" เพื่อกลับไปดูได้ตลอด</div></div>
+
+    <div class="guide-item"><div class="guide-q">🚚 คาดคะเน/ขนส่ง (MENU → Logistics)</div>
+      <div class="guide-a">รวมเครื่องมือช่วยงานคลัง/ขนส่ง 8 อย่าง: คาดคะเนสต๊อกหมด, จุดสั่งซื้อซ้ำ, EOQ, น้ำหนักตามปริมาตร, แปลงลัง/พาเลท, นับด้วยการชั่งน้ำหนัก, ค่าน้ำมัน+เวลาเดินทาง, % ใช้พื้นที่ตู้/รถ, กำไร-มาร์จิ้น — กรอกตัวเลขแล้วกดปุ่มคำนวณแต่ละอันได้เลย</div></div>
   </div>
 
   <!-- VARIABLE PICKER (STO/RCL) -->
@@ -824,11 +832,21 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
 
   <!-- ===== PANEL: STOCK COUNT (นับสินค้าคงคลัง) ===== -->
   <div class="panel" id="panel-stock">
+    <div class="chip-row" id="stockSessionTabs"></div>
+    <div class="field-row"><input id="stockSessionName" placeholder="ชื่อรายการนี้">
+      <button class="pbtn" id="stockRenameBtn" style="flex:0 0 80px;">บันทึกชื่อ</button>
+      <button class="pbtn" id="stockDeleteSession" style="flex:0 0 50px; background:#8a3227;">ลบ</button></div>
     <div class="field-row"><label>แถว (Rows)</label><input id="stkRows" type="number" value="5" min="1" max="20">
       <label style="width:70px">คอลัมน์ (Cols)</label><input id="stkCols" type="number" value="8" min="1" max="20"></div>
     <div class="field-row"><label>ค่าเริ่มต้น/จุด</label><input id="stkDefault" type="number" value="10" min="0">
       <button class="pbtn acc" id="stkGenerate" style="flex:0 0 90px;">สร้างตาราง</button></div>
+    <div class="seg" id="stockViewSeg" style="margin-bottom:2px;"><button class="on" data-view="2d">2D</button><button data-view="3d">🧊 3D</button></div>
     <div class="stock-grid" id="stockGrid"></div>
+    <div id="stock3dWrap" style="display:none; position:relative; height:270px; border-radius:10px; overflow:hidden; background:#0a0d08; margin:2px 0;">
+      <canvas id="stock3dCanvas" style="width:100%; height:100%; display:block; touch-action:none;"></canvas>
+      <div id="stock3dHint" style="position:absolute; bottom:5px; left:7px; font-size:9px; color:#9a9d8f; font-family:'JetBrains Mono',monospace; pointer-events:none;">ลาก=หมุน · หยิกนิ้ว=ซูม · แตะกล่อง=แก้ไข</div>
+      <div id="stock3dMissing" style="display:none; position:absolute; inset:0; align-items:center; justify-content:center; text-align:center; padding:14px; font-size:11px; color:#c9cbbf; font-family:'JetBrains Mono',monospace;">ไม่พบไฟล์ 3D library<br>ต้องมี three.module.min.js และ OrbitControls.js<br>อยู่โฟลเดอร์เดียวกับ index.html</div>
+    </div>
     <div class="field-row" id="stockEditRow" style="display:none;">
       <label id="stockEditLabel" style="width:auto; flex:0 0 auto;">แถว - / คอลัมน์ -</label>
       <input id="stockEditVal" type="number" value="0">
@@ -839,7 +857,78 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       <button class="pbtn" id="stockEditColBtn">แก้ทั้งคอลัมน์นี้</button>
     </div>
     <div class="out" id="stockTotal">รวมทั้งหมด: 0 ชิ้น</div>
-    <div class="guide-a" style="margin-top:2px;">แตะจุดไหนก็ได้ในตารางเพื่อแก้ไขจำนวน — เลือกได้ว่าจะแก้เฉพาะจุดนั้น หรือแก้ทั้งแถว/ทั้งคอลัมน์ในทีเดียว ข้อมูลจะถูกบันทึกอัตโนมัติ</div>
+    <div class="field-row"><label style="width:auto; flex:0 0 auto;">ยอดตามระบบ</label><input id="stockExpected" type="number" placeholder="(ไม่บังคับ)"></div>
+    <div class="out" id="stockVariance" style="display:none;"></div>
+    <div class="guide-a" style="margin-top:2px;">แตะจุดไหนก็ได้ในตารางเพื่อแก้ไขจำนวน — เลือกได้ว่าจะแก้เฉพาะจุดนั้น หรือแก้ทั้งแถว/ทั้งคอลัมน์ในทีเดียว ข้อมูลจะถูกบันทึกอัตโนมัติ ใส่ "ยอดตามระบบ" เพื่อเทียบส่วนต่างกับยอดที่นับได้จริง</div>
+  </div>
+
+  <!-- ===== PANEL: LOGISTICS (คาดคะเน/ขนส่ง) ===== -->
+  <div class="panel" id="panel-logistics">
+    <div class="mini-title">คาดคะเนสต๊อกจะหมด (Days Until Stockout)</div>
+    <div class="field-row"><label>สต๊อกปัจจุบัน</label><input id="lgStock" type="number" value="100"></div>
+    <div class="field-row"><label>ใช้/วัน</label><input id="lgUsage" type="number" value="5"></div>
+    <button class="pbtn acc" id="lgStockoutBtn">คำนวณวันที่จะหมด</button>
+    <div class="out" id="lgStockoutOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">จุดสั่งซื้อซ้ำ (Reorder Point)</div>
+    <div class="field-row"><label>Lead Time (วัน)</label><input id="lgLeadTime" type="number" value="7"></div>
+    <div class="field-row"><label>สต๊อกปลอดภัย</label><input id="lgSafety" type="number" value="20"></div>
+    <button class="pbtn acc" id="lgReorderBtn">คำนวณจุดสั่งซื้อ</button>
+    <div class="out" id="lgReorderOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">EOQ (ปริมาณสั่งซื้อประหยัดสุด)</div>
+    <div class="field-row"><label>ความต้องการ/ปี (D)</label><input id="lgD" type="number" value="1000"></div>
+    <div class="field-row"><label>ต้นทุนสั่ง/ครั้ง (S)</label><input id="lgS" type="number" value="50">
+      <label style="width:110px">ต้นทุนเก็บ/หน่วย/ปี (H)</label><input id="lgH" type="number" value="2"></div>
+    <button class="pbtn acc" id="lgEoqBtn">คำนวณ EOQ</button>
+    <div class="out" id="lgEoqOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">น้ำหนักตามปริมาตร (Dimensional Weight)</div>
+    <div class="field-row"><input id="lgDimL" type="number" placeholder="ยาว (ซม.)" value="40">
+      <input id="lgDimW" type="number" placeholder="กว้าง (ซม.)" value="30">
+      <input id="lgDimH" type="number" placeholder="สูง (ซม.)" value="30"></div>
+    <div class="field-row"><label>น้ำหนักจริง (กก.)</label><input id="lgActualW" type="number" value="8">
+      <label style="width:70px">ตัวหาร</label><input id="lgDivisor" type="number" value="5000"></div>
+    <button class="pbtn acc" id="lgDimBtn">คำนวณน้ำหนักคิดค่าส่ง</button>
+    <div class="out" id="lgDimOut">ผลลัพธ์จะแสดงที่นี่ (Result) — ตัวหารทั่วไปใช้ 5000, ขนส่งทางอากาศมักใช้ 6000</div>
+
+    <div class="mini-title">แปลงหน่วยลัง/พาเลท</div>
+    <div class="field-row"><label>ชิ้น/ลัง</label><input id="lgUnitsPerCarton" type="number" value="24">
+      <label style="width:80px">ลัง/พาเลท</label><input id="lgCartonsPerPallet" type="number" value="40"></div>
+    <div class="field-row"><label>จำนวนพาเลท</label><input id="lgPallets" type="number" value="1"></div>
+    <button class="pbtn acc" id="lgPalletBtn">คำนวณจำนวนชิ้นรวม</button>
+    <div class="out" id="lgPalletOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">นับด้วยการชั่งน้ำหนัก (Weight-based Counting)</div>
+    <div class="field-row"><label>น้ำหนักรวม (กก.)</label><input id="lgTotalWeight" type="number" value="5"></div>
+    <div class="field-row"><label>น้ำหนัก/ชิ้น (กรัม)</label><input id="lgUnitWeight" type="number" value="2"></div>
+    <button class="pbtn acc" id="lgWeightCountBtn">คำนวณจำนวนชิ้น</button>
+    <div class="out" id="lgWeightCountOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">ค่าน้ำมัน (Fuel Cost)</div>
+    <div class="field-row"><label>ระยะทาง (กม.)</label><input id="lgFuelDist" type="number" value="100"></div>
+    <div class="field-row"><label>สิ้นเปลือง (กม./ล.)</label><input id="lgFuelEff" type="number" value="12">
+      <label style="width:80px">ราคา/ลิตร</label><input id="lgFuelPrice" type="number" value="32"></div>
+    <button class="pbtn acc" id="lgFuelBtn">คำนวณค่าน้ำมัน</button>
+    <div class="out" id="lgFuelOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">เวลาเดินทาง (Delivery Time)</div>
+    <div class="field-row"><label>ระยะทาง (กม.)</label><input id="lgTimeDist" type="number" value="100">
+      <label style="width:80px">ความเร็วเฉลี่ย</label><input id="lgTimeSpeed" type="number" value="60"></div>
+    <button class="pbtn acc" id="lgTimeBtn">คำนวณเวลาถึง</button>
+    <div class="out" id="lgTimeOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">% ใช้พื้นที่ตู้คอนเทนเนอร์/รถ</div>
+    <div class="field-row"><label>ปริมาตรสินค้า (ลบ.ม.)</label><input id="lgCargoVol" type="number" value="20"></div>
+    <div class="field-row"><label>ความจุตู้/รถ (ลบ.ม.)</label><input id="lgContainerVol" type="number" value="33"></div>
+    <button class="pbtn acc" id="lgUtilBtn">คำนวณ % การใช้พื้นที่</button>
+    <div class="out" id="lgUtilOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
+
+    <div class="mini-title">กำไร/มาร์จิ้น (Margin &amp; Markup)</div>
+    <div class="field-row"><label>ต้นทุน</label><input id="lgCost" type="number" value="100">
+      <label style="width:70px">ราคาขาย</label><input id="lgPrice" type="number" value="150"></div>
+    <button class="pbtn acc" id="lgMarginBtn">คำนวณกำไร/มาร์จิ้น</button>
+    <div class="out" id="lgMarginOut">ผลลัพธ์จะแสดงที่นี่ (Result)</div>
   </div>
 
 </div> <!-- end .device -->
@@ -1269,9 +1358,9 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     vector:document.getElementById('panel-vector'), equation:document.getElementById('panel-equation'),
     table:document.getElementById('panel-table'), stat:document.getElementById('panel-stat'),
     dist:document.getElementById('panel-dist'), tools:document.getElementById('panel-tools'),
-    stock:document.getElementById('panel-stock') };
+    stock:document.getElementById('panel-stock'), logistics:document.getElementById('panel-logistics') };
   const modeNames={ calc:'CALCULATE', complex:'COMPLEX', basen:'BASE-N', matrix:'MATRIX', vector:'VECTOR',
-    equation:'EQUATION', table:'TABLE', stat:'STATISTICS', dist:'DISTRIBUTION', tools:'TOOLS', stock:'STOCK COUNT' };
+    equation:'EQUATION', table:'TABLE', stat:'STATISTICS', dist:'DISTRIBUTION', tools:'TOOLS', stock:'STOCK COUNT', logistics:'LOGISTICS' };
   function openMenu(){ menuOverlay.classList.add('open'); haptic(); playClick(); }
   function closeMenu(){ menuOverlay.classList.remove('open'); }
   function setMode(m){
@@ -2241,8 +2330,84 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     const editRow=document.getElementById('stockEditRow'), editLabel=document.getElementById('stockEditLabel'),
       editVal=document.getElementById('stockEditVal'), editSave=document.getElementById('stockEditSave');
     const bulkRow=document.getElementById('stockBulkRow'), editRowBtn=document.getElementById('stockEditRowBtn'), editColBtn=document.getElementById('stockEditColBtn');
+    const expectedInput=document.getElementById('stockExpected'), varianceEl=document.getElementById('stockVariance');
+    const tabsEl=document.getElementById('stockSessionTabs'), nameInput=document.getElementById('stockSessionName'),
+      renameBtn=document.getElementById('stockRenameBtn'), deleteBtn=document.getElementById('stockDeleteSession');
     let rows=5, cols=8, defVal=10, data=[], selected=null;
-    function persist(){ saveState('stockCount', {rows, cols, defVal, data}); }
+    let sessions=[], activeId=null;
+
+    // ----- จัดการหลายรายการนับ (sessions) -----
+    function loadSessions(){
+      sessions=loadState('stockSessions', null);
+      activeId=loadState('stockActiveId', null);
+      if(!sessions || !sessions.length){
+        // ย้ายข้อมูลชุดเดียวเดิม (ถ้ามี) มาเป็นรายการแรก
+        const old=loadState('stockCount', null);
+        const oldExpected=loadState('stockExpected', '');
+        const id='s'+Date.now();
+        sessions=[{ id, name:'รายการที่ 1',
+          rows: old?old.rows:5, cols: old?old.cols:8, defVal: old?old.defVal:10,
+          data: (old && old.data) ? old.data : null, expected: oldExpected }];
+        activeId=id;
+      }
+      if(!sessions.find(s=>s.id===activeId)) activeId=sessions[0].id;
+    }
+    function persistSessions(){ saveState('stockSessions', sessions); saveState('stockActiveId', activeId); }
+    function getActive(){ return sessions.find(s=>s.id===activeId); }
+    function renderTabs(){
+      tabsEl.innerHTML='';
+      sessions.forEach(s=>{
+        const b=document.createElement('button'); b.type='button'; b.className='chip'+(s.id===activeId?' active-session':'');
+        b.textContent=s.name; b.addEventListener('click', ()=>switchSession(s.id));
+        tabsEl.appendChild(b);
+      });
+      const addBtn=document.createElement('button'); addBtn.type='button'; addBtn.className='chip'; addBtn.textContent='+ ใหม่';
+      addBtn.addEventListener('click', newSession);
+      tabsEl.appendChild(addBtn);
+      deleteBtn.style.display = sessions.length>1 ? 'block' : 'none';
+    }
+    function loadIntoWorkingVars(s){
+      rows=s.rows; cols=s.cols; defVal=s.defVal;
+      data = (s.data && s.data.length) ? s.data : (()=>{ const d=[]; for(let r=0;r<rows;r++) d.push(new Array(cols).fill(defVal)); return d; })();
+      nameInput.value=s.name;
+      expectedInput.value=s.expected||'';
+      rowsInput.value=rows; colsInput.value=cols; defInput.value=defVal;
+    }
+    function switchSession(id){
+      activeId=id; persistSessions();
+      loadIntoWorkingVars(getActive());
+      selected=null; editRow.style.display='none'; bulkRow.style.display='none';
+      renderTabs(); renderGrid(); updateTotal(false);
+      haptic(); playClick();
+    }
+    function newSession(){
+      const id='s'+Date.now();
+      sessions.push({ id, name:'รายการที่ '+(sessions.length+1), rows:5, cols:8, defVal:10, data:null, expected:'' });
+      switchSession(id);
+      showToast('สร้างรายการนับใหม่แล้ว');
+    }
+    function persist(){
+      const s=getActive();
+      s.rows=rows; s.cols=cols; s.defVal=defVal; s.data=data; s.expected=expectedInput.value;
+      persistSessions();
+    }
+    renameBtn.addEventListener('click', ()=>{
+      const v=nameInput.value.trim(); if(!v) return;
+      getActive().name=v; persistSessions(); renderTabs();
+      showToast('เปลี่ยนชื่อรายการแล้ว'); haptic(); playClick();
+    });
+    deleteBtn.addEventListener('click', ()=>{
+      if(sessions.length<=1) return;
+      if(!confirm('ลบรายการ "'+getActive().name+'" ทั้งหมด? การกระทำนี้ย้อนกลับไม่ได้')) return;
+      sessions=sessions.filter(s=>s.id!==activeId);
+      activeId=sessions[0].id;
+      persistSessions();
+      loadIntoWorkingVars(getActive());
+      selected=null; editRow.style.display='none'; bulkRow.style.display='none';
+      renderTabs(); renderGrid(); updateTotal(false);
+      showToast('ลบรายการแล้ว'); haptic();
+    });
+
     function generate(fromSaved){
       if(!fromSaved){
         rows=Math.max(1,Math.min(20,parseInt(rowsInput.value)||5));
@@ -2271,6 +2436,11 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
           gridEl.appendChild(btn);
         }
       }
+      sync3d();
+    }
+    let view3dActive=false;
+    function sync3d(){
+      if(view3dActive && window.__stock3d) window.__stock3d.buildBoxes(rows, cols, data);
     }
     function selectCell(r,c){
       selected={r,c};
@@ -2320,20 +2490,175 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
       const sum=data.reduce((a,row)=>a+row.reduce((x,y)=>x+y,0),0);
       totalEl.textContent='รวมทั้งหมด (Total): '+sum+' ชิ้น — '+rows+'×'+cols+' จุด';
       if(bump){ totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump'); }
+      updateVariance(sum);
     }
+    function updateVariance(sum){
+      const exp=parseFloat(expectedInput.value);
+      if(isNaN(exp) || expectedInput.value.trim()===''){ varianceEl.style.display='none'; persist(); return; }
+      const diff=sum-exp;
+      const pct = exp!==0 ? (diff/exp*100) : 0;
+      varianceEl.style.display='block';
+      if(diff===0){ varianceEl.style.color='#c9e8b8'; varianceEl.textContent='ตรงกับยอดระบบพอดี ✓ ('+sum+' = '+exp+')'; }
+      else if(diff<0){ varianceEl.style.color='#ff8a80'; varianceEl.textContent='ขาด (Shortage): '+Math.abs(diff)+' ชิ้น ('+Math.abs(pct).toFixed(1)+'%) — นับได้ '+sum+' / ระบบ '+exp; }
+      else{ varianceEl.style.color='#ffd479'; varianceEl.textContent='เกิน (Surplus): +'+diff+' ชิ้น (+'+pct.toFixed(1)+'%) — นับได้ '+sum+' / ระบบ '+exp; }
+      persist();
+    }
+    expectedInput.addEventListener('input', ()=>{
+      const sum=data.reduce((a,row)=>a+row.reduce((x,y)=>x+y,0),0);
+      updateVariance(sum);
+    });
     document.getElementById('stkGenerate').addEventListener('click', ()=>generate(false));
     editSave.addEventListener('click', saveEdit);
     editRowBtn.addEventListener('click', saveWholeRow);
     editColBtn.addEventListener('click', saveWholeCol);
     editVal.addEventListener('keydown', e=>{ if(e.key==='Enter') saveEdit(); });
-    // โหลดข้อมูลที่บันทึกไว้ (ถ้ามี) แทนที่จะสร้างตารางใหม่ทุกครั้งที่เข้าโหมดนี้
-    const saved=loadState('stockCount', null);
-    if(saved && saved.data && saved.data.length){
-      rows=saved.rows; cols=saved.cols; defVal=saved.defVal; data=saved.data;
-      generate(true);
-    } else {
-      generate(false);
-    }
+
+    // ----- สลับมุมมอง 2D / 3D -----
+    const viewSeg=document.getElementById('stockViewSeg'), grid2dEl=document.getElementById('stockGrid'),
+      wrap3dEl=document.getElementById('stock3dWrap'), missing3dEl=document.getElementById('stock3dMissing');
+    viewSeg.addEventListener('click', (e)=>{
+      const b=e.target.closest('button'); if(!b) return;
+      viewSeg.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+      const is3d = b.dataset.view==='3d';
+      view3dActive = is3d;
+      grid2dEl.style.display = is3d ? 'none' : 'grid';
+      wrap3dEl.style.display = is3d ? 'block' : 'none';
+      if(is3d){
+        if(window.__stock3dFailed){ missing3dEl.style.display='flex'; }
+        else if(window.__stock3d){
+          missing3dEl.style.display='none';
+          window.__stock3d.buildBoxes(rows, cols, data);
+          setTimeout(()=>window.__stock3d.resize(), 50);
+        } else {
+          setTimeout(()=>{
+            if(window.__stock3dFailed){ missing3dEl.style.display='flex'; }
+            else if(window.__stock3d){ missing3dEl.style.display='none'; window.__stock3d.buildBoxes(rows, cols, data); window.__stock3d.resize(); }
+          }, 400);
+        }
+      }
+      haptic(); playClick();
+    });
+    window.addEventListener('stock3d-select', (e)=>{ selectCell(e.detail.r, e.detail.c); });
+
+    // เริ่มต้น: โหลดรายการที่บันทึกไว้ทั้งหมด แล้วแสดงรายการที่ใช้งานล่าสุด
+    loadSessions();
+    loadIntoWorkingVars(getActive());
+    renderTabs();
+    renderGrid();
+    updateTotal(false);
+  })();
+
+  // ============================================================
+  // PANEL: LOGISTICS (คาดคะเน / ขนส่ง)
+  // ============================================================
+  (function(){
+    document.getElementById('lgStockoutBtn').addEventListener('click', ()=>{
+      const stock=parseFloat(document.getElementById('lgStock').value)||0;
+      const usage=parseFloat(document.getElementById('lgUsage').value)||0;
+      const out=document.getElementById('lgStockoutOut');
+      if(usage<=0){ out.textContent='กรุณาใส่อัตราใช้/วันมากกว่า 0'; return; }
+      const days=stock/usage;
+      const d=new Date(); d.setDate(d.getDate()+Math.floor(days));
+      const dateStr=d.toLocaleDateString('th-TH', {year:'numeric', month:'short', day:'numeric'});
+      out.textContent='สต๊อกจะหมดในอีกประมาณ '+days.toFixed(1)+' วัน\nคาดว่าจะหมดวันที่: '+dateStr;
+      haptic(); playClick();
+    });
+    document.getElementById('lgReorderBtn').addEventListener('click', ()=>{
+      const usage=parseFloat(document.getElementById('lgUsage').value)||0;
+      const lead=parseFloat(document.getElementById('lgLeadTime').value)||0;
+      const safety=parseFloat(document.getElementById('lgSafety').value)||0;
+      const out=document.getElementById('lgReorderOut');
+      const rp=(usage*lead)+safety;
+      out.textContent='จุดสั่งซื้อซ้ำ (Reorder Point) = '+rp.toFixed(1)+' หน่วย\n(เมื่อสต๊อกลดเหลือระดับนี้ ควรสั่งของใหม่ทันที)\nสูตร: (ใช้/วัน '+usage+' × Lead Time '+lead+' วัน) + สต๊อกปลอดภัย '+safety;
+      haptic(); playClick();
+    });
+    document.getElementById('lgEoqBtn').addEventListener('click', ()=>{
+      const D=parseFloat(document.getElementById('lgD').value)||0;
+      const S=parseFloat(document.getElementById('lgS').value)||0;
+      const H=parseFloat(document.getElementById('lgH').value)||0;
+      const out=document.getElementById('lgEoqOut');
+      if(H<=0){ out.textContent='กรุณาใส่ต้นทุนเก็บ/หน่วย/ปี (H) มากกว่า 0'; return; }
+      const eoq=Math.sqrt((2*D*S)/H);
+      const orders=eoq>0 ? D/eoq : 0;
+      out.textContent='EOQ (ปริมาณสั่งซื้อที่ประหยัดสุด) = '+eoq.toFixed(1)+' หน่วย/ครั้ง\nควรสั่งประมาณ '+orders.toFixed(1)+' ครั้ง/ปี\nสูตร: √(2×D×S/H) = √(2×'+D+'×'+S+'/'+H+')';
+      haptic(); playClick();
+    });
+    document.getElementById('lgDimBtn').addEventListener('click', ()=>{
+      const L=parseFloat(document.getElementById('lgDimL').value)||0;
+      const W=parseFloat(document.getElementById('lgDimW').value)||0;
+      const H=parseFloat(document.getElementById('lgDimH').value)||0;
+      const actual=parseFloat(document.getElementById('lgActualW').value)||0;
+      const divisor=parseFloat(document.getElementById('lgDivisor').value)||5000;
+      const out=document.getElementById('lgDimOut');
+      if(divisor<=0){ out.textContent='กรุณาใส่ตัวหารมากกว่า 0'; return; }
+      const dimWeight=(L*W*H)/divisor;
+      const chargeable=Math.max(actual, dimWeight);
+      out.textContent='น้ำหนักตามปริมาตร = '+dimWeight.toFixed(2)+' กก.\nน้ำหนักจริง = '+actual.toFixed(2)+' กก.\n➜ น้ำหนักที่ใช้คิดค่าส่งจริง (Chargeable Weight) = '+chargeable.toFixed(2)+' กก. ('+(chargeable===dimWeight?'ใช้น้ำหนักปริมาตร เพราะมากกว่า':'ใช้น้ำหนักจริง เพราะมากกว่า')+')';
+      haptic(); playClick();
+    });
+    document.getElementById('lgPalletBtn').addEventListener('click', ()=>{
+      const upc=parseFloat(document.getElementById('lgUnitsPerCarton').value)||0;
+      const cpp=parseFloat(document.getElementById('lgCartonsPerPallet').value)||0;
+      const pallets=parseFloat(document.getElementById('lgPallets').value)||0;
+      const out=document.getElementById('lgPalletOut');
+      const cartons=cpp*pallets;
+      const units=upc*cartons;
+      out.textContent='จำนวนลังรวม = '+cartons+' ลัง\nจำนวนชิ้นรวม = '+units+' ชิ้น\n('+pallets+' พาเลท × '+cpp+' ลัง/พาเลท × '+upc+' ชิ้น/ลัง)';
+      haptic(); playClick();
+    });
+    document.getElementById('lgWeightCountBtn').addEventListener('click', ()=>{
+      const totalKg=parseFloat(document.getElementById('lgTotalWeight').value)||0;
+      const perUnitG=parseFloat(document.getElementById('lgUnitWeight').value)||0;
+      const out=document.getElementById('lgWeightCountOut');
+      if(perUnitG<=0){ out.textContent='กรุณาใส่น้ำหนัก/ชิ้นมากกว่า 0'; return; }
+      const totalG=totalKg*1000;
+      const count=totalG/perUnitG;
+      out.textContent='จำนวนชิ้นโดยประมาณ = '+count.toFixed(1)+' ชิ้น\n('+totalKg+' กก. = '+totalG+' กรัม ÷ '+perUnitG+' กรัม/ชิ้น)\nปัดเป็นจำนวนเต็ม ≈ '+Math.round(count)+' ชิ้น';
+      haptic(); playClick();
+    });
+    document.getElementById('lgFuelBtn').addEventListener('click', ()=>{
+      const dist=parseFloat(document.getElementById('lgFuelDist').value)||0;
+      const eff=parseFloat(document.getElementById('lgFuelEff').value)||0;
+      const price=parseFloat(document.getElementById('lgFuelPrice').value)||0;
+      const out=document.getElementById('lgFuelOut');
+      if(eff<=0){ out.textContent='กรุณาใส่อัตราสิ้นเปลืองมากกว่า 0'; return; }
+      const liters=dist/eff;
+      const cost=liters*price;
+      out.textContent='ใช้น้ำมันประมาณ = '+liters.toFixed(2)+' ลิตร\nค่าน้ำมันรวม = '+cost.toFixed(2)+' บาท\n('+dist+' กม. ÷ '+eff+' กม./ล. × '+price+' บาท/ล.)';
+      haptic(); playClick();
+    });
+    document.getElementById('lgTimeBtn').addEventListener('click', ()=>{
+      const dist=parseFloat(document.getElementById('lgTimeDist').value)||0;
+      const speed=parseFloat(document.getElementById('lgTimeSpeed').value)||0;
+      const out=document.getElementById('lgTimeOut');
+      if(speed<=0){ out.textContent='กรุณาใส่ความเร็วเฉลี่ยมากกว่า 0'; return; }
+      const hours=dist/speed;
+      const h=Math.floor(hours), m=Math.round((hours-h)*60);
+      const arrive=new Date(Date.now()+hours*3600000);
+      const arriveStr=arrive.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
+      out.textContent='ใช้เวลาเดินทางประมาณ '+h+' ชม. '+m+' นาที\nถ้าออกเดินทางตอนนี้ คาดว่าถึงเวลา ≈ '+arriveStr;
+      haptic(); playClick();
+    });
+    document.getElementById('lgUtilBtn').addEventListener('click', ()=>{
+      const cargo=parseFloat(document.getElementById('lgCargoVol').value)||0;
+      const container=parseFloat(document.getElementById('lgContainerVol').value)||0;
+      const out=document.getElementById('lgUtilOut');
+      if(container<=0){ out.textContent='กรุณาใส่ความจุตู้/รถมากกว่า 0'; return; }
+      const pct=(cargo/container)*100;
+      const remain=container-cargo;
+      out.textContent='ใช้พื้นที่ไปแล้ว = '+pct.toFixed(1)+'%\nเหลือพื้นที่ว่าง = '+remain.toFixed(2)+' ลบ.ม.'+(pct>100?'\n⚠️ สินค้าเกินความจุ! เกินไป '+(cargo-container).toFixed(2)+' ลบ.ม.':'');
+      haptic(); playClick();
+    });
+    document.getElementById('lgMarginBtn').addEventListener('click', ()=>{
+      const cost=parseFloat(document.getElementById('lgCost').value)||0;
+      const price=parseFloat(document.getElementById('lgPrice').value)||0;
+      const out=document.getElementById('lgMarginOut');
+      const profit=price-cost;
+      const margin = price!==0 ? (profit/price*100) : 0;
+      const markup = cost!==0 ? (profit/cost*100) : 0;
+      out.textContent='กำไร = '+profit.toFixed(2)+' บาท/ชิ้น\nMargin (เทียบราคาขาย) = '+margin.toFixed(1)+'%\nMarkup (เทียบต้นทุน) = '+markup.toFixed(1)+'%';
+      haptic(); playClick();
+    });
   })();
 
   // ============================================================
@@ -2347,6 +2672,117 @@ body[data-theme="dark"] .out{background:#0a1310; color:#a7dcc1;}
     }catch(e){}
   }
 
+})();
+</script>
+
+<!-- 3D VIEWER (Stock Count) — ต้องมีไฟล์ three.module.min.js และ OrbitControls.js อยู่โฟลเดอร์เดียวกับ index.html -->
+<script type="module">
+(async () => {
+  let THREE, OrbitControls;
+  try{
+    THREE = await import('./three.module.min.js');
+    ({ OrbitControls } = await import('./OrbitControls.js'));
+  }catch(e){
+    window.__stock3dFailed = true;
+    return;
+  }
+
+  const canvas = document.getElementById('stock3dCanvas');
+  const wrapEl = document.getElementById('stock3dWrap');
+  let scene, camera, renderer, controls, boxGroup, inited=false;
+
+  function initScene(){
+    if(inited) return;
+    inited = true;
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x11150d);
+    camera = new THREE.PerspectiveCamera(45, Math.max(1,wrapEl.clientWidth)/Math.max(1,wrapEl.clientHeight), 0.1, 100);
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setSize(wrapEl.clientWidth, wrapEl.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    renderer.shadowMap.enabled = true;
+
+    scene.add(new THREE.AmbientLight(0xfff2df, 0.65));
+    const dir = new THREE.DirectionalLight(0xfff2df, 0.9);
+    dir.position.set(6, 10, 6); dir.castShadow = true;
+    dir.shadow.mapSize.set(1024,1024);
+    scene.add(dir);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(60,60),
+      new THREE.MeshStandardMaterial({ color:0x1c2016, roughness:0.95 })
+    );
+    ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
+    scene.add(ground);
+
+    boxGroup = new THREE.Group();
+    scene.add(boxGroup);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    controls.maxPolarAngle = Math.PI*0.49;
+    controls.minDistance = 2; controls.maxDistance = 60;
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('resize', resize);
+    animate();
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if(controls) controls.update();
+    if(renderer && scene && camera) renderer.render(scene, camera);
+  }
+
+  function buildBoxes(rows, cols, data){
+    if(!inited) initScene();
+    boxGroup.clear();
+    const spacing = 1.15;
+    let maxV = 1; data.forEach(row=>row.forEach(v=>{ if(v>maxV) maxV=v; }));
+    const heightScale = 4/maxV;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const v = data[r][c];
+        const h = Math.max(0.06, v*heightScale);
+        const geo = new THREE.BoxGeometry(0.86, h, 0.86);
+        const t = Math.min(1, v/maxV);
+        const color = new THREE.Color().setHSL(0.09 - t*0.045, 0.72, 0.32 + t*0.28);
+        const mat = new THREE.MeshStandardMaterial({ color, roughness:0.5, metalness:0.08 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set((c-(cols-1)/2)*spacing, h/2, (r-(rows-1)/2)*spacing);
+        mesh.castShadow = true; mesh.receiveShadow = true;
+        mesh.userData = { r, c, v };
+        boxGroup.add(mesh);
+      }
+    }
+    const dist = Math.max(rows,cols)*1.5 + 3.5;
+    camera.position.set(dist*0.72, dist*0.85, dist*0.72);
+    camera.lookAt(0,0,0);
+    controls.target.set(0,0,0);
+    controls.update();
+  }
+
+  function onPointerDown(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX-rect.left)/rect.width)*2-1;
+    const y = -((e.clientY-rect.top)/rect.height)*2+1;
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera({x,y}, camera);
+    const hits = raycaster.intersectObjects(boxGroup.children);
+    if(hits.length){
+      const { r, c } = hits[0].object.userData;
+      window.dispatchEvent(new CustomEvent('stock3d-select', { detail:{ r, c } }));
+    }
+  }
+
+  function resize(){
+    if(!renderer || !wrapEl.clientWidth) return;
+    camera.aspect = wrapEl.clientWidth/wrapEl.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(wrapEl.clientWidth, wrapEl.clientHeight);
+  }
+
+  window.__stock3d = { initScene, buildBoxes, resize };
 })();
 </script>
 </body>
